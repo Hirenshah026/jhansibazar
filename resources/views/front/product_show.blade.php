@@ -172,7 +172,7 @@
         <div
             style="margin:12px; border-radius:20px; overflow:hidden; position:relative; height:165px; box-shadow: 0 10px 20px rgba(59, 91, 219, 0.15)">
             @if ($shop->shop_photo)
-                <img src="{{ url('/shop_photo/' . $shop->shop_photo) }}"
+                <img src="{{ $shop->shop_photo }}"
                     style="width:100%; height:100%; object-fit:cover">
             @else
                 <img src="https://images.unsplash.com/photo-1612203985729-70726954388c?w=900&q=80"

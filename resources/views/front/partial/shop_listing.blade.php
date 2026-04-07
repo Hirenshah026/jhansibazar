@@ -31,7 +31,7 @@
             <a href="{{ url('/shopprofile-details') }}/{{ str_replace(' ', '-', strtolower($sp->shop_name ?? 's')) }}">
                 <div class="p-card fu" style="animation-delay: 0s;">
                     <div style="position:relative;overflow:hidden">
-                        <img src="{{ asset('shop_photo/' . $sp->shop_photo) }}" alt="Red Velvet Cake"
+                        <img src="{{ $sp->shop_photo }}" alt="Red Velvet Cake"
                             style="width:100%;height:130px;object-fit:cover" loading="lazy"
                             onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($sp->shop_name) }}&background=random'">
                         <div
