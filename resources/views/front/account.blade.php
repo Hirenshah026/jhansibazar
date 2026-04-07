@@ -7,7 +7,6 @@
                 display: none;
             }
 
-            /* Delete Confirmation Modal */
             #delete-modal {
                 display: none;
                 position: fixed;
@@ -72,6 +71,7 @@
         </div>
 
         <div class="px-4 mt-6 overflow-y-auto">
+
             <!-- Action Row -->
             <div class="grid grid-cols-2 gap-3 mb-5">
                 <button onclick="Turbo.visit('{{ url('/item-register') }}')"
@@ -111,21 +111,12 @@
                 </button>
             </div>
 
-            <div class="flex gap-2 mb-4 hidden">
-                <button onclick="showScreen('spin')"
-                    class="flex-1 gradient-brand text-white font-display font-bold rounded-2xl py-3 text-sm shadow-md btn-press">🎡 Spin & Win</button>
-                <button class="w-12 bg-white border border-ink-200 rounded-2xl flex items-center justify-center shadow-sm hover:border-saffron-300 transition">📞</button>
-                <button class="w-12 bg-green-500 rounded-2xl flex items-center justify-center shadow-sm">
-                    <span class="text-white text-lg">💬</span>
-                </button>
-            </div>
-
             <!-- Tabs -->
             <div class="flex border-b border-ink-100 mb-4">
-                <button onclick="shopTab(this,'offers')" class="flex-1 py-2.5 text-xs font-semibold tab-active" id="tab-offers">Offers</button>
-                <button onclick="shopTab(this,'items')" class="flex-1 py-2.5 text-xs font-semibold text-ink-400" id="tab-items">Items</button>
+                <button onclick="shopTab(this,'offers')"  class="flex-1 py-2.5 text-xs font-semibold tab-active" id="tab-offers">Offers</button>
+                <button onclick="shopTab(this,'items')"   class="flex-1 py-2.5 text-xs font-semibold text-ink-400" id="tab-items">Items</button>
                 <button onclick="shopTab(this,'reviews')" class="flex-1 py-2.5 text-xs font-semibold text-ink-400" id="tab-reviews">Reviews</button>
-                <button onclick="shopTab(this,'info')" class="flex-1 py-2.5 text-xs font-semibold text-ink-400" id="tab-info">Info</button>
+                <button onclick="shopTab(this,'info')"    class="flex-1 py-2.5 text-xs font-semibold text-ink-400" id="tab-info">Info</button>
             </div>
 
             <!-- Tab: Offers -->
@@ -196,24 +187,37 @@
                     <div class="grid grid-cols-2 gap-3 mb-4">
                         @foreach($items as $item)
                             @php
-                                $photos = json_decode($item->photos, true);
-                                $firstPhoto = (!empty($photos) && is_array($photos))
-                                    ? asset('items/' . ltrim($photos[0], '/'))
-                                    : null;
+                                // ── Photo: handle both Cloudinary & old local format ──
+                                $photos     = json_decode($item->photos ?? '[]', true) ?? [];
+                                $firstPhoto = null;
 
-                                $hasDiscount = $item->is_discount_on && $item->discount_price > 0;
-                                $displayPrice = $hasDiscount ? $item->discount_price : $item->mrp_price;
+                                if (!empty($photos)) {
+                                    $first = $photos[0];
+                                    if (is_array($first) && !empty($first['url'])) {
+                                        // New Cloudinary format: {"url":"...","public_id":"..."}
+                                        $firstPhoto = $first['url'];
+                                    } elseif (is_string($first) && !empty($first)) {
+                                        // Old local format: "filename.webp"
+                                        $firstPhoto = asset('items/' . ltrim($first, '/'));
+                                    }
+                                }
+
+                                // ── Pricing ──
+                                $hasDiscount    = $item->is_discount_on && $item->discount_price > 0;
+                                $displayPrice   = $hasDiscount ? $item->discount_price : $item->mrp_price;
                                 $discountPercent = ($hasDiscount && $item->mrp_price > 0)
                                     ? round((($item->mrp_price - $item->discount_price) / $item->mrp_price) * 100)
                                     : 0;
 
+                                // ── Stock ──
                                 $stockMap = [
-                                    'available'    => ['label' => 'In Stock',     'class' => 'bg-forest-100 text-forest-600'],
-                                    'out_of_stock' => ['label' => 'Out of Stock', 'class' => 'bg-red-100 text-red-600'],
-                                    'limited'      => ['label' => 'Limited',      'class' => 'bg-amber-100 text-amber-600'],
+                                    'available' => ['label' => 'In Stock',     'class' => 'bg-forest-100 text-forest-600'],
+                                    'out'       => ['label' => 'Out of Stock', 'class' => 'bg-red-100 text-red-600'],
+                                    'limited'   => ['label' => 'Limited',      'class' => 'bg-amber-100 text-amber-600'],
                                 ];
                                 $stock = $stockMap[$item->stock_status] ?? ['label' => ucfirst($item->stock_status), 'class' => 'bg-ink-100 text-ink-500'];
 
+                                // ── Card gradient & emoji fallback ──
                                 $gradients = [
                                     'from-orange-100 to-amber-100',
                                     'from-blue-100 to-indigo-100',
@@ -223,9 +227,8 @@
                                     'from-yellow-100 to-lime-100',
                                 ];
                                 $gradient = $gradients[$item->id % count($gradients)];
-
-                                $emojis = ['📦','🛍️','🧴','🧺','🎁','🪄','🧲','🔖'];
-                                $emoji  = $emojis[$item->id % count($emojis)];
+                                $emojis   = ['📦','🛍️','🧴','🧺','🎁','🪄','🧲','🔖'];
+                                $emoji    = $emojis[$item->id % count($emojis)];
                             @endphp
 
                             <div class="bg-white border border-ink-100 rounded-2xl overflow-hidden card-hover relative">
@@ -239,9 +242,17 @@
                                     </svg>
                                 </button>
 
+                                {{-- Photo / Fallback ──}}
                                 <div class="h-24 bg-gradient-to-br {{ $gradient }} flex items-center justify-center relative overflow-hidden">
                                     @if($firstPhoto)
-                                        <img src="{{ $firstPhoto }}" alt="{{ $item->item_name }}" class="w-full h-full object-cover">
+                                        <img
+                                            src="{{ $firstPhoto }}"
+                                            alt="{{ $item->item_name }}"
+                                            class="w-full h-full object-cover"
+                                            loading="lazy"
+                                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                                        {{-- Emoji fallback shown if image fails to load --}}
+                                        <span class="text-4xl" style="display:none">{{ $emoji }}</span>
                                     @else
                                         <span class="text-4xl">{{ $emoji }}</span>
                                     @endif
@@ -260,12 +271,8 @@
                                 </div>
 
                                 <div class="p-2.5">
-                                    <p class="text-xs font-bold text-ink-800 leading-tight truncate">
-                                        {{ $item->item_name }}
-                                    </p>
-                                    <p class="text-[10px] text-ink-400 truncate mt-0.5">
-                                        {{ $item->category ?? '—' }}
-                                    </p>
+                                    <p class="text-xs font-bold text-ink-800 leading-tight truncate">{{ $item->item_name }}</p>
+                                    <p class="text-[10px] text-ink-400 truncate mt-0.5">{{ $item->category ?? '—' }}</p>
                                     <div class="flex items-center justify-between mt-1.5 gap-1 flex-wrap">
                                         <div class="flex items-baseline gap-1">
                                             <p class="font-display font-bold text-saffron-600 text-sm leading-none">
@@ -303,24 +310,20 @@
                         </div>
                         <div class="flex-1">
                             <div class="flex items-center gap-2 mb-1"><span class="text-xs w-4">5</span>
-                                <div class="flex-1 bg-ink-100 rounded-full h-1.5">
-                                    <div class="bg-gold-400 h-1.5 rounded-full" style="width:70%"></div>
-                                </div><span class="text-xs text-ink-400">70%</span>
+                                <div class="flex-1 bg-ink-100 rounded-full h-1.5"><div class="bg-gold-400 h-1.5 rounded-full" style="width:70%"></div></div>
+                                <span class="text-xs text-ink-400">70%</span>
                             </div>
                             <div class="flex items-center gap-2 mb-1"><span class="text-xs w-4">4</span>
-                                <div class="flex-1 bg-ink-100 rounded-full h-1.5">
-                                    <div class="bg-gold-400 h-1.5 rounded-full" style="width:20%"></div>
-                                </div><span class="text-xs text-ink-400">20%</span>
+                                <div class="flex-1 bg-ink-100 rounded-full h-1.5"><div class="bg-gold-400 h-1.5 rounded-full" style="width:20%"></div></div>
+                                <span class="text-xs text-ink-400">20%</span>
                             </div>
                             <div class="flex items-center gap-2 mb-1"><span class="text-xs w-4">3</span>
-                                <div class="flex-1 bg-ink-100 rounded-full h-1.5">
-                                    <div class="bg-gold-400 h-1.5 rounded-full" style="width:7%"></div>
-                                </div><span class="text-xs text-ink-400">7%</span>
+                                <div class="flex-1 bg-ink-100 rounded-full h-1.5"><div class="bg-gold-400 h-1.5 rounded-full" style="width:7%"></div></div>
+                                <span class="text-xs text-ink-400">7%</span>
                             </div>
                             <div class="flex items-center gap-2"><span class="text-xs w-4">1-2</span>
-                                <div class="flex-1 bg-ink-100 rounded-full h-1.5">
-                                    <div class="bg-red-400 h-1.5 rounded-full" style="width:3%"></div>
-                                </div><span class="text-xs text-ink-400">3%</span>
+                                <div class="flex-1 bg-ink-100 rounded-full h-1.5"><div class="bg-red-400 h-1.5 rounded-full" style="width:3%"></div></div>
+                                <span class="text-xs text-ink-400">3%</span>
                             </div>
                         </div>
                     </div>
@@ -332,7 +335,7 @@
                                     <p class="text-xs font-bold text-ink-800">Priya Rani</p>
                                     <span class="text-saffron-400 text-xs">★★★★★</span>
                                 </div>
-                                <p class="text-xs text-ink-400 mt-0.5">Bahut achha collection hai. Spin se 20% off mila — aur joote bhi best quality ke hain!</p>
+                                <p class="text-xs text-ink-400 mt-0.5">Bahut achha collection hai. Spin se 20% off mila!</p>
                                 <p class="text-xs text-ink-300 mt-1">2 ghante pehle</p>
                             </div>
                         </div>
@@ -343,7 +346,7 @@
                                     <p class="text-xs font-bold text-ink-800">Amit Kumar</p>
                                     <span class="text-saffron-400 text-xs">★★★★☆</span>
                                 </div>
-                                <p class="text-xs text-ink-400 mt-0.5">Good shop, friendly staff. Earned 25 coins today from spin!</p>
+                                <p class="text-xs text-ink-400 mt-0.5">Good shop, friendly staff. Earned 25 coins today!</p>
                                 <p class="text-xs text-ink-300 mt-1">Kal</p>
                             </div>
                         </div>
@@ -357,23 +360,27 @@
                     <div class="space-y-3 divide-y divide-ink-50">
                         <div class="flex justify-between text-sm pt-0">
                             <span class="text-ink-400">Pata</span>
-                            <span class="font-medium text-ink-700 text-right text-xs">Shop 14, Sadar Bazar, Jhansi</span>
+                            <span class="font-medium text-ink-700 text-right text-xs">{{ Session::get('shopuser')->address ?? 'N/A' }}</span>
                         </div>
                         <div class="flex justify-between text-sm pt-3">
                             <span class="text-ink-400">Samay</span>
-                            <span class="font-medium text-ink-700">10AM – 9PM</span>
+                            <span class="font-medium text-ink-700">
+                                {{ Session::get('shopuser')->open_time  ? date('h:i A', strtotime(Session::get('shopuser')->open_time))  : 'N/A' }}
+                                –
+                                {{ Session::get('shopuser')->close_time ? date('h:i A', strtotime(Session::get('shopuser')->close_time)) : 'N/A' }}
+                            </span>
                         </div>
                         <div class="flex justify-between text-sm pt-3">
                             <span class="text-ink-400">Chhuti</span>
-                            <span class="font-medium text-ink-700">Sunday</span>
+                            <span class="font-medium text-ink-700">{{ Session::get('shopuser')->off_days ?? 'N/A' }}</span>
                         </div>
                         <div class="flex justify-between text-sm pt-3">
                             <span class="text-ink-400">Category</span>
-                            <span class="font-medium text-ink-700">Footwear</span>
+                            <span class="font-medium text-ink-700">{{ Session::get('shopuser')->categories ?? 'N/A' }}</span>
                         </div>
                         <div class="flex justify-between text-sm pt-3">
                             <span class="text-ink-400">Payment</span>
-                            <span class="font-medium text-ink-700">Cash, UPI, Card</span>
+                            <span class="font-medium text-ink-700">{{ Session::get('shopuser')->payment_modes ?? 'N/A' }}</span>
                         </div>
                     </div>
                 </div>
@@ -382,10 +389,9 @@
         </div>
     </div>
 
-    {{-- ===================== DELETE CONFIRMATION MODAL ===================== --}}
+    {{-- Delete Confirmation Modal --}}
     <div id="delete-modal" onclick="closeDeleteModal(event)">
         <div id="delete-modal-box">
-            {{-- Icon --}}
             <div class="flex justify-center mb-3">
                 <div class="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center">
                     <svg class="w-7 h-7 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -394,19 +400,12 @@
                     </svg>
                 </div>
             </div>
-
-            {{-- Title --}}
             <p class="text-center text-base font-bold text-ink-800">Item Delete Karein?</p>
             <p class="text-center text-xs text-ink-400 mt-1 mb-1">Aap yeh item delete karne wale hain:</p>
-
-            {{-- Product name highlight --}}
             <div class="bg-red-50 border border-red-100 rounded-xl px-4 py-2.5 mx-2 mb-4 text-center">
                 <p class="text-sm font-bold text-red-600" id="delete-item-name">—</p>
             </div>
-
             <p class="text-center text-xs text-ink-400 mb-5">Yeh action undo nahi ho sakta.</p>
-
-            {{-- Buttons --}}
             <div class="flex gap-3">
                 <button onclick="closeDeleteModalDirect()"
                     class="flex-1 bg-ink-100 text-ink-600 font-bold text-sm rounded-2xl py-3 active:scale-95 transition-all">
@@ -429,34 +428,33 @@
 @endsection
 
 @push('script')
-    <script>
-        $(document).on('turbo:load', function () {
-            $('#toggle-profile').off('click').on('click', function () {
-                $('#collapsible-content').slideToggle(300, function () {
-                    let isVisible = $(this).is(':visible');
-                    $('#arrow').text(isVisible ? '▲' : '▼');
-                });
+<script>
+    $(document).on('turbo:load', function () {
+        $('#toggle-profile').off('click').on('click', function () {
+            $('#collapsible-content').slideToggle(300, function () {
+                $('#arrow').text($(this).is(':visible') ? '▲' : '▼');
             });
         });
+    });
 
-        function confirmDelete(itemId, itemName) {
-            document.getElementById('delete-item-name').textContent = itemName;
-            document.getElementById('delete-form').action = '/item-delete/' + itemId;
-            document.getElementById('delete-modal').classList.add('show');
-        }
+    function confirmDelete(itemId, itemName) {
+        document.getElementById('delete-item-name').textContent = itemName;
+        document.getElementById('delete-form').action = '/item-delete/' + itemId;
+        document.getElementById('delete-modal').classList.add('show');
+    }
 
-        function closeDeleteModal(event) {
-            if (event.target === document.getElementById('delete-modal')) {
-                closeDeleteModalDirect();
-            }
+    function closeDeleteModal(event) {
+        if (event.target === document.getElementById('delete-modal')) {
+            closeDeleteModalDirect();
         }
+    }
 
-        function closeDeleteModalDirect() {
-            document.getElementById('delete-modal').classList.remove('show');
-        }
+    function closeDeleteModalDirect() {
+        document.getElementById('delete-modal').classList.remove('show');
+    }
 
-        function submitDelete() {
-            document.getElementById('delete-form').submit();
-        }
-    </script>
+    function submitDelete() {
+        document.getElementById('delete-form').submit();
+    }
+</script>
 @endpush

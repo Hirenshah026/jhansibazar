@@ -44,8 +44,22 @@
                 <div class="bg-white rounded-2xl p-2.5 border border-emerald-50 shadow-[0_2px_10px_-3px_rgba(0,0,0,0.04)] flex items-center gap-3 relative transition-all active:scale-[0.97]">
                     
                     <div class="relative w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 border border-emerald-50 bg-emerald-50">
-                        @if($shop->shop_photo)
-                            <img src="{{ asset('uploads/shops/'.$shop->shop_photo) }}" class="w-full h-full object-cover">
+                        @php
+                            $shopPhoto = $shop->shop_photo;
+                            $photoData = is_string($shopPhoto) ? json_decode($shopPhoto, true) : null;
+                            if (is_array($photoData) && !empty($photoData['url'])) {
+                                // Cloudinary format: {"url":"...","public_id":"..."}
+                                $photoUrl = $photoData['url'];
+                            } elseif (is_string($shopPhoto) && !empty($shopPhoto)) {
+                                // Old local format: plain filename string
+                                $photoUrl = asset('uploads/shops/' . $shopPhoto);
+                            } else {
+                                $photoUrl = null;
+                            }
+                        @endphp
+
+                        @if($photoUrl)
+                            <img src="{{ $photoUrl }}" class="w-full h-full object-cover">
                         @else
                             <div class="w-full h-full flex items-center justify-center text-xl grayscale opacity-30">🏪</div>
                         @endif
