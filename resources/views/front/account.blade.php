@@ -251,7 +251,6 @@
                                             class="w-full h-full object-cover"
                                             loading="lazy"
                                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                                        {{-- Emoji fallback shown if image fails to load --}}
                                         <span class="text-4xl" style="display:none">{{ $emoji }}</span>
                                     @else
                                         <span class="text-4xl">{{ $emoji }}</span>
