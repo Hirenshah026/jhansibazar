@@ -232,8 +232,6 @@
                             @endphp
 
                             <div class="bg-white border border-ink-100 rounded-2xl overflow-hidden card-hover relative">
-
-                                {{-- Delete button --}}
                                 <button
                                     onclick="confirmDelete({{ $item->id }}, '{{ addslashes($item->item_name) }}')"
                                     class="absolute top-1.5 right-1.5 z-10 w-6 h-6 bg-white/90 rounded-full flex items-center justify-center shadow border border-red-100 active:scale-90 transition-all">
@@ -242,7 +240,7 @@
                                     </svg>
                                 </button>
 
-                                {{-- Photo / Fallback ──}}
+                                
                                 <div class="h-24 bg-gradient-to-br {{ $gradient }} flex items-center justify-center relative overflow-hidden">
                                     @if($firstPhoto)
                                         <img
@@ -388,7 +386,6 @@
         </div>
     </div>
 
-    {{-- Delete Confirmation Modal --}}
     <div id="delete-modal" onclick="closeDeleteModal(event)">
         <div id="delete-modal-box">
             <div class="flex justify-center mb-3">
