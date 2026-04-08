@@ -37,7 +37,7 @@
                         <div
                             style="position:absolute;top:7px;left:7px;background:#EF4444;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px">
                             -25%</div>
-                        <div style="position:absolute;top:7px;right:7px"><span class="tag t-red"
+                        <div style="position:absolute;top:7px;right:7px" class="hidden"><span class="tag t-red"
                                 style="font-size:9px;padding:2px 6px">🔥 Best Seller</span></div>
 
                     </div>
