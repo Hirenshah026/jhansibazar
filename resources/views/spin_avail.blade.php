@@ -16,18 +16,6 @@
             </div>
             <div class="flex items-center gap-3 text-slate-400">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                <div class="w-8 h-8 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center text-[10px] font-bold text-emerald-700">RK</div>
-            </div>
-        </div>
-
-        <div class="px-4 py-2 bg-white border-b border-emerald-50 flex gap-3 overflow-x-auto no-scrollbar">
-            <div class="flex items-center gap-1.5 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100 flex-shrink-0">
-                <span class="text-xs">🪙</span>
-                <span class="text-[10px] font-bold text-emerald-800">340 COINS</span>
-            </div>
-            <div class="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100 flex-shrink-0">
-                <span class="text-xs">🎡</span>
-                <span class="text-[10px] font-bold text-slate-600">2 SPINS</span>
             </div>
         </div>
 
