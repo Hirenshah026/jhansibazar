@@ -52,7 +52,7 @@
                                 $photoUrl = $photoData['url'];
                             } elseif (is_string($shopPhoto) && !empty($shopPhoto)) {
                                 // Old local format: plain filename string
-                                $photoUrl = asset('uploads/shops/' . $shopPhoto);
+                                $photoUrl = $shopPhoto;
                             } else {
                                 $photoUrl = null;
                             }
