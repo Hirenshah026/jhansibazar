@@ -39,7 +39,7 @@ class FrontController extends Controller
         $shop=DB::table('shops')->where('shop_name',$slug)->first();
         if(!$shop)
         {
-             $shops=DB::table('shops')->get();
+            $shops=DB::table('shops')->get();
             return view('spin_avail',compact('shops')); 
         }
         return view('front.spin1',compact('shop')); 
@@ -47,7 +47,8 @@ class FrontController extends Controller
     public function account() 
     { 
         $shop=DB::table('shops')->where('id',Session::get('shopuser')->id??0)->first();
-        return view('front.account',compact('shop')); 
+        $services=DB::table('services')->get();
+        return view('front.account',compact('shop','services')); 
     }
     public function wallet() { return view('front.wallet'); }
     public function shopprofile($slug) 

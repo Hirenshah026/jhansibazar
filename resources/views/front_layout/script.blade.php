@@ -4,7 +4,7 @@
         // Agar server root par chal raha hai to path khali rakho, 
         // warna apna prefix dalo
        
-        const basePath = window.location.host == 'localhost' ? '/jhs' : '';
+        const basePath = window.location.host == 'localhost' ? '/jhansibazar' : '';
         // alert(window.location.host)
         var fullPath = basePath + '/' + name;
         if(slug) 
@@ -58,7 +58,7 @@
     }
 
     function shopTab(btn, tab) {
-        ['offers', 'items', 'reviews', 'info'].forEach(t => {
+        ['offers', 'items','service', 'reviews', 'info'].forEach(t => {
             const el = document.getElementById('shopTab-' + t);
             const tb = document.getElementById('tab-' + t);
             if (el) el.classList.toggle('hidden', t !== tab);

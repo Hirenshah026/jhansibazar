@@ -64,4 +64,10 @@ Route::middleware(['authcheckuser'])->group(function () {
     Route::post('/categories/store', [CategoryController::class, 'store'])->name('categories.store');
     Route::post('/categories/update', [CategoryController::class, 'update'])->name('categories.update'); // Ye missing tha
     Route::post('/categories/delete', [CategoryController::class, 'destroy'])->name('categories.delete');
+
+    Route::any('/services/list', [ServiceController::class, 'list_show']);
+    Route::get('/api/services-list', [ServiceController::class, 'getServices'])->name('services.api.list');
+    Route::get('/services/fetch/{id}', [ServiceController::class, 'fetch']);
+    Route::post('/services/update/{id}', [ServiceController::class, 'update']);
+    Route::delete('/services/delete/{id}', [ServiceController::class, 'destroy']);
 });

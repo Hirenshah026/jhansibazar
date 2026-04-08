@@ -252,7 +252,8 @@
             <button onclick="window.history.back()"
                 style="color:#fff; background:none; border:none; font-size:20px">←</button>
             <p style="color:#fff;font-size:16px;font-weight:800;margin:0">Bulk Service Entry</p>
-            <div style="width:30px"></div>
+            <div style="width:30px"><a href="{{ url('services/list') }}"
+                    style="color:#fff; text-decoration:none;  font-weight:bold">List</a></div>
         </div>
 
         <div id="bulk-container">
@@ -279,7 +280,8 @@
                         </div>
                     </div>
 
-                    <p style="font-size:12px; font-weight:700; margin-bottom:8px; color:#475569">Category (Optional)</p>
+                    <p style="font-size:12px; font-weight:700; margin-bottom:8px; color:#475569">Category (Optional) <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 inset-ring inset-ring-green-600/20 cursor-pointer"
+                            onclick="showCategoryForm()" class="cursor-pointer">+Add New</span></p>
                     <div class="category-group" style="display:flex; gap:7px; flex-wrap:wrap; margin-bottom:15px">
                         <button type="button" class="chp on" onclick="handleChip(this)">Hair</button>
                         <button type="button" class="chp" onclick="handleChip(this)">Facial</button>
@@ -319,6 +321,54 @@
                 Confirm & Save All
             </button>
         </div>
+
+        <div id="catPopUp"
+            style="display:none; position:fixed; inset:0; background:rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+
+            <div
+                style="background:#fff; width:100%; max-width:380px; border-radius:24px; overflow:hidden; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25); border: 1px solid #e2e8f0;">
+
+                <div style="background:#16A34A; padding:20px; color:#fff; text-align:center;">
+                    <div
+                        style="background:rgba(255,255,255,0.2); width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px auto;">
+                        <span style="font-size:24px;">➕</span>
+                    </div>
+                    <h3
+                        style="margin:0; font-size:18px; font-weight:800; letter-spacing:0.5px; font-family:'Baloo 2', cursive;">
+                        NEW CATEGORY</h3>
+                    <p style="margin:4px 0 0 0; font-size:12px; opacity:0.9; font-weight:600;">Add to your marketplace list
+                    </p>
+                </div>
+
+                <div style="padding:24px;">
+                    <div style="margin-bottom:20px;">
+                        <label
+                            style="display:block; font-size:11px; font-weight:800; color:#16A34A; text-transform:uppercase; margin-bottom:8px; padding-left:4px;">
+                            Category Name
+                        </label>
+                        <input type="text" id="new-cat-name" placeholder="e.g. Mobile Repairing"
+                            style="width:100%; background:#f8fafc; border:2px solid #e2e8f0; border-radius:14px; padding:14px; font-size:15px; font-weight:700; color:#1e293b; outline:none; transition:0.2s;"
+                            onfocus="this.style.borderColor='#16A34A'; this.style.background='#fff';"
+                            onblur="this.style.borderColor='#e2e8f0'; this.style.background='#f8fafc';">
+                    </div>
+
+                    <div style="display:flex; gap:12px;">
+                        <button onclick="hideCategoryForm()"
+                            style="flex:1; background:#f1f5f9; color:#64748b; border:none; border-radius:14px; padding:15px; font-weight:800; font-size:14px; cursor:pointer; transition:0.2s;">
+                            Cancel
+                        </button>
+
+                        <button onclick="saveQuickCategory()"
+                            style="flex:2; background:#16A34A; color:#fff; border:none; border-radius:14px; padding:15px; font-weight:800; font-size:14px; cursor:pointer; box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3); transition:0.2s;"
+                            onmousedown="this.style.transform='scale(0.96)'" onmouseup="this.style.transform='scale(1)'">
+                            Save Category
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 
     <style>
@@ -513,5 +563,49 @@
                 }
             });
         });
+    </script>
+    <script>
+        // Bank softare jaisa window dikhane ke liye
+        function showCategoryForm() {
+            $('#catPopUp').css('display', 'flex');
+        }
+
+        // Window band karne ke liye
+        function hideCategoryForm() {
+            $('#catPopUp').hide();
+            $('#new-cat-name').val('');
+        }
+
+        // Bina refresh save karne ke liye
+        function saveQuickCategory() {
+            let name = $('#new-cat-name').val();
+            if (!name) return alert("Naam likho bhai!");
+
+            $.ajax({
+                url: "{{ route('categories.store') }}",
+                type: "POST",
+                data: {
+                    name: name,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(res) {
+                    if (res.status == 'success') {
+                        // Dropdown mein naya data daalo
+                        $('#category_id').append(
+                            `<option value="${res.data.id}" selected>${res.data.name}</option>`);
+
+                        // Window band kar do
+                        hideCategoryForm();
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Saved!',
+                            timer: 1000,
+                            showConfirmButton: false
+                        });
+                    }
+                }
+            });
+        }
     </script>
 @endpush
