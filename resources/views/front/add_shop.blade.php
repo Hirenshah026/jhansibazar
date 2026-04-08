@@ -354,7 +354,11 @@
             padding: 16px;
             cursor: pointer;
             transition: all .15s;
-            letter-spacing: .3px
+            letter-spacing: .3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .btn-main:hover {
@@ -368,9 +372,10 @@
         }
 
         .btn-main:disabled {
-            opacity: .5;
-            cursor: default;
-            transform: none
+            opacity: .6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
         .btn-sec {
@@ -388,6 +393,24 @@
 
         .btn-sec:hover {
             background: #EFF6FF
+        }
+
+        /* ── Button Spinner ── */
+        .btn-spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid rgba(255, 255, 255, 0.35);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: btn-spin .65s linear infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes btn-spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* ── Success screen ── */
@@ -502,8 +525,7 @@
                 <input id="shopName" class="inp" type="text" placeholder="Jaise: Sharma General Store"
                     oninput="validateShop(this)" />
                 <p id="shopNameErr" style="display:none;font-size:11px;color:#EF4444;margin-top:4px;font-weight:600">⚠ Dukan
-                    ka
-                    naam zaroori hai</p>
+                    ka naam zaroori hai</p>
             </div>
 
             <!-- Phone / WhatsApp -->
@@ -517,8 +539,7 @@
                         placeholder="98765 43210" oninput="validatePhone(this)" inputmode="numeric" />
                 </div>
                 <p id="phoneErr" style="display:none;font-size:11px;color:#EF4444;margin-top:4px;font-weight:600">⚠ 10
-                    digit ka
-                    number daalo</p>
+                    digit ka number daalo</p>
                 <div style="display:flex;align-items:center;gap:6px;margin-top:6px">
                     <input type="checkbox" id="waCheck" style="width:16px;height:16px;accent-color:#25D366" checked />
                     <label for="waCheck" style="font-size:12px;color:#64748b;font-weight:600">Yahi number WhatsApp pe bhi
@@ -579,7 +600,7 @@
                 </div>
             </div>
 
-            <button class="btn-main" onclick="saveStep1AndNext()">Aage Badho — Category Chuno →</button>
+            <button id="btn1" class="btn-main" onclick="saveStep1AndNext()">Aage Badho — Category Chuno →</button>
         </div>
 
         <!-- ══════════════════════════════════════════════════════ -->
@@ -615,8 +636,7 @@
                     <button type="button" class="cat-chip" onclick="toggleCat(this)" data-cat="paan">🌿 Paan &
                         General</button>
                     <button type="button" class="cat-chip" onclick="toggleCat(this)" data-cat="electronics">📱
-                        Electronics &
-                        Mobile</button>
+                        Electronics & Mobile</button>
                     <button type="button" class="cat-chip" onclick="toggleCat(this)" data-cat="coaching">📚 Coaching &
                         Classes</button>
                     <button type="button" class="cat-chip" onclick="toggleCat(this)" data-cat="dairy">🥛 Dairy &
@@ -627,8 +647,7 @@
                         Aur</button>
                 </div>
                 <p id="catErr" style="display:none;font-size:11px;color:#EF4444;margin-top:8px;font-weight:600">⚠ Kam
-                    se kam ek
-                    category zaroori hai</p>
+                    se kam ek category zaroori hai</p>
             </div>
 
             <!-- Service name / tagline -->
@@ -666,11 +685,9 @@
             <!-- Offers preview -->
             <div style="background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:16px;padding:14px;margin-bottom:20px">
                 <p class="fd" style="color:#1e40af;font-size:14px;font-weight:700;margin-bottom:8px">🎡 Aapke Spin
-                    Wheel Offers
-                </p>
+                    Wheel Offers</p>
                 <p style="font-size:12px;color:#3b82f6;margin-bottom:10px">3 offers set karo — customer spin karke jeete
-                    (baad
-                    mein edit bhi kar sakte ho)</p>
+                    (baad mein edit bhi kar sakte ho)</p>
                 <div style="display:flex;flex-direction:column;gap:8px">
                     <input id="offer1" class="inp" type="text"
                         placeholder="Offer 1 — Jaise: 10% off on ₹100 purchase" style="font-size:13px" />
@@ -683,7 +700,7 @@
 
             <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px">
                 <button class="btn-sec" onclick="goStep(1)">← Wapas</button>
-                <button class="btn-main" onclick="saveStep2AndNext()">Aage — Photos Daalo →</button>
+                <button id="btn2" class="btn-main" onclick="saveStep2AndNext()">Aage — Photos Daalo →</button>
             </div>
         </div>
 
@@ -694,14 +711,14 @@
 
             <div style="background:#ECFDF5;border:1.5px solid #86EFAC;border-radius:14px;padding:12px;margin-bottom:18px">
                 <p style="font-size:12px;color:#16A34A;font-weight:700;line-height:1.5">📸 Photos se profile attractive
-                    banta
-                    hai — zyada customers aate hain. Mobile se seedha click karke upload karo!</p>
+                    banta hai — zyada customers aate hain. Mobile se seedha click karke upload karo!</p>
             </div>
 
             <!-- Shop Photo — Main -->
             <div style="margin-bottom:16px">
                 <p class="lbl">🏪 Dukan Ki Photo <span class="req">*</span></p>
-                <p style="font-size:12px;color:#94a3b8;margin-bottom:8px">Dukan ke bahar ya andar ki clear photo (3:2 aspect ratio best hai)</p>
+                <p style="font-size:12px;color:#94a3b8;margin-bottom:8px">Dukan ke bahar ya andar ki clear photo (3:2
+                    aspect ratio best hai)</p>
                 <div class="photo-box" id="shopPhotoBox"
                     style="height:140px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px"
                     onclick="triggerUpload('shopPhoto')">
@@ -718,14 +735,14 @@
                 </div>
                 <div class="image-info" id="shopPhotoInfo"></div>
                 <p id="shopPhotoErr" style="display:none;font-size:11px;color:#EF4444;margin-top:4px;font-weight:600">⚠
-                    Dukan ki
-                    ek photo zaroori hai</p>
+                    Dukan ki ek photo zaroori hai</p>
             </div>
 
             <!-- Owner Photo -->
             <div style="margin-bottom:16px">
                 <p class="lbl">👤 Aapki Photo (Optional)</p>
-                <p style="font-size:12px;color:#94a3b8;margin-bottom:8px">Customer aapko pehchaane — trust badhta hai (Square best)</p>
+                <p style="font-size:12px;color:#94a3b8;margin-bottom:8px">Customer aapko pehchaane — trust badhta hai
+                    (Square best)</p>
                 <div class="photo-box" id="ownerPhotoBox"
                     style="height:110px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px"
                     onclick="triggerUpload('ownerPhoto')">
@@ -745,7 +762,8 @@
             <!-- Item / Service Photos -->
             <div style="margin-bottom:16px">
                 <p class="lbl">🍽️ Items / Services Ki Photos</p>
-                <p style="font-size:12px;color:#94a3b8;margin-bottom:8px">Jo bhi bechte ho — uski photos daalo (max 6, 4:3 aspect ratio)</p>
+                <p style="font-size:12px;color:#94a3b8;margin-bottom:8px">Jo bhi bechte ho — uski photos daalo (max 6,
+                    4:3 aspect ratio)</p>
                 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px" id="itemPhotosGrid">
                     <!-- Generated by JS -->
                 </div>
@@ -768,8 +786,7 @@
                 </div>
                 <div id="videoNote" style="margin-top:10px;background:#EFF6FF;border-radius:10px;padding:8px 10px">
                     <p style="font-size:11px;color:#3595ff;font-weight:600">✓ Hamare team member aapke paas aayenge aur
-                        video
-                        banayenge — 2-3 din mein</p>
+                        video banayenge — 2-3 din mein</p>
                 </div>
             </div>
 
@@ -789,8 +806,7 @@
                             Aapki Dukan</p>
                         <p id="previewCategory" style="font-size:11px;color:#64748b;margin-top:1px">Category • Jhansi</p>
                         <p id="previewTagline" style="font-size:11px;color:#3595ff;font-weight:600;margin-top:2px">Aapki
-                            tagline
-                            yahan aayegi</p>
+                            tagline yahan aayegi</p>
                     </div>
                 </div>
                 <div style="display:flex;gap:6px;margin-top:10px">
@@ -808,7 +824,7 @@
 
             <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px">
                 <button class="btn-sec" onclick="goStep(2)">← Wapas</button>
-                <button class="btn-main" onclick="submitForm()">🚀 Profile Banao — Free!</button>
+                <button id="btn3" class="btn-main" onclick="submitForm()">🚀 Profile Banao — Free!</button>
             </div>
         </div>
 
@@ -819,7 +835,8 @@
             <div class="crop-container">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
                     <p style="font-size:14px;font-weight:700;color:#1e293b">Photo Ko Crop Karo</p>
-                    <button onclick="closeCropModal()" style="background:none;border:none;font-size:20px;cursor:pointer;padding:0">✕</button>
+                    <button onclick="closeCropModal()"
+                        style="background:none;border:none;font-size:20px;cursor:pointer;padding:0">✕</button>
                 </div>
                 <div class="crop-image-wrapper">
                     <img id="cropImage" src="" alt="crop">
@@ -848,19 +865,17 @@
             <div id="confettiContainer" style="position:absolute;inset:0;pointer-events:none"></div>
 
             <div style="margin-top:0px;margin-bottom:28px">
-                <div style="width: 37px;/* height: 96px; */background:linear-gradient(135deg,#417dbf,#3595ff);border-radius: 8px;display:flex;align-items:center;justify-content:center;font-size: 25px;margin: 0 auto 0px;box-shadow:0 12px 32px rgba(53,149,255,.35);/* display: none; */"
+                <div style="width:37px;background:linear-gradient(135deg,#417dbf,#3595ff);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:25px;margin:0 auto 0px;box-shadow:0 12px 32px rgba(53,149,255,.35);"
                     class="pop hidden">✅</div>
                 <h2 class="fd" style="font-size:26px;font-weight:800;color:#1e293b;margin-bottom:6px">Badhai Ho!</h2>
                 <p style="font-size:15px;color:#64748b;line-height:1.5">Aapki dukan register ho gayi.<br />Profile 24
-                    ghante
-                    mein live ho jaayega!</p>
+                    ghante mein live ho jaayega!</p>
             </div>
 
             <!-- What happens next -->
             <div
                 style="background:white;border-radius:20px;padding:18px;border:1.5px solid #E2E8F0;margin-bottom:16px;text-align:left">
-                <p class="fd" style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:14px">Aage Kya Hoga:
-                </p>
+                <p class="fd" style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:14px">Aage Kya Hoga:</p>
                 <div style="display:flex;flex-direction:column;gap:12px">
                     <div style="display:flex;gap:12px;align-items:flex-start">
                         <div
@@ -898,12 +913,11 @@
                 style="background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border-radius:14px;padding:14px;margin-bottom:20px;border:1.5px solid #BFDBFE">
                 <p style="font-size:11px;color:#64748b;margin-bottom:4px">Aapka Registration ID</p>
                 <p id="regId" class="fd" style="font-size:24px;font-weight:800;color:#1e40af;letter-spacing:2px">
-                    JB-2025-0041
-                </p>
+                    JB-2025-0041</p>
                 <p style="font-size:11px;color:#3b82f6;margin-top:4px">Yeh ID save kar lo — kaam aayega</p>
             </div>
 
-            <button class="btn-main" onclick="shareWhatsApp()" style="margin-bottom:10px">
+            <button id="btnShare" class="btn-main" onclick="shareWhatsApp()" style="margin-bottom:10px">
                 💬 WhatsApp Pe Share Karo
             </button>
             <button onclick="resetForm()"
@@ -933,12 +947,33 @@
             });
         });
 
-        // ─── 2. CROP FUNCTIONS ───
+        // ─── 2. LOADER HELPER ───
+        /**
+         * setLoader(btnEl, loading, text)
+         * btnEl   — the <button> DOM element
+         * loading — true = show spinner & disable, false = restore original label
+         * text    — custom loading text shown beside the spinner (optional)
+         */
+        function setLoader(btnEl, loading, text) {
+            if (!btnEl) return;
+            if (loading) {
+                btnEl.dataset.originalHtml = btnEl.innerHTML;
+                btnEl.disabled = true;
+                btnEl.innerHTML = `<span class="btn-spinner"></span> ${text || 'Please Wait...'}`;
+            } else {
+                btnEl.disabled = false;
+                if (btnEl.dataset.originalHtml) {
+                    btnEl.innerHTML = btnEl.dataset.originalHtml;
+                    delete btnEl.dataset.originalHtml;
+                }
+            }
+        }
+
+        // ─── 3. CROP FUNCTIONS ───
         function initiateCrop(input, photoId, boxId, previewId, aspectRatio) {
             if (input.files && input.files[0]) {
                 const file = input.files[0];
-                
-                // Validate file size (5MB max)
+
                 if (file.size > 5 * 1024 * 1024) {
                     Toast.fire({ icon: 'error', title: 'Photo 5MB se chhota hona chahiye' });
                     return;
@@ -968,10 +1003,10 @@
             const image = document.getElementById('cropImage');
             let aspectRatio = NaN;
             if (currentCropContext.aspectRatio === '1:1') aspectRatio = 1;
-            else if (currentCropContext.aspectRatio === '3:2') aspectRatio = 3/2;
-            else if (currentCropContext.aspectRatio === '4:3') aspectRatio = 4/3;
-            else if (currentCropContext.aspectRatio === '16:9') aspectRatio = 16/9;
-            
+            else if (currentCropContext.aspectRatio === '3:2') aspectRatio = 3 / 2;
+            else if (currentCropContext.aspectRatio === '4:3') aspectRatio = 4 / 3;
+            else if (currentCropContext.aspectRatio === '16:9') aspectRatio = 16 / 9;
+
             cropper = new Cropper(image, {
                 aspectRatio: aspectRatio,
                 autoCropArea: 0.8,
@@ -997,13 +1032,13 @@
         function setCropAspect(btn, aspect) {
             $('.crop-option-btn').removeClass('active');
             $(btn).addClass('active');
-            
+
             let ratio = NaN;
             if (aspect === '1:1') ratio = 1;
-            else if (aspect === '3:2') ratio = 3/2;
-            else if (aspect === '4:3') ratio = 4/3;
-            else if (aspect === '16:9') ratio = 16/9;
-            
+            else if (aspect === '3:2') ratio = 3 / 2;
+            else if (aspect === '4:3') ratio = 4 / 3;
+            else if (aspect === '16:9') ratio = 16 / 9;
+
             if (cropper) cropper.setAspectRatio(ratio);
         }
 
@@ -1017,22 +1052,19 @@
 
             canvas.toBlob((blob) => {
                 const croppedFile = new File([blob], 'cropped.jpg', { type: 'image/jpeg' });
-                
-                // Update file input
+
                 const dataTransfer = new DataTransfer();
                 dataTransfer.items.add(croppedFile);
                 document.getElementById(currentCropContext.photoId).files = dataTransfer.files;
 
-                // Preview
                 const url = canvas.toDataURL('image/jpeg', 0.8);
                 $(`#${currentCropContext.previewId}`).html(
                     `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">`
                 );
                 $(`#${currentCropContext.boxId}`).css('border-style', 'solid').css('border-color', '#3595ff');
 
-                // Show image info
                 const sizeKB = (blob.size / 1024).toFixed(1);
-                showImageInfo(currentCropContext.photoId.replace('Photo', 'Photo'), `✓ Cropped • ${sizeKB}KB`);
+                showImageInfo(currentCropContext.photoId, `✓ Cropped • ${sizeKB}KB`);
 
                 if (currentCropContext.previewId === 'shopPreview') {
                     $('#previewAvatar').html(
@@ -1049,7 +1081,7 @@
             $(`#${infoId}`).text(text).addClass('show');
         }
 
-        // ─── 3. VALIDATION FUNCTIONS ───
+        // ─── 4. VALIDATION FUNCTIONS ───
         function validateName(el) {
             if (el.value.trim().length > 0) {
                 $('#ownerNameErr').fadeOut();
@@ -1099,7 +1131,7 @@
             else $(el).css('border-color', '#3595ff');
         }
 
-        // ─── 4. PHOTO PREVIEW LOGIC ───
+        // ─── 5. PHOTO PREVIEW LOGIC ───
         function triggerUpload(id) {
             document.getElementById(id).click();
         }
@@ -1108,15 +1140,19 @@
             let html = '';
             for (let i = 1; i <= 6; i++) {
                 html += `
-                <div class="photo-box" id="itemBox${i}" style="height:85px;border:2px dashed #cbd5e1;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative" onclick="triggerUpload('itemPhoto${i}')">
-                    <input type="file" id="itemPhoto${i}" accept="image/*" style="display:none" onchange="initiateCrop(this, 'itemPhoto${i}', 'itemBox${i}', 'itemPreview${i}', '4:3')">
-                    <div id="itemPreview${i}" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">➕</div>
+                <div class="photo-box" id="itemBox${i}"
+                    style="height:85px;border:2px dashed #cbd5e1;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative"
+                    onclick="triggerUpload('itemPhoto${i}')">
+                    <input type="file" id="itemPhoto${i}" accept="image/*" style="display:none"
+                        onchange="initiateCrop(this, 'itemPhoto${i}', 'itemBox${i}', 'itemPreview${i}', '4:3')">
+                    <div id="itemPreview${i}"
+                        style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">➕</div>
                 </div>`;
             }
             $('#itemPhotosGrid').html(html);
         }
 
-        // ─── 5. STEP NAVIGATION ───
+        // ─── 6. STEP NAVIGATION ───
         function goStep(step) {
             $('.fu, #step1, #step2, #step3').hide();
             $(`#step${step}`).fadeIn();
@@ -1130,27 +1166,25 @@
             $('#stepLabel').text(step);
             for (let i = 1; i <= 3; i++) {
                 if (i <= step) {
-                    $(`#dot${i}`).css({
-                        'background': 'white',
-                        'color': '#3595ff'
-                    });
+                    $(`#dot${i}`).css({ 'background': 'white', 'color': '#3595ff' });
                     $(`#lbl${i}`).css('color', 'white');
                 } else {
-                    $(`#dot${i}`).css({
-                        'background': 'rgba(255,255,255,.3)',
-                        'color': 'rgba(255,255,255,.7)'
-                    });
+                    $(`#dot${i}`).css({ 'background': 'rgba(255,255,255,.3)', 'color': 'rgba(255,255,255,.7)' });
                     $(`#lbl${i}`).css('color', 'rgba(255,255,255,.5)');
                 }
             }
         }
 
-        // ─── 6. AJAX SAVES ───
+        // ─── 7. AJAX SAVES ───
         async function saveStep1AndNext() {
             if (!$('#ownerName').val() || !$('#shopName').val() || $('#phone').val().length < 10 || !$('#address').val()) {
                 validateStep1();
                 return;
             }
+
+            const btn = document.getElementById('btn1');
+            setLoader(btn, true, 'Save Ho Raha Hai...');
+
             const isWhatsapp = $('#waCheck').is(':checked') ? 1 : 0;
             const data = {
                 _token: '{{ csrf_token() }}',
@@ -1175,7 +1209,9 @@
                     Toast.fire({ icon: 'error', title: res.message });
                 }
             } catch (e) {
-                alert("Server Error!");
+                Toast.fire({ icon: 'error', title: 'Server Error! Dobara try karo.' });
+            } finally {
+                setLoader(btn, false);
             }
         }
 
@@ -1184,6 +1220,9 @@
                 Toast.fire({ icon: 'error', title: "Category aur Tagline zaroori hai!" });
                 return;
             }
+
+            const btn = document.getElementById('btn2');
+            setLoader(btn, true, 'Save Ho Raha Hai...');
 
             const data = {
                 _token: '{{ csrf_token() }}',
@@ -1203,7 +1242,9 @@
                     Toast.fire({ icon: 'error', title: res.message });
                 }
             } catch (e) {
-                alert("Data save nahi ho paya!");
+                Toast.fire({ icon: 'error', title: 'Data save nahi ho paya!' });
+            } finally {
+                setLoader(btn, false);
             }
         }
 
@@ -1212,6 +1253,9 @@
                 Toast.fire({ icon: 'error', title: "Dukan ki photo zaroori hai!" });
                 return;
             }
+
+            const btn = document.getElementById('btn3');
+            setLoader(btn, true, 'Upload Ho Raha Hai...');
 
             let formData = new FormData();
             formData.append('_token', '{{ csrf_token() }}');
@@ -1235,15 +1279,21 @@
                         $('#step3').hide();
                         $('#stepSuccess').fadeIn();
                         $('#regId').text(res.reg_id || 'JB-' + shopId);
+                    } else {
+                        Toast.fire({ icon: 'error', title: res.message || 'Submit fail hua!' });
                     }
                 },
                 error: function() {
-                    alert("Image upload fail!");
+                    Toast.fire({ icon: 'error', title: 'Image upload fail! Dobara try karo.' });
+                },
+                complete: function() {
+                    // Always restore the button — even on error — so user can retry
+                    setLoader(btn, false);
                 }
             });
         }
 
-        // ─── 7. UI TOGGLES ───
+        // ─── 8. UI TOGGLES ───
         function toggleCat(btn) {
             let cat = $(btn).data('cat');
             $(btn).toggleClass('sel');
@@ -1304,9 +1354,16 @@
             }
         }
 
+        // ─── 9. SHARE & RESET ───
         function shareWhatsApp() {
+            const btn = document.getElementById('btnShare');
+            setLoader(btn, true, 'WhatsApp Khul Raha Hai...');
+
             const text = `Badhai! 🎉 Mere shop (${$('#shopName').val()}) ko Jhansi Bazaar pe register kar diya! Join karo: [link]`;
             window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
+
+            // Restore after 2s — window.open resolves instantly
+            setTimeout(() => setLoader(btn, false), 2000);
         }
 
         function resetForm() {
