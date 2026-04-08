@@ -124,23 +124,22 @@
             </div>
 
             <div
-                style="width: 150px; text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; border: 1px solid #eee; padding: 12px; border-radius: 12px; background: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                style="width: 160px; text-align: center; font-family: sans-serif; border: 1px solid #ddd; padding: 10px; border-radius: 12px; background: #fff; margin: 10px;">
 
-                <div style="margin-bottom: 8px;">
-                    <img id="qrImage" src="https://quickchart.io/qr?text={{ urlencode(url('/')) }}&size=500"
-                        style="width: 125px; height: 125px; border-radius: 6px; display: block; margin: 0 auto;">
+                <img id="qrDisplay" src="https://quickchart.io/qr?text={{ urlencode(url('/')) }}&size=500"
+                    style="width: 140px; height: 140px; border-radius: 8px; display: block; margin: 0 auto;">
+
+                <div id="shopNameTxt" style="font-size: 14px; font-weight: bold; margin: 8px 0; color: #000;">
+                    {{ Session::get('shopuser')->shop_name ?? 'na' }}
                 </div>
 
-                <div
-                    style="display: block !important; visibility: visible !important; font-size: 14px; font-weight: 700; color: #333; margin: 8px 0; line-height: 1.2; word-wrap: break-word;">
-                    {{ $vendor->shop_name ?? 'My Shop' }}
-                </div>
-
-                <button onclick="saveQR()"
-                    style="width: 100%; padding: 7px 0; font-size: 12px; background: #000; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; transition: 0.3s;">
+                <button onclick="generateDownload()"
+                    style="width: 100%; padding: 7px; font-size: 12px; background: #000; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">
                     Download QR
                 </button>
             </div>
+
+            <canvas id="myCanvas" style="display:none;"></canvas>
             <div class="flex gap-2 mb-4 hidden">
                 <button onclick="showScreen('spin')"
                     class="flex-1 gradient-brand text-white font-display font-bold rounded-2xl py-3 text-sm shadow-md btn-press">🎡
@@ -579,31 +578,42 @@
         }
     </script>
     <script>
-        async function saveQR() {
-            const imgElement = document.getElementById('qrImage');
-            const imgUrl = imgElement.src;
-            // File name ke liye dynamic shop name
-            const shopName = "{{ $vendor->shop_name ?? 'shop' }}".replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        function generateDownload() {
+            const canvas = document.getElementById('myCanvas');
+            const ctx = canvas.getContext('2d');
+            const shopName = document.getElementById('shopNameTxt').innerText;
+            const qrImg = new Image();
 
-            try {
-                const response = await fetch(imgUrl);
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
+            // CORS issue na ho isliye anonymous setting
+            qrImg.crossOrigin = "anonymous";
+            qrImg.src = document.getElementById('qrDisplay').src;
 
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = url;
-                a.download = `QR_${shopName}.png`;
+            qrImg.onload = function() {
+                // Canvas size set karein (500x500 QR + 100px niche space naam ke liye)
+                canvas.width = 500;
+                canvas.height = 620;
 
-                document.body.appendChild(a);
-                a.click();
+                // Background white karein
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
-            } catch (error) {
-                console.error("Download failed, opening in new tab", error);
-                window.open(imgUrl, '_blank');
-            }
+                // QR Code draw karein
+                ctx.drawImage(qrImg, 0, 0, 500, 500);
+
+                // Naam (Shop Name) likhein
+                ctx.fillStyle = "#000000"; // Black color
+                ctx.font = "bold 45px Arial"; // Bada aur bold font
+                ctx.textAlign = "center";
+
+                // QR ke niche center mein naam likhna
+                ctx.fillText(shopName, 250, 570);
+
+                // Ab download link banayein
+                const link = document.createElement('a');
+                link.download = shopName.replace(/\s+/g, '_') + '_QR.png';
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            };
         }
     </script>
 @endpush
