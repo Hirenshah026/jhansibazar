@@ -16,18 +16,6 @@
             </div>
             <div class="flex items-center gap-3 text-slate-400">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                <div class="w-8 h-8 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center text-[10px] font-bold text-emerald-700">RK</div>
-            </div>
-        </div>
-
-        <div class="px-4 py-2 bg-white border-b border-emerald-50 flex gap-3 overflow-x-auto no-scrollbar">
-            <div class="flex items-center gap-1.5 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100 flex-shrink-0">
-                <span class="text-xs">🪙</span>
-                <span class="text-[10px] font-bold text-emerald-800">340 COINS</span>
-            </div>
-            <div class="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100 flex-shrink-0">
-                <span class="text-xs">🎡</span>
-                <span class="text-[10px] font-bold text-slate-600">2 SPINS</span>
             </div>
         </div>
 
@@ -44,8 +32,22 @@
                 <div class="bg-white rounded-2xl p-2.5 border border-emerald-50 shadow-[0_2px_10px_-3px_rgba(0,0,0,0.04)] flex items-center gap-3 relative transition-all active:scale-[0.97]">
                     
                     <div class="relative w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 border border-emerald-50 bg-emerald-50">
-                        @if($shop->shop_photo)
-                            <img src="{{ asset('uploads/shops/'.$shop->shop_photo) }}" class="w-full h-full object-cover">
+                        @php
+                            $shopPhoto = $shop->shop_photo;
+                            $photoData = is_string($shopPhoto) ? json_decode($shopPhoto, true) : null;
+                            if (is_array($photoData) && !empty($photoData['url'])) {
+                                // Cloudinary format: {"url":"...","public_id":"..."}
+                                $photoUrl = $photoData['url'];
+                            } elseif (is_string($shopPhoto) && !empty($shopPhoto)) {
+                                // Old local format: plain filename string
+                                $photoUrl = $shopPhoto;
+                            } else {
+                                $photoUrl = null;
+                            }
+                        @endphp
+
+                        @if($photoUrl)
+                            <img src="{{ $photoUrl }}" class="w-full h-full object-cover">
                         @else
                             <div class="w-full h-full flex items-center justify-center text-xl grayscale opacity-30">🏪</div>
                         @endif

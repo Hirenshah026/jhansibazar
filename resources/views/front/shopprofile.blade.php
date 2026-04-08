@@ -109,30 +109,43 @@
 
     <div id="shopTab-items" class="tab-content hidden">
       <div class="grid grid-cols-2 gap-3 mb-4">
-        @php
-            // Item photos array ko decode karo
-            $itemPhotos = is_array($shop->item_photos) ? $shop->item_photos : json_decode($shop->item_photos, true);
-        @endphp
+          @php
+              $itemPhotos = is_array($shop->item_photos) ? $shop->item_photos : json_decode($shop->item_photos, true);
+          @endphp
 
-        @if($itemPhotos && count($itemPhotos) > 0)
-            @foreach($itemPhotos as $index => $photo)
-                <div class="bg-white border border-ink-100 rounded-2xl overflow-hidden card-hover">
-                  <div class="h-28 bg-ink-50 overflow-hidden">
-                      <img src="{{ asset('shop_photo/' . $photo) }}" 
-                           class="w-full h-full object-cover"
-                           onerror="this.src='https://placehold.co/400x400?text=Item+Photo'">
+          @if($itemPhotos && count($itemPhotos) > 0)
+              @foreach($itemPhotos as $index => $photo)
+                  @php
+                      // Support both Cloudinary format {"url":"...","public_id":"..."} and old local string format
+                      if (is_array($photo) && !empty($photo['url'])) {
+                          $photoUrl = $photo['url'];
+                      } elseif (is_string($photo) && !empty($photo)) {
+                          $photoUrl = asset('shop_photo/' . $photo);
+                      } else {
+                          $photoUrl = null;
+                      }
+                  @endphp
+                  <div class="bg-white border border-ink-100 rounded-2xl overflow-hidden card-hover">
+                    <div class="h-28 bg-ink-50 overflow-hidden">
+                        @if($photoUrl)
+                            <img src="{{ $photoUrl }}" 
+                                 class="w-full h-full object-cover"
+                                 onerror="this.src='https://placehold.co/400x400?text=Item+Photo'">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center text-3xl">📦</div>
+                        @endif
+                    </div>
+                    <div class="p-2.5 text-center">
+                      <p class="text-[10px] font-bold text-ink-800 uppercase tracking-tight">Product #{{ $index + 1 }}</p>
+                      <span class="bg-forest-100 text-forest-600 text-[9px] font-bold px-1.5 py-0.5 rounded-lg mt-1 inline-block">Available</span>
+                    </div>
                   </div>
-                  <div class="p-2.5 text-center">
-                    <p class="text-[10px] font-bold text-ink-800 uppercase tracking-tight">Product #{{ $index + 1 }}</p>
-                    <span class="bg-forest-100 text-forest-600 text-[9px] font-bold px-1.5 py-0.5 rounded-lg mt-1 inline-block">Available</span>
-                  </div>
-                </div>
-            @endforeach
-        @else
-            <div class="col-span-2 py-10 text-center">
-                <p class="text-xs text-ink-400">Bhai, abhi tak koi item photo upload nahi hui.</p>
-            </div>
-        @endif
+              @endforeach
+          @else
+              <div class="col-span-2 py-10 text-center">
+                  <p class="text-xs text-ink-400">Bhai, abhi tak koi item photo upload nahi hui.</p>
+              </div>
+          @endif
       </div>
     </div>
 

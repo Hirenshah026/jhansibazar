@@ -1,5 +1,6 @@
 @extends('front_layout.main')
 @push('css_or_link')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <style>
         * {
             box-sizing: border-box;
@@ -153,6 +154,128 @@
             border-color: #3595ff
         }
 
+        /* ── Crop Modal ── */
+        .crop-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .8);
+            z-index: 1000;
+            padding: 16px;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .crop-modal.active {
+            display: flex;
+        }
+
+        .crop-container {
+            background: white;
+            border-radius: 20px;
+            padding: 16px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .crop-image-wrapper {
+            width: 100%;
+            max-height: 400px;
+            overflow: hidden;
+            border-radius: 12px;
+            background: #f0f4ff;
+        }
+
+        .crop-image-wrapper img {
+            width: 100%;
+            max-height: 400px;
+            display: block;
+        }
+
+        .crop-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        .crop-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .2s;
+            font-size: 13px;
+        }
+
+        .crop-cancel {
+            background: #E2E8F0;
+            color: #64748b;
+        }
+
+        .crop-cancel:hover {
+            background: #CBD5E1;
+        }
+
+        .crop-save {
+            background: linear-gradient(135deg, #417dbf, #3595ff);
+            color: white;
+        }
+
+        .crop-save:hover {
+            opacity: .9;
+        }
+
+        .crop-options {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            padding: 8px 0;
+        }
+
+        .crop-option-btn {
+            padding: 6px 12px;
+            background: #EFF6FF;
+            color: #3595ff;
+            border: 1px solid #BFDBFE;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .crop-option-btn.active {
+            background: #3595ff;
+            color: white;
+            border-color: #3595ff;
+        }
+
+        .crop-option-btn:hover {
+            background: #BFDBFE;
+        }
+
+        /* ── Image quality info ── */
+        .image-info {
+            background: #F1F5F9;
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .image-info.show {
+            display: block;
+        }
+
         /* ── Animations ── */
         @keyframes fadeUp {
             from {
@@ -231,7 +354,11 @@
             padding: 16px;
             cursor: pointer;
             transition: all .15s;
-            letter-spacing: .3px
+            letter-spacing: .3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .btn-main:hover {
@@ -245,9 +372,10 @@
         }
 
         .btn-main:disabled {
-            opacity: .5;
-            cursor: default;
-            transform: none
+            opacity: .6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
         .btn-sec {
@@ -267,11 +395,63 @@
             background: #EFF6FF
         }
 
+        /* ── Button Spinner ── */
+        .btn-spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid rgba(255, 255, 255, 0.35);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: btn-spin .65s linear infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes btn-spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
         /* ── Success screen ── */
         .confetti-piece {
             position: absolute;
             border-radius: 2px;
             pointer-events: none
+        }
+
+        /* ── Photo action buttons ── */
+        .photo-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+            justify-content: flex-end;
+        }
+
+        .photo-action-btn {
+            padding: 6px 10px;
+            background: #EFF6FF;
+            color: #3595ff;
+            border: 1px solid #BFDBFE;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .photo-action-btn:hover {
+            background: #BFDBFE;
+        }
+
+        .photo-action-btn.remove {
+            background: #FEE2E2;
+            color: #EF4444;
+            border-color: #FECACA;
+        }
+
+        .photo-action-btn.remove:hover {
+            background: #FECACA;
         }
     </style>
 @endpush
@@ -345,8 +525,7 @@
                 <input id="shopName" class="inp" type="text" placeholder="Jaise: Sharma General Store"
                     oninput="validateShop(this)" />
                 <p id="shopNameErr" style="display:none;font-size:11px;color:#EF4444;margin-top:4px;font-weight:600">⚠ Dukan
-                    ka
-                    naam zaroori hai</p>
+                    ka naam zaroori hai</p>
             </div>
 
             <!-- Phone / WhatsApp -->
@@ -360,8 +539,7 @@
                         placeholder="98765 43210" oninput="validatePhone(this)" inputmode="numeric" />
                 </div>
                 <p id="phoneErr" style="display:none;font-size:11px;color:#EF4444;margin-top:4px;font-weight:600">⚠ 10
-                    digit ka
-                    number daalo</p>
+                    digit ka number daalo</p>
                 <div style="display:flex;align-items:center;gap:6px;margin-top:6px">
                     <input type="checkbox" id="waCheck" style="width:16px;height:16px;accent-color:#25D366" checked />
                     <label for="waCheck" style="font-size:12px;color:#64748b;font-weight:600">Yahi number WhatsApp pe bhi
@@ -422,7 +600,7 @@
                 </div>
             </div>
 
-            <button class="btn-main" onclick="saveStep1AndNext()">Aage Badho — Category Chuno →</button>
+            <button id="btn1" class="btn-main" onclick="saveStep1AndNext()">Aage Badho — Category Chuno →</button>
         </div>
 
         <!-- ══════════════════════════════════════════════════════ -->
@@ -458,8 +636,7 @@
                     <button type="button" class="cat-chip" onclick="toggleCat(this)" data-cat="paan">🌿 Paan &
                         General</button>
                     <button type="button" class="cat-chip" onclick="toggleCat(this)" data-cat="electronics">📱
-                        Electronics &
-                        Mobile</button>
+                        Electronics & Mobile</button>
                     <button type="button" class="cat-chip" onclick="toggleCat(this)" data-cat="coaching">📚 Coaching &
                         Classes</button>
                     <button type="button" class="cat-chip" onclick="toggleCat(this)" data-cat="dairy">🥛 Dairy &
@@ -470,8 +647,7 @@
                         Aur</button>
                 </div>
                 <p id="catErr" style="display:none;font-size:11px;color:#EF4444;margin-top:8px;font-weight:600">⚠ Kam
-                    se kam ek
-                    category zaroori hai</p>
+                    se kam ek category zaroori hai</p>
             </div>
 
             <!-- Service name / tagline -->
@@ -509,11 +685,9 @@
             <!-- Offers preview -->
             <div style="background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:16px;padding:14px;margin-bottom:20px">
                 <p class="fd" style="color:#1e40af;font-size:14px;font-weight:700;margin-bottom:8px">🎡 Aapke Spin
-                    Wheel Offers
-                </p>
+                    Wheel Offers</p>
                 <p style="font-size:12px;color:#3b82f6;margin-bottom:10px">3 offers set karo — customer spin karke jeete
-                    (baad
-                    mein edit bhi kar sakte ho)</p>
+                    (baad mein edit bhi kar sakte ho)</p>
                 <div style="display:flex;flex-direction:column;gap:8px">
                     <input id="offer1" class="inp" type="text"
                         placeholder="Offer 1 — Jaise: 10% off on ₹100 purchase" style="font-size:13px" />
@@ -526,30 +700,30 @@
 
             <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px">
                 <button class="btn-sec" onclick="goStep(1)">← Wapas</button>
-                <button class="btn-main" onclick="saveStep2AndNext()">Aage — Photos Daalo →</button>
+                <button id="btn2" class="btn-main" onclick="saveStep2AndNext()">Aage — Photos Daalo →</button>
             </div>
         </div>
 
         <!-- ══════════════════════════════════════════════════════ -->
-        <!-- STEP 3 — PHOTOS -->
+        <!-- STEP 3 — PHOTOS (WITH CROP) -->
         <!-- ══════════════════════════════════════════════════════ -->
         <div id="step3" style="display:none;flex:1;padding:20px 16px 100px">
 
             <div style="background:#ECFDF5;border:1.5px solid #86EFAC;border-radius:14px;padding:12px;margin-bottom:18px">
                 <p style="font-size:12px;color:#16A34A;font-weight:700;line-height:1.5">📸 Photos se profile attractive
-                    banta
-                    hai — zyada customers aate hain. Mobile se seedha click karke upload karo!</p>
+                    banta hai — zyada customers aate hain. Mobile se seedha click karke upload karo!</p>
             </div>
 
             <!-- Shop Photo — Main -->
             <div style="margin-bottom:16px">
                 <p class="lbl">🏪 Dukan Ki Photo <span class="req">*</span></p>
-                <p style="font-size:12px;color:#94a3b8;margin-bottom:8px">Dukan ke bahar ya andar ki clear photo</p>
+                <p style="font-size:12px;color:#94a3b8;margin-bottom:8px">Dukan ke bahar ya andar ki clear photo (3:2
+                    aspect ratio best hai)</p>
                 <div class="photo-box" id="shopPhotoBox"
                     style="height:140px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px"
                     onclick="triggerUpload('shopPhoto')">
                     <input type="file" id="shopPhoto" accept="image/*" style="display:none"
-                        onchange="previewPhoto(this,'shopPhotoBox','shopPreview')" />
+                        onchange="initiateCrop(this,'shopPhoto','shopPhotoBox','shopPreview', '3:2')" />
                     <div id="shopPreview"
                         style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px">
                         <div
@@ -559,20 +733,21 @@
                         <p style="font-size:11px;color:#94a3b8">JPG ya PNG • Max 5MB</p>
                     </div>
                 </div>
+                <div class="image-info" id="shopPhotoInfo"></div>
                 <p id="shopPhotoErr" style="display:none;font-size:11px;color:#EF4444;margin-top:4px;font-weight:600">⚠
-                    Dukan ki
-                    ek photo zaroori hai</p>
+                    Dukan ki ek photo zaroori hai</p>
             </div>
 
             <!-- Owner Photo -->
             <div style="margin-bottom:16px">
                 <p class="lbl">👤 Aapki Photo (Optional)</p>
-                <p style="font-size:12px;color:#94a3b8;margin-bottom:8px">Customer aapko pehchaane — trust badhta hai</p>
+                <p style="font-size:12px;color:#94a3b8;margin-bottom:8px">Customer aapko pehchaane — trust badhta hai
+                    (Square best)</p>
                 <div class="photo-box" id="ownerPhotoBox"
                     style="height:110px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px"
                     onclick="triggerUpload('ownerPhoto')">
                     <input type="file" id="ownerPhoto" accept="image/*" style="display:none"
-                        onchange="previewPhoto(this,'ownerPhotoBox','ownerPreview')" />
+                        onchange="initiateCrop(this,'ownerPhoto','ownerPhotoBox','ownerPreview', '1:1')" />
                     <div id="ownerPreview"
                         style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px">
                         <div
@@ -581,12 +756,14 @@
                         <p style="font-size:12px;font-weight:700;color:#64748b">Selfie ya Photo Upload</p>
                     </div>
                 </div>
+                <div class="image-info" id="ownerPhotoInfo"></div>
             </div>
 
             <!-- Item / Service Photos -->
             <div style="margin-bottom:16px">
                 <p class="lbl">🍽️ Items / Services Ki Photos</p>
-                <p style="font-size:12px;color:#94a3b8;margin-bottom:8px">Jo bhi bechte ho — uski photos daalo (max 6)</p>
+                <p style="font-size:12px;color:#94a3b8;margin-bottom:8px">Jo bhi bechte ho — uski photos daalo (max 6,
+                    4:3 aspect ratio)</p>
                 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px" id="itemPhotosGrid">
                     <!-- Generated by JS -->
                 </div>
@@ -609,8 +786,7 @@
                 </div>
                 <div id="videoNote" style="margin-top:10px;background:#EFF6FF;border-radius:10px;padding:8px 10px">
                     <p style="font-size:11px;color:#3595ff;font-weight:600">✓ Hamare team member aapke paas aayenge aur
-                        video
-                        banayenge — 2-3 din mein</p>
+                        video banayenge — 2-3 din mein</p>
                 </div>
             </div>
 
@@ -630,8 +806,7 @@
                             Aapki Dukan</p>
                         <p id="previewCategory" style="font-size:11px;color:#64748b;margin-top:1px">Category • Jhansi</p>
                         <p id="previewTagline" style="font-size:11px;color:#3595ff;font-weight:600;margin-top:2px">Aapki
-                            tagline
-                            yahan aayegi</p>
+                            tagline yahan aayegi</p>
                     </div>
                 </div>
                 <div style="display:flex;gap:6px;margin-top:10px">
@@ -649,7 +824,34 @@
 
             <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px">
                 <button class="btn-sec" onclick="goStep(2)">← Wapas</button>
-                <button class="btn-main" onclick="submitForm()">🚀 Profile Banao — Free!</button>
+                <button id="btn3" class="btn-main" onclick="submitForm()">🚀 Profile Banao — Free!</button>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════════ -->
+        <!-- CROP MODAL -->
+        <!-- ══════════════════════════════════════════════════════ -->
+        <div id="cropModal" class="crop-modal">
+            <div class="crop-container">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <p style="font-size:14px;font-weight:700;color:#1e293b">Photo Ko Crop Karo</p>
+                    <button onclick="closeCropModal()"
+                        style="background:none;border:none;font-size:20px;cursor:pointer;padding:0">✕</button>
+                </div>
+                <div class="crop-image-wrapper">
+                    <img id="cropImage" src="" alt="crop">
+                </div>
+                <div class="crop-options">
+                    <button class="crop-option-btn active" onclick="setCropAspect(this, 'free')">Free</button>
+                    <button class="crop-option-btn" onclick="setCropAspect(this, '1:1')">1:1</button>
+                    <button class="crop-option-btn" onclick="setCropAspect(this, '3:2')">3:2</button>
+                    <button class="crop-option-btn" onclick="setCropAspect(this, '4:3')">4:3</button>
+                    <button class="crop-option-btn" onclick="setCropAspect(this, '16:9')">16:9</button>
+                </div>
+                <div class="crop-actions">
+                    <button class="crop-cancel" onclick="closeCropModal()">Cancel</button>
+                    <button class="crop-save" onclick="saveCrop()">Save & Crop</button>
+                </div>
             </div>
         </div>
 
@@ -663,19 +865,17 @@
             <div id="confettiContainer" style="position:absolute;inset:0;pointer-events:none"></div>
 
             <div style="margin-top:0px;margin-bottom:28px">
-                <div style="width: 37px;/* height: 96px; */background:linear-gradient(135deg,#417dbf,#3595ff);border-radius: 8px;display:flex;align-items:center;justify-content:center;font-size: 25px;margin: 0 auto 0px;box-shadow:0 12px 32px rgba(53,149,255,.35);/* display: none; */"
+                <div style="width:37px;background:linear-gradient(135deg,#417dbf,#3595ff);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:25px;margin:0 auto 0px;box-shadow:0 12px 32px rgba(53,149,255,.35);"
                     class="pop hidden">✅</div>
                 <h2 class="fd" style="font-size:26px;font-weight:800;color:#1e293b;margin-bottom:6px">Badhai Ho!</h2>
                 <p style="font-size:15px;color:#64748b;line-height:1.5">Aapki dukan register ho gayi.<br />Profile 24
-                    ghante
-                    mein live ho jaayega!</p>
+                    ghante mein live ho jaayega!</p>
             </div>
 
             <!-- What happens next -->
             <div
                 style="background:white;border-radius:20px;padding:18px;border:1.5px solid #E2E8F0;margin-bottom:16px;text-align:left">
-                <p class="fd" style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:14px">Aage Kya Hoga:
-                </p>
+                <p class="fd" style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:14px">Aage Kya Hoga:</p>
                 <div style="display:flex;flex-direction:column;gap:12px">
                     <div style="display:flex;gap:12px;align-items:flex-start">
                         <div
@@ -713,12 +913,11 @@
                 style="background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border-radius:14px;padding:14px;margin-bottom:20px;border:1.5px solid #BFDBFE">
                 <p style="font-size:11px;color:#64748b;margin-bottom:4px">Aapka Registration ID</p>
                 <p id="regId" class="fd" style="font-size:24px;font-weight:800;color:#1e40af;letter-spacing:2px">
-                    JB-2025-0041
-                </p>
+                    JB-2025-0041</p>
                 <p style="font-size:11px;color:#3b82f6;margin-top:4px">Yeh ID save kar lo — kaam aayega</p>
             </div>
 
-            <button class="btn-main" onclick="shareWhatsApp()" style="margin-bottom:10px">
+            <button id="btnShare" class="btn-main" onclick="shareWhatsApp()" style="margin-bottom:10px">
                 💬 WhatsApp Pe Share Karo
             </button>
             <button onclick="resetForm()"
@@ -731,24 +930,158 @@
     </div>
 @endsection
 @push('script')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script>
         // ─── 1. GLOBAL VARIABLES ───
         let currentStep = 1;
-        let shopId = null; // Step 1 save hone ke baad DB se aayegi
+        let shopId = null;
         let selectedCategories = [];
         let selectedOffDays = [];
+        let cropper = null;
+        let currentCropContext = {};
 
         $(document).ready(function() {
-            // Initial Grid Setup
             renderItemPhotoGrid();
-
-            // Video note toggle logic
             $('#videoReq').on('change', function() {
                 $('#videoNote').toggle(this.checked);
             });
         });
 
-        // ─── 2. VALIDATION FUNCTIONS (Solving your Console Errors) ───
+        // ─── 2. LOADER HELPER ───
+        /**
+         * setLoader(btnEl, loading, text)
+         * btnEl   — the <button> DOM element
+         * loading — true = show spinner & disable, false = restore original label
+         * text    — custom loading text shown beside the spinner (optional)
+         */
+        function setLoader(btnEl, loading, text) {
+            if (!btnEl) return;
+            if (loading) {
+                btnEl.dataset.originalHtml = btnEl.innerHTML;
+                btnEl.disabled = true;
+                btnEl.innerHTML = `<span class="btn-spinner"></span> ${text || 'Please Wait...'}`;
+            } else {
+                btnEl.disabled = false;
+                if (btnEl.dataset.originalHtml) {
+                    btnEl.innerHTML = btnEl.dataset.originalHtml;
+                    delete btnEl.dataset.originalHtml;
+                }
+            }
+        }
+
+        // ─── 3. CROP FUNCTIONS ───
+        function initiateCrop(input, photoId, boxId, previewId, aspectRatio) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+
+                if (file.size > 5 * 1024 * 1024) {
+                    Toast.fire({ icon: 'error', title: 'Photo 5MB se chhota hona chahiye' });
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    $('#cropImage').attr('src', e.target.result);
+                    currentCropContext = {
+                        photoId: photoId,
+                        boxId: boxId,
+                        previewId: previewId,
+                        aspectRatio: aspectRatio,
+                        originalData: e.target.result
+                    };
+                    openCropModal();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function openCropModal() {
+            $('#cropModal').addClass('active');
+            if (cropper) {
+                cropper.destroy();
+            }
+            const image = document.getElementById('cropImage');
+            let aspectRatio = NaN;
+            if (currentCropContext.aspectRatio === '1:1') aspectRatio = 1;
+            else if (currentCropContext.aspectRatio === '3:2') aspectRatio = 3 / 2;
+            else if (currentCropContext.aspectRatio === '4:3') aspectRatio = 4 / 3;
+            else if (currentCropContext.aspectRatio === '16:9') aspectRatio = 16 / 9;
+
+            cropper = new Cropper(image, {
+                aspectRatio: aspectRatio,
+                autoCropArea: 0.8,
+                responsive: true,
+                restore: true,
+                guides: true,
+                center: true,
+                highlight: true,
+                cropBoxMovable: true,
+                cropBoxResizable: true,
+                toggleDragModeOnDblclick: true,
+            });
+        }
+
+        function closeCropModal() {
+            $('#cropModal').removeClass('active');
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+        }
+
+        function setCropAspect(btn, aspect) {
+            $('.crop-option-btn').removeClass('active');
+            $(btn).addClass('active');
+
+            let ratio = NaN;
+            if (aspect === '1:1') ratio = 1;
+            else if (aspect === '3:2') ratio = 3 / 2;
+            else if (aspect === '4:3') ratio = 4 / 3;
+            else if (aspect === '16:9') ratio = 16 / 9;
+
+            if (cropper) cropper.setAspectRatio(ratio);
+        }
+
+        function saveCrop() {
+            const canvas = cropper.getCroppedCanvas({
+                maxWidth: 1200,
+                maxHeight: 1200,
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'high',
+            });
+
+            canvas.toBlob((blob) => {
+                const croppedFile = new File([blob], 'cropped.jpg', { type: 'image/jpeg' });
+
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(croppedFile);
+                document.getElementById(currentCropContext.photoId).files = dataTransfer.files;
+
+                const url = canvas.toDataURL('image/jpeg', 0.8);
+                $(`#${currentCropContext.previewId}`).html(
+                    `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">`
+                );
+                $(`#${currentCropContext.boxId}`).css('border-style', 'solid').css('border-color', '#3595ff');
+
+                const sizeKB = (blob.size / 1024).toFixed(1);
+                showImageInfo(currentCropContext.photoId, `✓ Cropped • ${sizeKB}KB`);
+
+                if (currentCropContext.previewId === 'shopPreview') {
+                    $('#previewAvatar').html(
+                        `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">`
+                    );
+                }
+
+                closeCropModal();
+            }, 'image/jpeg', 0.8);
+        }
+
+        function showImageInfo(inputId, text) {
+            const infoId = inputId.replace('Photo', 'PhotoInfo');
+            $(`#${infoId}`).text(text).addClass('show');
+        }
+
+        // ─── 4. VALIDATION FUNCTIONS ───
         function validateName(el) {
             if (el.value.trim().length > 0) {
                 $('#ownerNameErr').fadeOut();
@@ -798,54 +1131,28 @@
             else $(el).css('border-color', '#3595ff');
         }
 
-        // ─── 3. PHOTO PREVIEW LOGIC ───
+        // ─── 5. PHOTO PREVIEW LOGIC ───
         function triggerUpload(id) {
             document.getElementById(id).click();
-        }
-
-        function previewPhoto(input, boxId, previewId) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    $(`#${previewId}`).html(
-                        `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">`
-                        );
-                    $(`#${boxId}`).css('border-style', 'solid').css('border-color', '#3595ff');
-                    if (previewId === 'shopPreview') {
-                        $('#previewAvatar').html(
-                            `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">`
-                            );
-                    }
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
         }
 
         function renderItemPhotoGrid() {
             let html = '';
             for (let i = 1; i <= 6; i++) {
                 html += `
-                <div class="photo-box" id="itemBox${i}" style="height:85px;border:2px dashed #cbd5e1;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;overflow:hidden" onclick="triggerUpload('itemPhoto${i}')">
-                    <input type="file" id="itemPhoto${i}" accept="image/*" style="display:none" onchange="previewItemPhoto(this, ${i})">
-                    <div id="itemPreview${i}">➕</div>
+                <div class="photo-box" id="itemBox${i}"
+                    style="height:85px;border:2px dashed #cbd5e1;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative"
+                    onclick="triggerUpload('itemPhoto${i}')">
+                    <input type="file" id="itemPhoto${i}" accept="image/*" style="display:none"
+                        onchange="initiateCrop(this, 'itemPhoto${i}', 'itemBox${i}', 'itemPreview${i}', '4:3')">
+                    <div id="itemPreview${i}"
+                        style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">➕</div>
                 </div>`;
             }
             $('#itemPhotosGrid').html(html);
         }
 
-        function previewItemPhoto(input, index) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    $(`#itemPreview${index}`).html(
-                        `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`);
-                    $(`#itemBox${index}`).css('border-style', 'solid').css('border-color', '#3595ff');
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        // ─── 4. STEP NAVIGATION & DB SYNC ───
+        // ─── 6. STEP NAVIGATION ───
         function goStep(step) {
             $('.fu, #step1, #step2, #step3').hide();
             $(`#step${step}`).fadeIn();
@@ -859,29 +1166,26 @@
             $('#stepLabel').text(step);
             for (let i = 1; i <= 3; i++) {
                 if (i <= step) {
-                    $(`#dot${i}`).css({
-                        'background': 'white',
-                        'color': '#3595ff'
-                    });
+                    $(`#dot${i}`).css({ 'background': 'white', 'color': '#3595ff' });
                     $(`#lbl${i}`).css('color', 'white');
                 } else {
-                    $(`#dot${i}`).css({
-                        'background': 'rgba(255,255,255,.3)',
-                        'color': 'rgba(255,255,255,.7)'
-                    });
+                    $(`#dot${i}`).css({ 'background': 'rgba(255,255,255,.3)', 'color': 'rgba(255,255,255,.7)' });
                     $(`#lbl${i}`).css('color', 'rgba(255,255,255,.5)');
                 }
             }
         }
 
-        // Save Step 1 (AJAX)
+        // ─── 7. AJAX SAVES ───
         async function saveStep1AndNext() {
-            if (!$('#ownerName').val() || !$('#shopName').val() || $('#phone').val().length < 10 || !$('#address')
-            .val()) {
+            if (!$('#ownerName').val() || !$('#shopName').val() || $('#phone').val().length < 10 || !$('#address').val()) {
                 validateStep1();
                 return;
             }
-            const isWhatsapp = $('#is_whatsapp').is(':checked') ? 1 : 0;
+
+            const btn = document.getElementById('btn1');
+            setLoader(btn, true, 'Save Ho Raha Hai...');
+
+            const isWhatsapp = $('#waCheck').is(':checked') ? 1 : 0;
             const data = {
                 _token: '{{ csrf_token() }}',
                 shop_id: shopId,
@@ -899,33 +1203,26 @@
                 const res = await $.post("{{ url('/save-step1') }}", data);
                 if (res.success) {
                     shopId = res.shop_id;
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Step 1 Saved! Category chuno.'
-                    });
+                    Toast.fire({ icon: 'success', title: 'Step 1 Saved!' });
                     goStep(2);
                 } else {
-                    // alert("Error: " + res.message);
-                    Toast.fire({
-                        icon: 'error',
-                        title: res.message
-                    });
+                    Toast.fire({ icon: 'error', title: res.message });
                 }
             } catch (e) {
-                alert("Server Error! Check Route or Controller.");
+                Toast.fire({ icon: 'error', title: 'Server Error! Dobara try karo.' });
+            } finally {
+                setLoader(btn, false);
             }
         }
 
-        // Save Step 2 (AJAX)
         async function saveStep2AndNext() {
             if (selectedCategories.length === 0 || !$('#tagline').val()) {
-
-                Toast.fire({
-                    icon: 'error',
-                    title: "Category aur Tagline zaroori hai!"
-                });
+                Toast.fire({ icon: 'error', title: "Category aur Tagline zaroori hai!" });
                 return;
             }
+
+            const btn = document.getElementById('btn2');
+            setLoader(btn, true, 'Save Ho Raha Hai...');
 
             const data = {
                 _token: '{{ csrf_token() }}',
@@ -939,33 +1236,26 @@
             try {
                 const res = await $.post("{{ url('/save-step2') }}", data);
                 if (res.success) {
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Step 2 Saved! '
-                    });
+                    Toast.fire({ icon: 'success', title: 'Step 2 Saved!' });
                     goStep(3);
                 } else {
-                    // alert("Error: " + res.message);
-                    Toast.fire({
-                        icon: 'error',
-                        title: res.message
-                    });
+                    Toast.fire({ icon: 'error', title: res.message });
                 }
             } catch (e) {
-                alert("Data save nahi ho paya!");
+                Toast.fire({ icon: 'error', title: 'Data save nahi ho paya!' });
+            } finally {
+                setLoader(btn, false);
             }
         }
 
-        // Final Submit (Images + DB Update)
         function submitForm() {
             if (!$('#shopPhoto')[0].files[0]) {
-
-                Toast.fire({
-                    icon: 'error',
-                    title: "Dukan ki photo daalna zaroori hai!"
-                });
+                Toast.fire({ icon: 'error', title: "Dukan ki photo zaroori hai!" });
                 return;
             }
+
+            const btn = document.getElementById('btn3');
+            setLoader(btn, true, 'Upload Ho Raha Hai...');
 
             let formData = new FormData();
             formData.append('_token', '{{ csrf_token() }}');
@@ -989,15 +1279,21 @@
                         $('#step3').hide();
                         $('#stepSuccess').fadeIn();
                         $('#regId').text(res.reg_id || 'JB-' + shopId);
+                    } else {
+                        Toast.fire({ icon: 'error', title: res.message || 'Submit fail hua!' });
                     }
                 },
                 error: function() {
-                    alert("Image upload fail ho gayi!");
+                    Toast.fire({ icon: 'error', title: 'Image upload fail! Dobara try karo.' });
+                },
+                complete: function() {
+                    // Always restore the button — even on error — so user can retry
+                    setLoader(btn, false);
                 }
             });
         }
 
-        // ─── 5. UI TOGGLES ───
+        // ─── 8. UI TOGGLES ───
         function toggleCat(btn) {
             let cat = $(btn).data('cat');
             $(btn).toggleClass('sel');
@@ -1042,18 +1338,6 @@
             return ok;
         }
 
-        function validateStep2() {
-            if (selectedCats.size === 0) {
-                showErr('catErr');
-                return false;
-            }
-            if (!document.getElementById('tagline').value.trim()) {
-                markErr('tagline');
-                return false;
-            }
-            return true;
-        }
-
         function showErr(id) {
             const el = document.getElementById(id);
             if (el) el.style.display = 'block';
@@ -1068,6 +1352,22 @@
                 el.classList.add('error');
                 setTimeout(() => el.classList.remove('error'), 2000);
             }
+        }
+
+        // ─── 9. SHARE & RESET ───
+        function shareWhatsApp() {
+            const btn = document.getElementById('btnShare');
+            setLoader(btn, true, 'WhatsApp Khul Raha Hai...');
+
+            const text = `Badhai! 🎉 Mere shop (${$('#shopName').val()}) ko Jhansi Bazaar pe register kar diya! Join karo: [link]`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
+
+            // Restore after 2s — window.open resolves instantly
+            setTimeout(() => setLoader(btn, false), 2000);
+        }
+
+        function resetForm() {
+            location.reload();
         }
     </script>
 @endpush

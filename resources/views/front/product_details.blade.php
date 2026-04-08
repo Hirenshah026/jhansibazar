@@ -382,7 +382,7 @@
             @php
                 $itemPhotos = json_decode($shop->item_photos, true);
                 $mainImg = $shop->shop_photo
-                    ? url('/shop_photo/' . $shop->shop_photo)
+                    ? $shop->shop_photo
                     : 'https://placehold.co/600x400?text=Jhansi+Bazaar';
             @endphp
             <img id="detailMainImg" src="{{ $mainImg }}" style="width:100%; height:300px; object-fit:cover">
@@ -404,7 +404,7 @@
                 @if ($itemPhotos)
                     @foreach ($itemPhotos as $photo)
                         @if (!empty($photo))
-                            <img src="{{ url('/shop_photo/' . $photo) }}" class="thumb" onclick="changeImg(this)">
+                            <img src="{{ $photo['url'] }}" class="thumb" onclick="changeImg(this)">
                         @endif
                     @endforeach
                 @endif
