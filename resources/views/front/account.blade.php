@@ -123,6 +123,24 @@
                 </button>
             </div>
 
+            <div
+                style="width: 150px; text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; border: 1px solid #eee; padding: 12px; border-radius: 12px; background: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+
+                <div style="margin-bottom: 8px;">
+                    <img id="qrImage" src="https://quickchart.io/qr?text={{ urlencode(url('/')) }}&size=500"
+                        style="width: 125px; height: 125px; border-radius: 6px; display: block; margin: 0 auto;">
+                </div>
+
+                <div
+                    style="display: block !important; visibility: visible !important; font-size: 14px; font-weight: 700; color: #333; margin: 8px 0; line-height: 1.2; word-wrap: break-word;">
+                    {{ $vendor->shop_name ?? 'My Shop' }}
+                </div>
+
+                <button onclick="saveQR()"
+                    style="width: 100%; padding: 7px 0; font-size: 12px; background: #000; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; transition: 0.3s;">
+                    Download QR
+                </button>
+            </div>
             <div class="flex gap-2 mb-4 hidden">
                 <button onclick="showScreen('spin')"
                     class="flex-1 gradient-brand text-white font-display font-bold rounded-2xl py-3 text-sm shadow-md btn-press">🎡
@@ -177,7 +195,8 @@
                     <div
                         class="absolute top-3 right-3 gradient-brand text-white text-xs font-bold px-2.5 py-1 rounded-full">
                         +3 coins</div>
-                    <div class="absolute bottom-3 left-3 bg-black/60 text-white text-xs px-2 py-0.5 rounded-full">0:30</div>
+                    <div class="absolute bottom-3 left-3 bg-black/60 text-white text-xs px-2 py-0.5 rounded-full">0:30
+                    </div>
                 </div>
 
                 <!-- Earn coins -->
@@ -339,7 +358,9 @@
 
                         <div
                             class="w-16 h-16 bg-slate-50 rounded-xl flex-shrink-0 flex items-center justify-center overflow-hidden border border-gray-50">
-                            <img src="{{ asset('storage/' . ($service->photos??'lk')) }}" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($service->item_name) }}&background=random'">
+                            <img src="{{ asset('storage/' . ($service->photos ?? 'lk')) }}"
+                                class="w-full h-full object-cover"
+                                onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($service->item_name) }}&background=random'">
                         </div>
 
                         <div class="flex-1">
@@ -555,6 +576,34 @@
 
         function submitDelete() {
             document.getElementById('delete-form').submit();
+        }
+    </script>
+    <script>
+        async function saveQR() {
+            const imgElement = document.getElementById('qrImage');
+            const imgUrl = imgElement.src;
+            // File name ke liye dynamic shop name
+            const shopName = "{{ $vendor->shop_name ?? 'shop' }}".replace(/[^a-z0-9]/gi, '_').toLowerCase();
+
+            try {
+                const response = await fetch(imgUrl);
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = `QR_${shopName}.png`;
+
+                document.body.appendChild(a);
+                a.click();
+
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } catch (error) {
+                console.error("Download failed, opening in new tab", error);
+                window.open(imgUrl, '_blank');
+            }
         }
     </script>
 @endpush
