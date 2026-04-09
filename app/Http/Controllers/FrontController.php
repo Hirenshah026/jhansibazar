@@ -168,6 +168,7 @@ class FrontController extends Controller
 
     public function add_item()
     {
-        return view('front.add_services');
+        $categories = DB::table('category')->where( 'shop_id', Session::get('shopuser')->id)->orderBy('id', 'desc')->get();
+        return view('front.add_services',compact('categories'));
     }
 }

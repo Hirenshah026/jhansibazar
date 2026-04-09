@@ -1,9 +1,8 @@
-
-
 <!-- ============================================================ -->
 <!-- BOTTOM NAVIGATION -->
 <!-- ============================================================ -->
-<div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white border-t border-ink-100 z-50 shadow-[0_-10px_25px_-5px_rgba(0,0,0,0.1)]">
+<div
+    class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white border-t border-ink-100 z-50 shadow-[0_-10px_25px_-5px_rgba(0,0,0,0.1)]">
     <div class="flex items-center">
         <button onclick="showScreen('home')" id="nav-home"
             class="nav-pill active flex-1 flex flex-col items-center gap-0.5 py-2.5 rounded-none transition-all">
@@ -49,7 +48,7 @@
                 <span class="text-xs font-semibold">Account</span>
             </button>
         @else
-        {{Session::has('shopuser')}}
+            {{ Session::has('shopuser') }}
             <button onclick="showScreen('login')" id="nav-account"
                 class="nav-pill flex-1 flex flex-col items-center gap-0.5 py-2.5 text-ink-400 rounded-none transition-all">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -61,3 +60,45 @@
         @endif
     </div>
 </div>
+
+<div id="loginModal" class="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center hidden p-0 sm:p-4">
+    <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-[2px]"></div>
+
+    <div
+        class="relative bg-white w-full sm:max-w-[360px] rounded-t-2xl sm:rounded-2xl shadow-xl transform transition-all animate-slide-up overflow-hidden">
+
+        <div class="h-1 w-10 bg-gray-200 rounded-full mx-auto mt-3 mb-2 sm:hidden"></div>
+
+        <div class="px-6 py-4">
+            <h3 class="text-lg font-bold text-gray-800">Login</h3>
+            <p class="text-xs text-gray-500 mb-5">Enter details to access your account</p>
+
+            <form id="ajaxLoginForm" class="space-y-4">
+                <div class="relative">
+                    <span class="absolute left-3 top-2.5 text-gray-400 text-sm font-medium">+91</span>
+                    <input type="tel" id="mobile" name="mobile" required maxlength="10"
+                        class="w-full pl-12 pr-3 py-2.5 bg-gray-50 border border-gray-100 rounded-lg text-sm outline-none focus:border-blue-500 focus:bg-white transition-all"
+                        placeholder="Mobile Number">
+                </div>
+
+                <div>
+                    <input type="password" id="pin" name="pin" maxlength="4" required
+                        class="w-full px-3 py-2.5 bg-gray-50 border border-gray-100 rounded-lg text-sm outline-none focus:border-blue-500 focus:bg-white transition-all"
+                        placeholder="4-digit Security PIN">
+                </div>
+
+                <button type="submit" id="loginBtn"
+                    class="w-full bg-black text-white text-sm font-semibold py-3 rounded-lg hover:bg-gray-800 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                    Proceed
+                </button>
+
+                <p id="loginMsg" class="text-[11px] text-center h-4"></p>
+            </form>
+
+            <button id="closeLogin" class="w-full text-[11px] text-gray-400 font-medium py-2 mt-1">
+                CLOSE
+            </button>
+        </div>
+    </div>
+</div>
+<button id="openLogin" class="trigger-login">Login Karne Ke Liye Dabayein</button>

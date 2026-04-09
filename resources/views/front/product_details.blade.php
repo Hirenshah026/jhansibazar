@@ -381,9 +381,7 @@
         <div style="position:relative; background:#F8FAFF">
             @php
                 $itemPhotos = json_decode($shop->item_photos, true);
-                $mainImg = $shop->shop_photo
-                    ? $shop->shop_photo
-                    : 'https://placehold.co/600x400?text=Jhansi+Bazaar';
+                $mainImg = $shop->shop_photo ? $shop->shop_photo : 'https://placehold.co/600x400?text=Jhansi+Bazaar';
             @endphp
             <img id="detailMainImg" src="{{ $mainImg }}" style="width:100%; height:300px; object-fit:cover">
 
@@ -413,10 +411,29 @@
 
         <div style="padding:18px 16px 0">
             <div class="flex items-center gap-4 mb-4">
-                <h2 class="text-xl font-extrabold text-slate-800 leading-tight m-0 tracking-tight">
+                {{-- <h2 class="text-xl font-extrabold text-slate-800 leading-tight m-0 tracking-tight">
                     {{ ucwords($shop->shop_name) }}
-                </h2>
+                </h2> --}}
+                <div
+                    class="w-full max-w-[340px] m-1 bg-white border border-gray-100 rounded-2xl p-3 shadow-sm flex items-center justify-between gap-4">
 
+                    <div class="flex items-center gap-3 min-w-0 flex-1">
+                        <div
+                            class="flex-shrink-0 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-md">
+                            {{ substr(ucwords($shop->shop_name), 0, 1) }}
+                        </div>
+
+                        <div class="min-w-0">
+                            <h4 class="text-sm font-bold text-gray-800 truncate">{{ ucwords($shop->shop_name) }}</h4>
+                            <p class="text-[11px] text-gray-400 truncate">{{ ucwords($shop->address) }}</p>
+                        </div>
+                    </div>
+
+                    <button id="followBtn" data-userid="123"
+                        class="flex-shrink-0 bg-black text-white text-[11px] font-bold px-5 py-2 rounded-full transition-all active:scale-95 hover:bg-gray-800 shadow-sm">
+                        Follow
+                    </button>
+                </div>
                 <div class="flex gap-3 items-center">
 
                     <div class="relative flex flex-col items-center group">
@@ -724,5 +741,51 @@
                 }
             });
         }
+        $(document).ready(function() {
+            // Event delegation taaki dynamic cards par bhi chale
+            $(document).on('click', '#followBtn', function(e) {
+                e.preventDefault();
+
+                let btn = $(this);
+                let userId = btn.data('userid');
+
+                // 1. UI update turant kar do (Optimistic UI)
+                if (!btn.hasClass('is-following')) {
+                    btn.addClass('is-following bg-gray-100 text-gray-500').removeClass(
+                        'bg-black text-white');
+                    btn.text('Following');
+                } else {
+                    btn.removeClass('is-following bg-gray-100 text-gray-500').addClass(
+                        'bg-black text-white');
+                    btn.text('Follow');
+                }
+
+                // 2. AJAX Request (Toggle logic)
+                $.ajax({
+                    url: "{{ url('/follow-user') }}",
+                    method: 'POST',
+                    data: {
+                        user_id: userId,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(res) {
+                        if (res.status === 'error') {
+                            
+                            $('.trigger-login').click();
+                            btn.removeClass('is-following bg-gray-100 text-gray-500').addClass(
+                                'bg-black text-white');
+                            btn.text('Follow');
+                        }
+                        // console.log('Status: ' + res.status);
+                    },
+                    error: function() {
+                        // Network error par reset
+                        alert("Something went wrong!");
+                        location.reload();
+                    }
+                });
+            });
+        });
     </script>
+
 @endsection

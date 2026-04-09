@@ -209,12 +209,14 @@
 
     <!-- SHOP BAR (unchanged) -->
     <div style="background:#EEF2FF;border-bottom:1.5px solid #C7D7FF;padding:10px 16px;display:flex;align-items:center;gap:10px">
-        <div style="width:36px;height:36px;background:#3B5BDB;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px" id="shopEmojiDisplay">🎂</div>
+        <div style="width:36px;height:36px;background:#3B5BDB;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px" id="shopEmojiDisplay1" ><img src="{{ url('storage/' . (Session::get('shopuser')->photos ?? 'lk')) }}"
+                                class="w-full h-full object-cover"
+                                onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(Session::get('shopuser')->shop_name ?? 'N/A') }}&background=random'"></div>
         <div style="flex-grow:1">
-            <p style="font-size:12px;font-weight:800;color:#3B5BDB" id="shopNameDisplay">Sweet Dreams Bakery</p>
-            <p style="font-size:10px;color:#64748b" id="shopCatDisplay">Bakery & Cake • Jhansi</p>
+            <p style="font-size:12px;font-weight:800;color:#3B5BDB" id="shopNameDisplay">{{ Session::get('shopuser')->shop_name ?? 'N/A' }}</p>
+            <p style="font-size:10px;color:#64748b" id="shopCatDisplay">{{ Session::get('shopuser')->address ?? 'N/A' }}</p>
         </div>
-        <select onchange="changeShopType(this.value)" style="background:#fff;border:1.5px solid #C7D7FF;border-radius:8px;padding:5px;font-size:11px;font-weight:700">
+        <select onchange="changeShopType(this.value)" style="background:#fff;border:1.5px solid #C7D7FF;border-radius:8px;padding:5px;font-size:11px;font-weight:700" class="hidden">
             <option value="bakery">🎂 Bakery</option>
             <option value="shoes">👟 Shoes</option>
             <option value="cloth">👗 Cloth</option>
@@ -249,7 +251,13 @@
 
         <div class="sec">
             <p class="sec-title">🏷️ Category Selection</p>
-            <div style="display:flex;gap:7px;flex-wrap:wrap" id="catChips"></div>
+            <div style="display:flex;gap:7px;flex-wrap:wrap" id="catChips">
+                @forelse ($categories as $cate)
+                    <div class="chip">{{ucwords($cate->name??'na')}}</div>
+                @empty
+                    No Category
+                @endforelse
+            </div>
         </div>
 
         <div class="sec salon_div" style="display:none">
@@ -281,7 +289,7 @@
     <!-- TAB: PHOTOS — grid replaced with crop-enabled slots -->
     <div id="tab-photos" style="display:none;padding:16px;padding-bottom:80px">
 
-        <div style="background:#ECFDF5;border:1px solid #D1FAE5;padding:12px;border-radius:14px;margin-bottom:14px">
+        <div style="background:#ECFDF5;border:1px solid #D1FAE5;padding:12px;border-radius:14px;margin-bottom:14px" class="hidden">
             <p style="font-size:11px;font-weight:800;color:#16A34A">🆓 Free Image Library</p>
             <div id="freeImageRow" style="display:flex;gap:8px;overflow-x:auto;padding:8px 0 4px"></div>
         </div>
@@ -460,7 +468,7 @@ const croppedPreviews = [null, null, null];
    INIT
 ══════════════════════════════════════════════ */
 function init() {
-    changeShopType('bakery');
+    //changeShopType('bakery');
     buildPhotoGrid();
 }
 
@@ -470,22 +478,10 @@ function init() {
 function changeShopType(type) {
     currentShopType = type;
     const cfg = shopTypes[type];
-    document.getElementById('shopEmojiDisplay').textContent = cfg.emoji;
+    
     document.getElementById('shopNameDisplay').textContent  = cfg.name;
 
-    /* Category chips */
-    const cc = document.getElementById('catChips');
-    cc.innerHTML = '';
-    cfg.categories.forEach((cat, i) => {
-        const c = document.createElement('div');
-        c.className = 'chip' + (i === 0 ? ' on' : '');
-        c.textContent = cat;
-        c.onclick = () => {
-            document.querySelectorAll('.chip').forEach(x => x.classList.remove('on'));
-            c.classList.add('on');
-        };
-        cc.appendChild(c);
-    });
+    
 
     /* Salon div toggle */
     document.querySelectorAll('.salon_div').forEach(el => {
@@ -793,6 +789,19 @@ function setStock(element, val) {
     element.classList.add('on');
     document.getElementById('selected_cat').value = val;
 }
+
+$(document).ready(function() {
+    // #catChips ke andar kisi bhi .chip par click ho
+    $('#catChips').on('click', '.chip', function() {
+        
+        // 1. Pehle saari chips se 'on' class hata do
+        $('#catChips .chip').removeClass('on');
+        
+        // 2. Phir sirf us chip par 'on' class lagao jis par click hua hai
+        $(this).addClass('on');
+        
+    });
+});
 
 init();
 </script>

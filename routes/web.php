@@ -8,6 +8,7 @@ use App\Http\Controllers\ShopController;
 use App\Http\Controllers\ItemStepController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\UserController;
 
 // ─────────────────────────────────────────────
 // Cache & View Clear Utilities
@@ -24,6 +25,12 @@ Route::get('/clear-cache', function () {
     File::cleanDirectory(storage_path('logs'));
     return redirect('/');
 });
+
+// user route 
+Route::post('/login-check', [UserController::class, 'ajaxLogin'])->name('login.check');
+
+// Follow/Unfollow Route
+Route::post('/follow-user', [UserController::class, 'toggleFollow'])->name('follow.user');
 
 // ─────────────────────────────────────────────
 // Public Routes
@@ -42,8 +49,7 @@ Route::get('/notifications',             [FrontController::class, 'notifications
 Route::get('/healthcard',                [FrontController::class, 'healthcard'])->name('healthcard');
 Route::get('/shop-register',             [FrontController::class, 'add_shop'])->name('add_shop');
 Route::get('/login',                     [FrontController::class, 'shop_login'])->name('shop_login');
-Route::get('/service-register',          [FrontController::class, 'add_service'])->name('add_service');
-Route::get('/item-register',             [FrontController::class, 'add_item'])->name('add_item');
+
 
 // ─────────────────────────────────────────────
 // Auth Routes
@@ -64,17 +70,27 @@ Route::post('/final-submit',  [ShopController::class, 'finalSubmit'])->name('sho
 Route::post('/shop/delete-item-photo', [ShopController::class, 'deleteItemPhoto'])->name('shop.photo.item.delete');
 Route::post('/shop/delete/{id}',       [ShopController::class, 'deleteShop'])->name('shop.delete');
 
-// ─────────────────────────────────────────────
-// Item & Service Routes
-// ─────────────────────────────────────────────
-Route::post('/item/save-step',       [ItemStepController::class, 'saveStep']);
-Route::delete('/item-delete/{id}',   [FrontController::class, 'deleteItem'])->name('item.delete');
-Route::post('/services/bulk-store',  [ServiceController::class, 'bulkStore'])->name('services.bulk-store');
+
 
 // ─────────────────────────────────────────────
 // Authenticated Routes (shop user only)
 // ─────────────────────────────────────────────
 Route::middleware(['authcheckuser'])->group(function () {
+    Route::get('/service-register',          [FrontController::class, 'add_service'])->name('add_service');
+    Route::get('/item-register',             [FrontController::class, 'add_item'])->name('add_item');
+
+     // Spinner Offers Routes
+    Route::get('/shop/offers', [ShopController::class, 'manageOffers'])->name('shop.offers.manage');
+    Route::post('/shop/offers/save', [ShopController::class, 'saveOffer'])->name('shop.offers.save');
+    Route::post('/shop/offers/delete', [ShopController::class, 'deleteOffer'])->name('shop.offers.delete');
+
+    // ─────────────────────────────────────────────
+    // Item & Service Routes
+    // ─────────────────────────────────────────────
+    Route::post('/item/save-step',       [ItemStepController::class, 'saveStep']);
+    Route::delete('/item-delete/{id}',   [FrontController::class, 'deleteItem'])->name('item.delete');
+    Route::post('/services/bulk-store',  [ServiceController::class, 'bulkStore'])->name('services.bulk-store');
+
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
     Route::post('/categories/store', [CategoryController::class, 'store'])->name('categories.store');
     Route::post('/categories/update', [CategoryController::class, 'update'])->name('categories.update'); // Ye missing tha
