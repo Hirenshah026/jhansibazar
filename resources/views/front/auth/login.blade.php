@@ -14,6 +14,27 @@
             border-radius: 20px !important;
             font-size: 14px !important;
         }
+
+        /* Eye icon button */
+        .eye-btn {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+        }
+
+        .eye-btn:hover {
+            color: #2e7d32;
+        }
     </style>
 @endpush
 @section('content')
@@ -30,11 +51,13 @@
             </div>
 
             <div class="p-8 pb-12">
+                {{-- autocomplete="off" form par bhi lagaya --}}
                 <form id="loginForm" autocomplete="off">
                     <div class="mb-5">
                         <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Mobile
                             Number</label>
                         <input type="text" id="username" maxlength="10" inputmode="numeric"
+                            autocomplete="off"
                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" placeholder="10 digit number"
                             class="w-full px-6 py-4 bg-gray-100 border-none rounded-2xl focus:ring-2 focus:ring-[#2e7d32] transition-all outline-none text-gray-800 font-semibold"
                             required>
@@ -43,10 +66,31 @@
                     <div class="mb-8">
                         <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Secure
                             Pin</label>
-                        <input type="password" id="password" maxlength="6" inputmode="numeric"
-                            oninput="this.value = this.value.replace(/[^0-9]/g, '');" placeholder="Enter Pin"
-                            class="w-full px-6 py-4 bg-gray-100 border-none rounded-2xl focus:ring-2 focus:ring-[#2e7d32] transition-all outline-none text-gray-800 font-semibold tracking-[5px]"
-                            required>
+                        {{-- Wrapper div position relative ke saath --}}
+                        <div class="relative">
+                            <input type="password" id="password" maxlength="6" inputmode="numeric"
+                                autocomplete="new-password"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '');" placeholder="Enter Pin"
+                                class="w-full px-6 py-4 pr-14 bg-gray-100 border-none rounded-2xl focus:ring-2 focus:ring-[#2e7d32] transition-all outline-none text-gray-800 font-semibold tracking-[5px]"
+                                required>
+                            {{-- Eye Icon Button --}}
+                            <button type="button" class="eye-btn" id="togglePin" tabindex="-1">
+                                {{-- Eye (show) icon --}}
+                                <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                {{-- Eye-off (hide) icon - default hidden --}}
+                                <svg id="eyeOffIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display:none;">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.97 9.97 0 012.087-3.36M6.53 6.53A9.97 9.97 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.97 9.97 0 01-4.073 5.002M6.53 6.53L3 3m3.53 3.53l11.94 11.94M3 3l18 18" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
 
                     <button type="submit" id="submitBtn"
@@ -80,13 +124,31 @@
         });
 
         $(document).ready(function() {
+
+            // --- Eye Icon Toggle ---
+            $('#togglePin').on('click', function() {
+                const passInput = $('#password');
+                const eyeIcon = $('#eyeIcon');
+                const eyeOffIcon = $('#eyeOffIcon');
+
+                if (passInput.attr('type') === 'password') {
+                    passInput.attr('type', 'text');
+                    eyeIcon.hide();
+                    eyeOffIcon.show();
+                } else {
+                    passInput.attr('type', 'password');
+                    eyeIcon.show();
+                    eyeOffIcon.hide();
+                }
+            });
+
+            // --- Login Form Submit ---
             $('#loginForm').on('submit', function(e) {
                 e.preventDefault();
 
                 let mobile = $('#username').val();
                 let pin = $('#password').val();
 
-                // Chota validation
                 if (mobile.length < 10) {
                     AppToast.fire({
                         icon: 'warning',
@@ -95,7 +157,6 @@
                     return;
                 }
 
-                // Button Loading State (App Style Spinner)
                 const btn = $('#submitBtn');
                 btn.html(`
                 <svg class="animate-spin h-6 w-6 text-white mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -104,7 +165,6 @@
                 </svg>
             `).prop('disabled', true);
 
-                // AJAX Call
                 $.ajax({
                     url: "{{ url('/shop-login-ajax') }}",
                     type: 'POST',
@@ -114,27 +174,21 @@
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
-                        if(response.success)
-                        {
+                        if (response.success) {
                             AppToast.fire({
                                 icon: 'success',
                                 title: 'Login Success!',
                                 text: response.message
                             });
 
-                            // --- TURBO REDIRECT YAHAN HAI ---
                             setTimeout(() => {
                                 if (typeof Turbo !== 'undefined') {
-                                    // Agar Turbo installed hai toh ye best hai
                                     Turbo.visit("{{ url('/') }}");
                                 } else {
-                                    // Backup agar Turbo load na hua ho
                                     window.location.href = "{{ url('/') }}";
                                 }
                             }, 1500);
-                        }
-                        else
-                        {
+                        } else {
                             AppToast.fire({
                                 icon: 'error',
                                 title: 'Login Fail',
@@ -142,7 +196,6 @@
                             });
                             btn.html('Login Now').prop('disabled', false);
                         }
-                        
                     },
                     error: function(err) {
                         AppToast.fire({
@@ -150,8 +203,6 @@
                             title: 'Login Fail',
                             text: 'Mobile ya Pin galat hai!'
                         });
-
-                        // Reset Button
                         btn.html('Login Now').prop('disabled', false);
                     }
                 });
