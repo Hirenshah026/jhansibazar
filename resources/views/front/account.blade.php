@@ -36,6 +36,7 @@
                     transform: translateY(100%);
                     opacity: 0;
                 }
+
                 to {
                     transform: translateY(0);
                     opacity: 1;
@@ -46,7 +47,7 @@
 
     @php
         $shopId = Session::get('shopuser')->id ?? null;
-        $items  = $shopId ? DB::table('items')->where('shop_id', $shopId)->get() : collect();
+        $items = $shopId ? DB::table('items')->where('shop_id', $shopId)->get() : collect();
         $offers = json_decode($shop->offers ?? '[]', true) ?? [];
     @endphp
 
@@ -64,15 +65,19 @@
                 </button>
             </div>
             <div class="px-4 pt-3 pb-12 text-white">
-                <div class="w-16 h-16 bg-red rounded-2xl shadow-lg flex items-center justify-center text-3xl mb-3 capitalize hidden">
+                <div
+                    class="w-16 h-16 bg-red rounded-2xl shadow-lg flex items-center justify-center text-3xl mb-3 capitalize hidden">
                     {{ Str::substr(Session::get('shopuser')->shop_name ?? 'na', 0, 1) }}
                 </div>
-                <h2 class="font-display text-2xl font-bold capitalize">{{ Session::get('shopuser')->shop_name ?? 'na' }}</h2>
+                <h2 class="font-display text-2xl font-bold capitalize">{{ Session::get('shopuser')->shop_name ?? 'na' }}
+                </h2>
                 <p class="text-white/70 text-sm hidden">Footwear & Sports Shoes • Est. 1998</p>
                 <div class="flex gap-2 mt-2 flex-wrap hidden">
                     <span class="glass rounded-full px-2.5 py-0.5 text-xs">★ 4.5 (128)</span>
-                    <span class="glass rounded-full px-2.5 py-0.5 text-xs">📍 {{ Session::get('shopuser')->address ?? 'na' }}</span>
-                    <span class="glass rounded-full px-2.5 py-0.5 text-xs">🟢 Open till {{ date('h:i A', strtotime(Session::get('shopuser')->close_time ?? '0')) }}</span>
+                    <span class="glass rounded-full px-2.5 py-0.5 text-xs">📍
+                        {{ Session::get('shopuser')->address ?? 'na' }}</span>
+                    <span class="glass rounded-full px-2.5 py-0.5 text-xs">🟢 Open till
+                        {{ date('h:i A', strtotime(Session::get('shopuser')->close_time ?? '0')) }}</span>
                 </div>
             </div>
         </div>
@@ -81,7 +86,7 @@
 
             <!-- Action Row -->
             <div class="grid grid-cols-2 gap-3 mb-5">
-                
+
                 <button onclick="Turbo.visit('{{ url('/categories') }}')"
                     class="flex items-center justify-center gap-2 bg-white border-2 border-dashed border-orange-200 text-orange-700 font-bold rounded-2xl py-4 shadow-sm active:scale-95 transition-all">
                     <span class="text-xl">📁</span>
@@ -106,10 +111,10 @@
                         <p class="text-[9px] font-normal text-gray-400 mt-1">Discount offer</p>
                     </div>
                 </button>
-                
 
-                
-                
+
+
+
                 <button onclick="Turbo.visit('{{ url('/service-register') }}')"
                     class="flex items-center justify-center gap-2 bg-white border-2 border-dashed border-blue-200 text-blue-700 font-bold rounded-2xl py-4 shadow-sm active:scale-95 transition-all {{ (json_decode(Session::get('shopuser')->categories ?? '[]')[0] ?? '') == 'salon' ? 'rn' : 'hidden' }}">
                     <span class="text-xl">🛠️</span>
@@ -121,9 +126,9 @@
             </div>
 
             <!-- QR Code -->
-            <div style="width:160px; text-align:center; font-family:sans-serif; border:1px solid #ddd; padding:10px; border-radius:12px; background:#fff; margin:10px;">
-                <img id="qrDisplay"
-                    src="https://quickchart.io/qr?text={{ urlencode(url('/')) }}&size=500"
+            <div
+                style="width:160px; text-align:center; font-family:sans-serif; border:1px solid #ddd; padding:10px; border-radius:12px; background:#fff; margin:10px;">
+                <img id="qrDisplay" src="https://quickchart.io/qr?text={{ urlencode(url('/')) }}&size=500"
                     style="width:140px; height:140px; border-radius:8px; display:block; margin:0 auto;">
                 <div id="shopNameTxt" style="font-size:14px; font-weight:bold; margin:8px 0; color:#000;">
                     {{ Session::get('shopuser')->shop_name ?? 'na' }}
@@ -137,17 +142,22 @@
 
             <!-- Tabs -->
             <div class="flex border-b border-ink-100 mb-4">
-                <button onclick="shopTab(this,'offers')"  class="flex-1 py-2.5 text-xs font-semibold tab-active"    id="tab-offers">Offers</button>
-                <button onclick="shopTab(this,'items')"   class="flex-1 py-2.5 text-xs font-semibold text-ink-400"  id="tab-items">Items</button>
-                <button onclick="shopTab(this,'service')" class="flex-1 py-2.5 text-xs font-semibold text-ink-400"  id="tab-service">Services</button>
-                <button onclick="shopTab(this,'reviews')" class="flex-1 py-2.5 text-xs font-semibold text-ink-400"  id="tab-reviews">Reviews</button>
-                <button onclick="shopTab(this,'info')"    class="flex-1 py-2.5 text-xs font-semibold text-ink-400"  id="tab-info">Info</button>
+                <button onclick="shopTab(this,'offers')" class="flex-1 py-2.5 text-xs font-semibold tab-active"
+                    id="tab-offers">Offers</button>
+                <button onclick="shopTab(this,'items')" class="flex-1 py-2.5 text-xs font-semibold text-ink-400"
+                    id="tab-items">Items</button>
+                <button onclick="shopTab(this,'service')" class="flex-1 py-2.5 text-xs font-semibold text-ink-400"
+                    id="tab-service">Services</button>
+                <button onclick="shopTab(this,'reviews')" class="flex-1 py-2.5 text-xs font-semibold text-ink-400"
+                    id="tab-reviews">Reviews</button>
+                <button onclick="shopTab(this,'info')" class="flex-1 py-2.5 text-xs font-semibold text-ink-400"
+                    id="tab-info">Info</button>
             </div>
 
             <!-- Tab: Offers -->
             <div id="shopTab-offers">
                 <div class="grid grid-cols-3 gap-2 mb-4">
-                    @forelse($offers as $offer)
+                    @forelse(array_filter($offers) as $offer)
                         <div class="bg-saffron-50 border border-saffron-200 rounded-xl p-3 text-center">
                             <p class="font-display font-bold text-saffron-700 text-xl">
                                 {{ is_array($offer) ? $offer['text'] : $offer }}
@@ -163,14 +173,17 @@
                 <div class="relative bg-gradient-to-br from-ink-100 to-ink-200 rounded-2xl overflow-hidden mb-4 cursor-pointer group"
                     style="height:160px" onclick="showScreen('spin')">
                     <div class="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                        <div class="w-14 h-14 gradient-brand rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                        <div
+                            class="w-14 h-14 gradient-brand rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                             <svg class="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M5 3l14 9-14 9V3z" />
                             </svg>
                         </div>
                         <p class="text-sm text-ink-600 font-semibold">Shop Video dekho (30 sec)</p>
                     </div>
-                    <div class="absolute top-3 right-3 gradient-brand text-white text-xs font-bold px-2.5 py-1 rounded-full">+3 coins</div>
+                    <div
+                        class="absolute top-3 right-3 gradient-brand text-white text-xs font-bold px-2.5 py-1 rounded-full">
+                        +3 coins</div>
                     <div class="absolute bottom-3 left-3 bg-black/60 text-white text-xs px-2 py-0.5 rounded-full">0:30</div>
                 </div>
 
@@ -179,19 +192,23 @@
                     <p class="text-xs font-semibold text-ink-400 uppercase tracking-wide mb-3">Yahan Coins Kamao</p>
                     <div class="space-y-2">
                         <div class="flex items-center justify-between bg-forest-50 rounded-xl px-3 py-2.5">
-                            <div class="flex items-center gap-2"><span>⭐</span><span class="text-sm text-ink-700 font-medium">Review likho</span></div>
+                            <div class="flex items-center gap-2"><span>⭐</span><span
+                                    class="text-sm text-ink-700 font-medium">Review likho</span></div>
                             <span class="text-forest-600 font-bold text-sm">+15</span>
                         </div>
                         <div class="flex items-center justify-between bg-forest-50 rounded-xl px-3 py-2.5">
-                            <div class="flex items-center gap-2"><span>📸</span><span class="text-sm text-ink-700 font-medium">Photo daalo</span></div>
+                            <div class="flex items-center gap-2"><span>📸</span><span
+                                    class="text-sm text-ink-700 font-medium">Photo daalo</span></div>
                             <span class="text-forest-600 font-bold text-sm">+10</span>
                         </div>
                         <div class="flex items-center justify-between bg-forest-50 rounded-xl px-3 py-2.5">
-                            <div class="flex items-center gap-2"><span>👍</span><span class="text-sm text-ink-700 font-medium">Rating do</span></div>
+                            <div class="flex items-center gap-2"><span>👍</span><span
+                                    class="text-sm text-ink-700 font-medium">Rating do</span></div>
                             <span class="text-forest-600 font-bold text-sm">+5</span>
                         </div>
                         <div class="flex items-center justify-between bg-forest-50 rounded-xl px-3 py-2.5">
-                            <div class="flex items-center gap-2"><span>📤</span><span class="text-sm text-ink-700 font-medium">Share karo</span></div>
+                            <div class="flex items-center gap-2"><span>📤</span><span
+                                    class="text-sm text-ink-700 font-medium">Share karo</span></div>
                             <span class="text-forest-600 font-bold text-sm">+20</span>
                         </div>
                     </div>
@@ -215,7 +232,7 @@
                         @foreach ($items as $item)
                             @php
                                 // ── Photo: handle both Cloudinary & old local format ──
-                                $photos     = json_decode($item->photos ?? '[]', true) ?? [];
+                                $photos = json_decode($item->photos ?? '[]', true) ?? [];
                                 $firstPhoto = null;
 
                                 if (!empty($photos)) {
@@ -230,17 +247,18 @@
                                 }
 
                                 // ── Pricing ──
-                                $hasDiscount     = $item->is_discount_on && $item->discount_price > 0;
-                                $displayPrice    = $hasDiscount ? $item->discount_price : $item->mrp_price;
-                                $discountPercent = ($hasDiscount && $item->mrp_price > 0)
-                                    ? round((($item->mrp_price - $item->discount_price) / $item->mrp_price) * 100)
-                                    : 0;
+                                $hasDiscount = $item->is_discount_on && $item->discount_price > 0;
+                                $displayPrice = $hasDiscount ? $item->discount_price : $item->mrp_price;
+                                $discountPercent =
+                                    $hasDiscount && $item->mrp_price > 0
+                                        ? round((($item->mrp_price - $item->discount_price) / $item->mrp_price) * 100)
+                                        : 0;
 
                                 // ── Stock ──
                                 $stockMap = [
-                                    'available'    => ['label' => 'In Stock',     'class' => 'bg-forest-100 text-forest-600'],
+                                    'available' => ['label' => 'In Stock', 'class' => 'bg-forest-100 text-forest-600'],
                                     'out_of_stock' => ['label' => 'Out of Stock', 'class' => 'bg-red-100 text-red-600'],
-                                    'limited'      => ['label' => 'Limited',      'class' => 'bg-amber-100 text-amber-600'],
+                                    'limited' => ['label' => 'Limited', 'class' => 'bg-amber-100 text-amber-600'],
                                 ];
                                 $stock = $stockMap[$item->stock_status] ?? [
                                     'label' => ucfirst($item->stock_status),
@@ -257,26 +275,25 @@
                                     'from-yellow-100 to-lime-100',
                                 ];
                                 $gradient = $gradients[$item->id % count($gradients)];
-                                $emojis   = ['📦','🛍️','🧴','🧺','🎁','🪄','🧲','🔖'];
-                                $emoji    = $emojis[$item->id % count($emojis)];
+                                $emojis = ['📦', '🛍️', '🧴', '🧺', '🎁', '🪄', '🧲', '🔖'];
+                                $emoji = $emojis[$item->id % count($emojis)];
                             @endphp
 
                             <div class="bg-white border border-ink-100 rounded-2xl overflow-hidden card-hover relative">
                                 <button
                                     onclick="confirmDelete({{ $item->id }}, '{{ addslashes($item->item_name) }}')"
                                     class="absolute top-1.5 right-1.5 z-10 w-6 h-6 bg-white/90 rounded-full flex items-center justify-center shadow border border-red-100 active:scale-90 transition-all">
-                                    <svg class="w-3 h-3 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <svg class="w-3 h-3 text-red-500" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="2.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                                     </svg>
                                 </button>
 
-                                <div class="h-24 bg-gradient-to-br {{ $gradient }} flex items-center justify-center relative overflow-hidden">
+                                <div
+                                    class="h-24 bg-gradient-to-br {{ $gradient }} flex items-center justify-center relative overflow-hidden">
                                     @if ($firstPhoto)
-                                        <img
-                                            src="{{ $firstPhoto }}"
-                                            alt="{{ $item->item_name }}"
-                                            class="w-full h-full object-cover"
-                                            loading="lazy"
+                                        <img src="{{ $firstPhoto }}" alt="{{ $item->item_name }}"
+                                            class="w-full h-full object-cover" loading="lazy"
                                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                                         <span class="text-4xl" style="display:none">{{ $emoji }}</span>
                                     @else
@@ -284,20 +301,23 @@
                                     @endif
 
                                     @if ($item->is_spin_wheel)
-                                        <div class="absolute top-1.5 left-1.5 gradient-brand text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none shadow">
+                                        <div
+                                            class="absolute top-1.5 left-1.5 gradient-brand text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none shadow">
                                             🎡 Spin
                                         </div>
                                     @endif
 
                                     @if ($hasDiscount && $discountPercent > 0)
-                                        <div class="absolute bottom-1.5 right-1.5 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none shadow">
+                                        <div
+                                            class="absolute bottom-1.5 right-1.5 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none shadow">
                                             -{{ $discountPercent }}%
                                         </div>
                                     @endif
                                 </div>
 
                                 <div class="p-2.5">
-                                    <p class="text-xs font-bold text-ink-800 leading-tight truncate">{{ $item->item_name }}</p>
+                                    <p class="text-xs font-bold text-ink-800 leading-tight truncate">
+                                        {{ $item->item_name }}</p>
                                     <p class="text-[10px] text-ink-400 truncate mt-0.5">{{ $item->category ?? '—' }}</p>
                                     <div class="flex items-center justify-between mt-1.5 gap-1 flex-wrap">
                                         <div class="flex items-baseline gap-1">
@@ -310,7 +330,8 @@
                                                 </p>
                                             @endif
                                         </div>
-                                        <span class="{{ $stock['class'] }} text-[9px] font-bold px-1.5 py-0.5 rounded-lg whitespace-nowrap flex-shrink-0">
+                                        <span
+                                            class="{{ $stock['class'] }} text-[9px] font-bold px-1.5 py-0.5 rounded-lg whitespace-nowrap flex-shrink-0">
                                             {{ $stock['label'] }}
                                         </span>
                                     </div>
@@ -329,8 +350,10 @@
             <!-- Tab: Services -->
             <div id="shopTab-service" class="space-y-3 hidden">
                 @forelse($services as $service)
-                    <div class="bg-white border border-gray-100 rounded-2xl p-3 flex items-center gap-4 shadow-sm relative active:scale-[0.98] transition-transform">
-                        <div class="w-16 h-16 bg-slate-50 rounded-xl flex-shrink-0 flex items-center justify-center overflow-hidden border border-gray-50">
+                    <div
+                        class="bg-white border border-gray-100 rounded-2xl p-3 flex items-center gap-4 shadow-sm relative active:scale-[0.98] transition-transform">
+                        <div
+                            class="w-16 h-16 bg-slate-50 rounded-xl flex-shrink-0 flex items-center justify-center overflow-hidden border border-gray-50">
                             <img src="{{ asset('storage/' . ($service->photos ?? 'lk')) }}"
                                 class="w-full h-full object-cover"
                                 onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($service->item_name) }}&background=random'">
@@ -338,7 +361,8 @@
                         <div class="flex-1">
                             <div class="flex items-center gap-2 mb-0.5">
                                 <h4 class="font-bold text-ink-900 text-sm capitalize">{{ $service->item_name }}</h4>
-                                <span class="text-[9px] px-1.5 py-0.5 rounded-md font-bold {{ $service->status == 'active' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600' }}">
+                                <span
+                                    class="text-[9px] px-1.5 py-0.5 rounded-md font-bold {{ $service->status == 'active' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600' }}">
                                     {{ strtoupper($service->status) }}
                                 </span>
                             </div>
@@ -357,7 +381,8 @@
                         <div class="flex flex-col items-center justify-center pr-1">
                             <a href="{{ url('services/edit/' . $service->id) }}"
                                 class="w-9 h-9 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                    stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                 </svg>
@@ -382,46 +407,60 @@
                         <div class="flex-1">
                             <div class="flex items-center gap-2 mb-1">
                                 <span class="text-xs w-4">5</span>
-                                <div class="flex-1 bg-ink-100 rounded-full h-1.5"><div class="bg-gold-400 h-1.5 rounded-full" style="width:70%"></div></div>
+                                <div class="flex-1 bg-ink-100 rounded-full h-1.5">
+                                    <div class="bg-gold-400 h-1.5 rounded-full" style="width:70%"></div>
+                                </div>
                                 <span class="text-xs text-ink-400">70%</span>
                             </div>
                             <div class="flex items-center gap-2 mb-1">
                                 <span class="text-xs w-4">4</span>
-                                <div class="flex-1 bg-ink-100 rounded-full h-1.5"><div class="bg-gold-400 h-1.5 rounded-full" style="width:20%"></div></div>
+                                <div class="flex-1 bg-ink-100 rounded-full h-1.5">
+                                    <div class="bg-gold-400 h-1.5 rounded-full" style="width:20%"></div>
+                                </div>
                                 <span class="text-xs text-ink-400">20%</span>
                             </div>
                             <div class="flex items-center gap-2 mb-1">
                                 <span class="text-xs w-4">3</span>
-                                <div class="flex-1 bg-ink-100 rounded-full h-1.5"><div class="bg-gold-400 h-1.5 rounded-full" style="width:7%"></div></div>
+                                <div class="flex-1 bg-ink-100 rounded-full h-1.5">
+                                    <div class="bg-gold-400 h-1.5 rounded-full" style="width:7%"></div>
+                                </div>
                                 <span class="text-xs text-ink-400">7%</span>
                             </div>
                             <div class="flex items-center gap-2">
                                 <span class="text-xs w-4">1-2</span>
-                                <div class="flex-1 bg-ink-100 rounded-full h-1.5"><div class="bg-red-400 h-1.5 rounded-full" style="width:3%"></div></div>
+                                <div class="flex-1 bg-ink-100 rounded-full h-1.5">
+                                    <div class="bg-red-400 h-1.5 rounded-full" style="width:3%"></div>
+                                </div>
                                 <span class="text-xs text-ink-400">3%</span>
                             </div>
                         </div>
                     </div>
                     <div class="space-y-3">
                         <div class="flex gap-3 pb-3 border-b border-ink-50">
-                            <div class="w-9 h-9 bg-saffron-100 rounded-full flex items-center justify-center text-xs font-bold text-saffron-700 flex-shrink-0">PR</div>
+                            <div
+                                class="w-9 h-9 bg-saffron-100 rounded-full flex items-center justify-center text-xs font-bold text-saffron-700 flex-shrink-0">
+                                PR</div>
                             <div>
                                 <div class="flex items-center gap-2">
                                     <p class="text-xs font-bold text-ink-800">Priya Rani</p>
                                     <span class="text-saffron-400 text-xs">★★★★★</span>
                                 </div>
-                                <p class="text-xs text-ink-400 mt-0.5">Bahut achha collection hai. Spin se 20% off mila — aur joote bhi best quality ke hain!</p>
+                                <p class="text-xs text-ink-400 mt-0.5">Bahut achha collection hai. Spin se 20% off mila —
+                                    aur joote bhi best quality ke hain!</p>
                                 <p class="text-xs text-ink-300 mt-1">2 ghante pehle</p>
                             </div>
                         </div>
                         <div class="flex gap-3 pb-3 border-b border-ink-50">
-                            <div class="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center text-xs font-bold text-blue-700 flex-shrink-0">AK</div>
+                            <div
+                                class="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center text-xs font-bold text-blue-700 flex-shrink-0">
+                                AK</div>
                             <div>
                                 <div class="flex items-center gap-2">
                                     <p class="text-xs font-bold text-ink-800">Amit Kumar</p>
                                     <span class="text-saffron-400 text-xs">★★★★☆</span>
                                 </div>
-                                <p class="text-xs text-ink-400 mt-0.5">Good shop, friendly staff. Earned 25 coins today from spin!</p>
+                                <p class="text-xs text-ink-400 mt-0.5">Good shop, friendly staff. Earned 25 coins today
+                                    from spin!</p>
                                 <p class="text-xs text-ink-300 mt-1">Kal</p>
                             </div>
                         </div>
@@ -435,27 +474,31 @@
                     <div class="space-y-3 divide-y divide-ink-50">
                         <div class="flex justify-between text-sm pt-0">
                             <span class="text-ink-400">Pata</span>
-                            <span class="font-medium text-ink-700 text-right text-xs">{{ Session::get('shopuser')->address ?? 'N/A' }}</span>
+                            <span
+                                class="font-medium text-ink-700 text-right text-xs">{{ Session::get('shopuser')->address ?? 'N/A' }}</span>
                         </div>
                         <div class="flex justify-between text-sm pt-3">
                             <span class="text-ink-400">Samay</span>
                             <span class="font-medium text-ink-700">
-                                {{ Session::get('shopuser')->open_time  ? date('h:i A', strtotime(Session::get('shopuser')->open_time))  : 'N/A' }}
+                                {{ Session::get('shopuser')->open_time ? date('h:i A', strtotime(Session::get('shopuser')->open_time)) : 'N/A' }}
                                 –
                                 {{ Session::get('shopuser')->close_time ? date('h:i A', strtotime(Session::get('shopuser')->close_time)) : 'N/A' }}
                             </span>
                         </div>
                         <div class="flex justify-between text-sm pt-3">
                             <span class="text-ink-400">Chhuti</span>
-                            <span class="font-medium text-ink-700">{{ Session::get('shopuser')->off_days ?? 'N/A' }}</span>
+                            <span
+                                class="font-medium text-ink-700">{{ Session::get('shopuser')->off_days ?? 'N/A' }}</span>
                         </div>
                         <div class="flex justify-between text-sm pt-3">
                             <span class="text-ink-400">Category</span>
-                            <span class="font-medium text-ink-700">{{ Session::get('shopuser')->categories ?? 'N/A' }}</span>
+                            <span
+                                class="font-medium text-ink-700">{{ Session::get('shopuser')->categories ?? 'N/A' }}</span>
                         </div>
                         <div class="flex justify-between text-sm pt-3">
                             <span class="text-ink-400">Payment</span>
-                            <span class="font-medium text-ink-700">{{ Session::get('shopuser')->payment_modes ?? 'N/A' }}</span>
+                            <span
+                                class="font-medium text-ink-700">{{ Session::get('shopuser')->payment_modes ?? 'N/A' }}</span>
                         </div>
                     </div>
                 </div>
@@ -469,7 +512,8 @@
         <div id="delete-modal-box">
             <div class="flex justify-center mb-3">
                 <div class="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center">
-                    <svg class="w-7 h-7 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <svg class="w-7 h-7 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0a1 1 0 00-1-1h-4a1 1 0 00-1 1H5" />
                     </svg>
@@ -503,63 +547,63 @@
 @endsection
 
 @push('script')
-<script>
-    $(document).on('turbo:load', function () {
-        $('#toggle-profile').off('click').on('click', function () {
-            $('#collapsible-content').slideToggle(300, function () {
-                $('#arrow').text($(this).is(':visible') ? '▲' : '▼');
+    <script>
+        $(document).on('turbo:load', function() {
+            $('#toggle-profile').off('click').on('click', function() {
+                $('#collapsible-content').slideToggle(300, function() {
+                    $('#arrow').text($(this).is(':visible') ? '▲' : '▼');
+                });
             });
         });
-    });
 
-    function confirmDelete(itemId, itemName) {
-        document.getElementById('delete-item-name').textContent = itemName;
-        document.getElementById('delete-form').action = '/item-delete/' + itemId;
-        document.getElementById('delete-modal').classList.add('show');
-    }
-
-    function closeDeleteModal(event) {
-        if (event.target === document.getElementById('delete-modal')) {
-            closeDeleteModalDirect();
+        function confirmDelete(itemId, itemName) {
+            document.getElementById('delete-item-name').textContent = itemName;
+            document.getElementById('delete-form').action = '/item-delete/' + itemId;
+            document.getElementById('delete-modal').classList.add('show');
         }
-    }
 
-    function closeDeleteModalDirect() {
-        document.getElementById('delete-modal').classList.remove('show');
-    }
+        function closeDeleteModal(event) {
+            if (event.target === document.getElementById('delete-modal')) {
+                closeDeleteModalDirect();
+            }
+        }
 
-    function submitDelete() {
-        document.getElementById('delete-form').submit();
-    }
+        function closeDeleteModalDirect() {
+            document.getElementById('delete-modal').classList.remove('show');
+        }
 
-    function generateDownload() {
-        const canvas   = document.getElementById('myCanvas');
-        const ctx      = canvas.getContext('2d');
-        const shopName = document.getElementById('shopNameTxt').innerText;
-        const qrImg    = new Image();
+        function submitDelete() {
+            document.getElementById('delete-form').submit();
+        }
 
-        qrImg.crossOrigin = "anonymous";
-        qrImg.src = document.getElementById('qrDisplay').src;
+        function generateDownload() {
+            const canvas = document.getElementById('myCanvas');
+            const ctx = canvas.getContext('2d');
+            const shopName = document.getElementById('shopNameTxt').innerText;
+            const qrImg = new Image();
 
-        qrImg.onload = function () {
-            canvas.width  = 500;
-            canvas.height = 620;
+            qrImg.crossOrigin = "anonymous";
+            qrImg.src = document.getElementById('qrDisplay').src;
 
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            qrImg.onload = function() {
+                canvas.width = 500;
+                canvas.height = 620;
 
-            ctx.drawImage(qrImg, 0, 0, 500, 500);
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.fillStyle  = "#000000";
-            ctx.font       = "bold 45px Arial";
-            ctx.textAlign  = "center";
-            ctx.fillText(shopName, 250, 570);
+                ctx.drawImage(qrImg, 0, 0, 500, 500);
 
-            const link      = document.createElement('a');
-            link.download   = shopName.replace(/\s+/g, '_') + '_QR.png';
-            link.href       = canvas.toDataURL("image/png");
-            link.click();
-        };
-    }
-</script>
+                ctx.fillStyle = "#000000";
+                ctx.font = "bold 45px Arial";
+                ctx.textAlign = "center";
+                ctx.fillText(shopName, 250, 570);
+
+                const link = document.createElement('a');
+                link.download = shopName.replace(/\s+/g, '_') + '_QR.png';
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            };
+        }
+    </script>
 @endpush
