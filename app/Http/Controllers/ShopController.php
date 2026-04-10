@@ -32,6 +32,8 @@ class ShopController extends Controller
             'open_time'   => $open_time,
             'close_time'  => $close_time,
             'off_days'    => $request->off_days,
+            'pin'    => $request->pin,
+            'pin_set'    => 1,
             'updated_at'  => now(),
         ];
 
