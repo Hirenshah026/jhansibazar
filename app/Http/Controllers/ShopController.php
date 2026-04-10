@@ -172,6 +172,8 @@ class ShopController extends Controller
         }
 
         DB::table('shops')->where('id', $request->shop_id)->update($updateData);
+        $user_detail_new = DB::table('shops')->where('id',$request->shop_id??0)->first();            
+        Session::put('shopuser', $user_detail_new);
 
         return response()->json([
             'success' => true,

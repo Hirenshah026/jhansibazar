@@ -120,7 +120,10 @@ class FrontController extends Controller
     {
         return view('front.auth.login');
     }
-
+    public function shop_set_pin()
+    {
+        return view('front.auth.set_pin');
+    }
     public function shop_login_ajax(Request $request)
     {
         $shop = DB::table('shops')
@@ -134,6 +137,33 @@ class FrontController extends Controller
         }
 
         return response()->json(['success' => false, 'message' => 'Invalid credentials. Please try again.']);
+    }
+    public function shop_updatePin(Request $request)
+    {
+        $request->validate([
+            'pin' => 'required|numeric',
+        ]);
+
+        try {
+            // Hum directly DB facade use kar rahe hain
+            DB::table('shops')
+                ->where('id',Session::get('shopuser')->id)
+                ->update([
+                    'pin' => $request->pin, // Security ke liye hash karna best hai
+                    'pin_set'=>1
+                ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'PIN successfully Set'
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function shop_logout()

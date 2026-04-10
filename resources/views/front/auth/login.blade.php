@@ -22,7 +22,7 @@
         <div class="w-full max-w-md bg-white rounded-[40px] shadow-[0_20px_50px_rgba(0,0,0,0.1)] overflow-hidden">
             <div class="bg-[#2e7d32] p-12 text-center text-white">
                 <div
-                    class="w-20 h-20 bg-white/20 backdrop-blur-lg rounded-[25px] mx-auto flex items-center justify-center mb-4 border border-white/30 shadow-inner">
+                    class="w-20 h-20 bg-white/20 backdrop-blur-lg rounded-[25px] mx-auto flex items-center justify-center mb-4 border border-white/30 shadow-inner hidden">
                     <span class="text-4xl">JB</span>
                 </div>
                 <h1 class="text-2xl font-bold tracking-tight">Jhansi Bazaar</h1>

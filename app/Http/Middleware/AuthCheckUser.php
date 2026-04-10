@@ -28,6 +28,10 @@ class AuthCheckUser
         {
             //dd(Session::get('user')->address);
             $user_detail_new = DB::table('shops')->where('id',Session::get('shopuser')->id??0)->first();
+            if($user_detail_new->pin_set==0)
+            {
+                return redirect('/set-pin-shop');
+            }
             Session::put('shopuser', $user_detail_new);
             
         }

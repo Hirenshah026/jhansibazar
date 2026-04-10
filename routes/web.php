@@ -40,7 +40,7 @@ Route::get('/home',                      [FrontController::class, 'home'])->name
 Route::get('/rozana',                    [FrontController::class, 'rozana'])->name('rozana');
 Route::get('/spin',                      [FrontController::class, 'spin'])->name('spin');
 Route::get('/spin/{slug}',               [FrontController::class, 'spin']);
-Route::get('/account',                   [FrontController::class, 'account'])->name('account');
+
 Route::get('/wallet',                    [FrontController::class, 'wallet'])->name('wallet');
 Route::get('/shopprofile',               [FrontController::class, 'shopprofile'])->name('shopprofile');
 Route::get('/shopprofile/{slug}',        [FrontController::class, 'shopprofile']);
@@ -49,7 +49,8 @@ Route::get('/notifications',             [FrontController::class, 'notifications
 Route::get('/healthcard',                [FrontController::class, 'healthcard'])->name('healthcard');
 Route::get('/shop-register',             [FrontController::class, 'add_shop'])->name('add_shop');
 Route::get('/login',                     [FrontController::class, 'shop_login'])->name('shop_login');
-
+Route::get('/set-pin-shop',                     [FrontController::class, 'shop_set_pin'])->name('shop_set_pin');
+Route::post('/update-shop-pin', [FrontController::class, 'shop_updatePin'])->name('settings.update-pin');
 
 // ─────────────────────────────────────────────
 // Auth Routes
@@ -76,6 +77,7 @@ Route::post('/shop/delete/{id}',       [ShopController::class, 'deleteShop'])->n
 // Authenticated Routes (shop user only)
 // ─────────────────────────────────────────────
 Route::middleware(['authcheckuser'])->group(function () {
+    Route::get('/account',                   [FrontController::class, 'account'])->name('account');
     Route::get('/service-register',          [FrontController::class, 'add_service'])->name('add_service');
     Route::get('/item-register',             [FrontController::class, 'add_item'])->name('add_item');
 
