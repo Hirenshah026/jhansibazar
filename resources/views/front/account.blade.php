@@ -68,8 +68,8 @@
                     {{ Str::substr(Session::get('shopuser')->shop_name ?? 'na', 0, 1) }}
                 </div>
                 <h2 class="font-display text-2xl font-bold capitalize">{{ Session::get('shopuser')->shop_name ?? 'na' }}</h2>
-                <p class="text-white/70 text-sm">Footwear & Sports Shoes • Est. 1998</p>
-                <div class="flex gap-2 mt-2 flex-wrap">
+                <p class="text-white/70 text-sm hidden">Footwear & Sports Shoes • Est. 1998</p>
+                <div class="flex gap-2 mt-2 flex-wrap hidden">
                     <span class="glass rounded-full px-2.5 py-0.5 text-xs">★ 4.5 (128)</span>
                     <span class="glass rounded-full px-2.5 py-0.5 text-xs">📍 {{ Session::get('shopuser')->address ?? 'na' }}</span>
                     <span class="glass rounded-full px-2.5 py-0.5 text-xs">🟢 Open till {{ date('h:i A', strtotime(Session::get('shopuser')->close_time ?? '0')) }}</span>
@@ -81,24 +81,7 @@
 
             <!-- Action Row -->
             <div class="grid grid-cols-2 gap-3 mb-5">
-                <button onclick="Turbo.visit('{{ url('/item-register') }}')"
-                    class="flex items-center justify-center gap-2 bg-white border-2 border-dashed border-green-200 text-green-700 font-bold rounded-2xl py-4 shadow-sm active:scale-95 transition-all">
-                    <span class="text-xl">📦</span>
-                    <div class="text-left">
-                        <p class="text-xs font-bold leading-none">Add Item</p>
-                        <p class="text-[9px] font-normal text-gray-400 mt-1">Naya maal jodein</p>
-                    </div>
-                </button>
-
-                <button onclick="Turbo.visit('{{ url('/service-register') }}')"
-                    class="flex items-center justify-center gap-2 bg-white border-2 border-dashed border-blue-200 text-blue-700 font-bold rounded-2xl py-4 shadow-sm active:scale-95 transition-all">
-                    <span class="text-xl">🛠️</span>
-                    <div class="text-left">
-                        <p class="text-xs font-bold leading-none">Add Service</p>
-                        <p class="text-[9px] font-normal text-gray-400 mt-1">Service manage</p>
-                    </div>
-                </button>
-
+                
                 <button onclick="Turbo.visit('{{ url('/categories') }}')"
                     class="flex items-center justify-center gap-2 bg-white border-2 border-dashed border-orange-200 text-orange-700 font-bold rounded-2xl py-4 shadow-sm active:scale-95 transition-all">
                     <span class="text-xl">📁</span>
@@ -107,13 +90,32 @@
                         <p class="text-[9px] font-normal text-gray-400 mt-1">Saman ki list</p>
                     </div>
                 </button>
-
+                <button onclick="Turbo.visit('{{ url('/item-register') }}')"
+                    class="flex items-center justify-center gap-2 bg-white border-2 border-dashed border-green-200 text-green-700 font-bold rounded-2xl py-4 shadow-sm active:scale-95 transition-all">
+                    <span class="text-xl">📦</span>
+                    <div class="text-left">
+                        <p class="text-xs font-bold leading-none">Add Item</p>
+                        <p class="text-[9px] font-normal text-gray-400 mt-1">Naya maal jodein</p>
+                    </div>
+                </button>
                 <button onclick="Turbo.visit('{{ url('/shop/offers') }}')"
                     class="flex items-center justify-center gap-2 bg-white border-2 border-dashed border-purple-200 text-purple-700 font-bold rounded-2xl py-4 shadow-sm active:scale-95 transition-all">
                     <span class="text-xl">🎁</span>
                     <div class="text-left">
                         <p class="text-xs font-bold leading-none">Add Offer</p>
                         <p class="text-[9px] font-normal text-gray-400 mt-1">Discount offer</p>
+                    </div>
+                </button>
+                
+
+                
+                
+                <button onclick="Turbo.visit('{{ url('/service-register') }}')"
+                    class="flex items-center justify-center gap-2 bg-white border-2 border-dashed border-blue-200 text-blue-700 font-bold rounded-2xl py-4 shadow-sm active:scale-95 transition-all {{ (json_decode(Session::get('shopuser')->categories ?? '[]')[0] ?? '') == 'salon' ? 'rn' : 'hidden' }}">
+                    <span class="text-xl">🛠️</span>
+                    <div class="text-left">
+                        <p class="text-xs font-bold leading-none">Add Service</p>
+                        <p class="text-[9px] font-normal text-gray-400 mt-1">Service manage</p>
                     </div>
                 </button>
             </div>

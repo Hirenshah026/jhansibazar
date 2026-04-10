@@ -10,7 +10,7 @@
             </div>
             <div class="flex items-start justify-between relative z-10">
                 <div>
-                    <p class="text-white/70 text-xs mb-1">Namaste, Rahul 👋</p>
+                    <p class="text-white/70 text-xs mb-1">Namaste, {{ Session::get('shopuser')->shop_name ?? 'Sir' }} 👋</p>
                     <h1 class="font-display text-white text-2xl font-bold leading-tight">Jhansi ka<br />Apna Bazaar</h1>
                     <p class="text-white/70 text-xs mt-1">Scan · Spin · Earn · Save</p>
                 </div>

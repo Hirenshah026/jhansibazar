@@ -175,7 +175,7 @@
                         }
                         // Warna jahan se aaya tha wahin wapas bhej do
                         else {
-                            window.location.href = previousPage || "{{ url('/dashboard') }}";
+                            window.location.href = previousPage || "{{ url('/account') }}";
                         }
                     }
                 },
