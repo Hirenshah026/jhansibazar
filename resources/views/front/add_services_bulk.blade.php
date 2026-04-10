@@ -166,7 +166,8 @@
             background: #fff;
             color: #475569;
             user-select: none;
-            white-space: nowrap
+            white-space: nowrap;
+
         }
 
         .chp:hover {
@@ -234,6 +235,43 @@
             padding: 2px 11px;
             border-radius: 14px;
         }
+
+       .chp {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1.5px solid #ddd;
+            background: #fff;
+            color: #666;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            flex: 0 0 auto;
+            text-align: center;
+            min-width: 60px;
+            width: auto;
+            text-align: center;
+        }
+
+        .chp.on {
+            background: #f0fdf4;
+            border-color: #16A34A;
+            color: #16A34A;
+        }
+
+        .inp:focus {
+            outline: none;
+            border-color: #16A34A !important;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 @endpush
 @section('content')
@@ -280,12 +318,17 @@
                         </div>
                     </div>
 
-                    <p style="font-size:12px; font-weight:700; margin-bottom:8px; color:#475569">Category (Optional) <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 inset-ring inset-ring-green-600/20 cursor-pointer"
+                    <p style="font-size:12px; font-weight:700; margin-bottom:8px; color:#475569">Category (Optional) <span
+                            class="inline-flex items-center rounded-md bg-green-500 px-2 py-1 text-xs font-medium text-white-900 inset-ring inset-ring-green-600/20 cursor-pointer"
                             onclick="showCategoryForm()" class="cursor-pointer">+Add New</span></p>
                     <div class="category-group" style="display:flex; gap:7px; flex-wrap:wrap; margin-bottom:15px">
-                        <button type="button" class="chp on" onclick="handleChip(this)">Hair</button>
-                        <button type="button" class="chp" onclick="handleChip(this)">Facial</button>
-                        <button type="button" class="chp" onclick="handleChip(this)">Makeup</button>
+                        @forelse ($categories as $in=>$cate)
+                            <button type="button" class="chp {{ $in == 0 ? 'on' : 'noo' }}"
+                                onclick="handleChip(this)">{{ ucwords($cate->name ?? 'na') }}</button>
+                        @empty
+                            No Category
+                        @endforelse
+
                     </div>
 
                     <div style="display:flex; gap:10px">
@@ -370,42 +413,6 @@
 
 
     </div>
-
-    <style>
-        .chp {
-            padding: 8px 15px;
-            border-radius: 20px;
-            border: 1.5px solid #ddd;
-            background: #fff;
-            color: #666;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            flex: 1;
-            text-align: center;
-        }
-
-        .chp.on {
-            background: #f0fdf4;
-            border-color: #16A34A;
-            color: #16A34A;
-        }
-
-        .inp:focus {
-            outline: none;
-            border-color: #16A34A !important;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-    </style>
 @endsection
 
 @push('script')

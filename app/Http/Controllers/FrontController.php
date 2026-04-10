@@ -193,7 +193,8 @@ class FrontController extends Controller
 
     public function add_service()
     {
-        return view('front.add_services_bulk');
+        $categories = DB::table('category')->where( 'shop_id', Session::get('shopuser')->id)->orderBy('id', 'desc')->get();
+        return view('front.add_services_bulk',compact('categories'));
     }
 
     public function add_item()

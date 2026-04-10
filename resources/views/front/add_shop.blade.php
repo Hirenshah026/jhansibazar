@@ -916,10 +916,12 @@
                     JB-2025-0041</p>
                 <p style="font-size:11px;color:#3b82f6;margin-top:4px">Yeh ID save kar lo — kaam aayega</p>
             </div>
-
-            <button id="btnShare" class="btn-main" onclick="shareWhatsApp()" style="margin-bottom:10px">
-                💬 WhatsApp Pe Share Karo
+            <button id="btnShare" class="btn-main" onclick="window.location.href='{{url('/account')}}'" style="margin-bottom:10px">
+               Dashboard
             </button>
+            {{-- <button id="btnShare" class="btn-main" onclick="shareWhatsApp()" style="margin-bottom:10px">
+                💬 WhatsApp Pe Share Karo
+            </button> --}}
             <button onclick="resetForm()"
                 style="width:100%;background:transparent;border:1.5px solid #E2E8F0;border-radius:14px;padding:13px;font-size:14px;font-weight:700;color:#64748b;cursor:pointer;font-family:'Nunito',sans-serif">
                 Ek Aur Dukan Register Karo
