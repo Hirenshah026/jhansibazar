@@ -101,4 +101,4 @@
         </div>
     </div>
 </div>
-<button id="openLogin" class="trigger-login">Login Karne Ke Liye Dabayein</button>
+<button id="openLogin" class="trigger-login hidden">Login Karne Ke Liye Dabayein</button>
