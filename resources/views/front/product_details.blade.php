@@ -803,7 +803,11 @@
         </div>
 
     </div>
+    @include('front.partial.img_popup')
+    
 
+@endsection
+@push('script')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function switchTab(btn, tabId) {
@@ -879,5 +883,4 @@
             });
         });
     </script>
-
-@endsection
+@endpush
