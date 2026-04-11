@@ -100,6 +100,7 @@
         </div>
 
         @include('front.partial.shop_listing')
+        @include('front.partial.shop_list_slider')
         <!-- Flash Deals -->
         <div class="px-4 mb-4">
             <div class="flex items-center justify-between mb-2">
