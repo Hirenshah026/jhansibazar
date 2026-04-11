@@ -695,7 +695,7 @@
                                     class="h-24 bg-gradient-to-br {{ $gradient }} flex items-center justify-center relative overflow-hidden">
                                     @if ($firstPhoto)
                                         <img src="{{ $firstPhoto }}" alt="{{ $item->item_name }}"
-                                            class="w-full h-full object-cover" loading="lazy"
+                                            class="w-full h-full object-cover pop_show" loading="lazy"
                                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                                         <span class="text-4xl" style="display:none">{{ $emoji }}</span>
                                     @else

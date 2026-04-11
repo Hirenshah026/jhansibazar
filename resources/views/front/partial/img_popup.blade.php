@@ -9,7 +9,7 @@
 <script>
 $(document).ready(function() {
     // 1. Image Click Event
-    $('.card-img-slide img').on('click', function(e) {
+    $('.pop_show').on('click', function(e) {
         e.stopPropagation(); // Card click event ko trigger hone se rokne ke liye
         
         const imgSrc = $(this).attr('src'); // Click ki gayi image ka source
