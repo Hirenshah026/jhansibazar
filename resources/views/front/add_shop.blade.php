@@ -548,21 +548,24 @@
             </div>
             <!-- Pin -->
             <div style="margin-bottom:16px">
-    <p class="lbl">Pin <span class="req">*</span></p>
-    <div style="position:relative">
-        <input id="pin" class="inp" type="password" maxlength="6" 
-               placeholder="****" inputmode="numeric" autocomplete="new-password" 
-               style="padding-right: 40px; width: 100%;" />
-        
-        <button type="button" onclick="togglePin()" 
-                style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; padding:0; display:flex; align-items:center;">
-            <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
-            </svg>
-        </button>
-    </div>
-    <p id="pinErr" style="display:none;font-size:11px;color:#EF4444;margin-top:4px;font-weight:600">⚠ Enter Pin</p>
-</div>
+                <p class="lbl">Pin <span class="req">*</span></p>
+                <div style="position:relative">
+                    <input id="pin" class="inp" type="password" maxlength="6" placeholder="****"
+                        inputmode="numeric" autocomplete="new-password" style="padding-right: 40px; width: 100%;" />
+
+                    <button type="button" onclick="togglePin()"
+                        style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; padding:0; display:flex; align-items:center;">
+                        <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                            viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                    </button>
+                </div>
+                <p id="pinErr" style="display:none;font-size:11px;color:#EF4444;margin-top:4px;font-weight:600">⚠ Enter
+                    Pin</p>
+            </div>
 
 
 
@@ -894,7 +897,8 @@
             <!-- What happens next -->
             <div
                 style="background:white;border-radius:20px;padding:18px;border:1.5px solid #E2E8F0;margin-bottom:16px;text-align:left">
-                <p class="fd" style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:14px">Aage Kya Hoga:</p>
+                <p class="fd" style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:14px">Aage Kya Hoga:
+                </p>
                 <div style="display:flex;flex-direction:column;gap:12px">
                     <div style="display:flex;gap:12px;align-items:flex-start">
                         <div
@@ -935,8 +939,9 @@
                     JB-2025-0041</p>
                 <p style="font-size:11px;color:#3b82f6;margin-top:4px">Yeh ID save kar lo — kaam aayega</p>
             </div>
-            <button id="btnShare" class="btn-main" onclick="window.location.href='{{url('/account')}}'" style="margin-bottom:10px">
-               Dashboard
+            <button id="btnShare" class="btn-main" onclick="window.location.href='{{ url('/account') }}'"
+                style="margin-bottom:10px">
+                Dashboard
             </button>
             {{-- <button id="btnShare" class="btn-main" onclick="shareWhatsApp()" style="margin-bottom:10px">
                 💬 WhatsApp Pe Share Karo
@@ -944,7 +949,7 @@
 
 
 
-            
+
             <button onclick="resetForm()"
                 style="width:100%;background:transparent;border:1.5px solid #E2E8F0;border-radius:14px;padding:13px;font-size:14px;font-weight:700;color:#64748b;cursor:pointer;font-family:'Nunito',sans-serif">
                 Ek Aur Dukan Register Karo
@@ -1000,7 +1005,10 @@
                 const file = input.files[0];
 
                 if (file.size > 5 * 1024 * 1024) {
-                    Toast.fire({ icon: 'error', title: 'Photo 5MB se chhota hona chahiye' });
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Photo 5MB se chhota hona chahiye'
+                    });
                     return;
                 }
 
@@ -1076,7 +1084,9 @@
             });
 
             canvas.toBlob((blob) => {
-                const croppedFile = new File([blob], 'cropped.jpg', { type: 'image/jpeg' });
+                const croppedFile = new File([blob], 'cropped.jpg', {
+                    type: 'image/jpeg'
+                });
 
                 const dataTransfer = new DataTransfer();
                 dataTransfer.items.add(croppedFile);
@@ -1125,11 +1135,12 @@
                 $(el).css('border-color', '#EF4444');
             }
         }
+
         function validatePin(el) {
             if (el.value.trim().length > 0) {
                 $('#pinErr').fadeOut();
                 $(el).css('border-color', '#3595ff');
-                
+
             } else {
                 $(el).css('border-color', '#EF4444');
             }
@@ -1200,10 +1211,16 @@
             $('#stepLabel').text(step);
             for (let i = 1; i <= 3; i++) {
                 if (i <= step) {
-                    $(`#dot${i}`).css({ 'background': 'white', 'color': '#3595ff' });
+                    $(`#dot${i}`).css({
+                        'background': 'white',
+                        'color': '#3595ff'
+                    });
                     $(`#lbl${i}`).css('color', 'white');
                 } else {
-                    $(`#dot${i}`).css({ 'background': 'rgba(255,255,255,.3)', 'color': 'rgba(255,255,255,.7)' });
+                    $(`#dot${i}`).css({
+                        'background': 'rgba(255,255,255,.3)',
+                        'color': 'rgba(255,255,255,.7)'
+                    });
                     $(`#lbl${i}`).css('color', 'rgba(255,255,255,.5)');
                 }
             }
@@ -1211,7 +1228,8 @@
 
         // ─── 7. AJAX SAVES ───
         async function saveStep1AndNext() {
-            if (!$('#ownerName').val() || !$('#shopName').val() || $('#phone').val().length < 10 || !$('#address').val()) {
+            if (!$('#ownerName').val() || !$('#shopName').val() || $('#phone').val().length < 10 || !$('#address')
+            .val()) {
                 validateStep1();
                 return;
             }
@@ -1238,13 +1256,22 @@
                 const res = await $.post("{{ url('/save-step1') }}", data);
                 if (res.success) {
                     shopId = res.shop_id;
-                    Toast.fire({ icon: 'success', title: 'Step 1 Saved!' });
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Step 1 Saved!'
+                    });
                     goStep(2);
                 } else {
-                    Toast.fire({ icon: 'error', title: res.message });
+                    Toast.fire({
+                        icon: 'error',
+                        title: res.message
+                    });
                 }
             } catch (e) {
-                Toast.fire({ icon: 'error', title: 'Server Error! Dobara try karo.' });
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Server Error! Dobara try karo.'
+                });
             } finally {
                 setLoader(btn, false);
             }
@@ -1252,7 +1279,10 @@
 
         async function saveStep2AndNext() {
             if (selectedCategories.length === 0 || !$('#tagline').val()) {
-                Toast.fire({ icon: 'error', title: "Category aur Tagline zaroori hai!" });
+                Toast.fire({
+                    icon: 'error',
+                    title: "Category aur Tagline zaroori hai!"
+                });
                 return;
             }
 
@@ -1271,13 +1301,22 @@
             try {
                 const res = await $.post("{{ url('/save-step2') }}", data);
                 if (res.success) {
-                    Toast.fire({ icon: 'success', title: 'Step 2 Saved!' });
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Step 2 Saved!'
+                    });
                     goStep(3);
                 } else {
-                    Toast.fire({ icon: 'error', title: res.message });
+                    Toast.fire({
+                        icon: 'error',
+                        title: res.message
+                    });
                 }
             } catch (e) {
-                Toast.fire({ icon: 'error', title: 'Data save nahi ho paya!' });
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Data save nahi ho paya!'
+                });
             } finally {
                 setLoader(btn, false);
             }
@@ -1285,7 +1324,10 @@
 
         function submitForm() {
             if (!$('#shopPhoto')[0].files[0]) {
-                Toast.fire({ icon: 'error', title: "Dukan ki photo zaroori hai!" });
+                Toast.fire({
+                    icon: 'error',
+                    title: "Dukan ki photo zaroori hai!"
+                });
                 return;
             }
 
@@ -1315,11 +1357,17 @@
                         $('#stepSuccess').fadeIn();
                         $('#regId').text(res.reg_id || 'JB-' + shopId);
                     } else {
-                        Toast.fire({ icon: 'error', title: res.message || 'Submit fail hua!' });
+                        Toast.fire({
+                            icon: 'error',
+                            title: res.message || 'Submit fail hua!'
+                        });
                     }
                 },
                 error: function() {
-                    Toast.fire({ icon: 'error', title: 'Image upload fail! Dobara try karo.' });
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Image upload fail! Dobara try karo.'
+                    });
                 },
                 complete: function() {
                     // Always restore the button — even on error — so user can retry
@@ -1399,7 +1447,8 @@
             const btn = document.getElementById('btnShare');
             setLoader(btn, true, 'WhatsApp Khul Raha Hai...');
 
-            const text = `Badhai! 🎉 Mere shop (${$('#shopName').val()}) ko Jhansi Bazaar pe register kar diya! Join karo: [link]`;
+            const text =
+                `Badhai! 🎉 Mere shop (${$('#shopName').val()}) ko Jhansi Bazaar pe register kar diya! Join karo: [link]`;
             window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
 
             // Restore after 2s — window.open resolves instantly
@@ -1411,21 +1460,23 @@
         }
     </script>
     <script>
-function togglePin() {
-    const pinInput = document.getElementById('pin');
-    const eyeIcon = document.getElementById('eyeIcon');
-    
-    if (pinInput.type === 'password') {
-        // Show Password
-        pinInput.type = 'text';
-        // Change icon to "Eye Off" (Slash)
-        eyeIcon.innerHTML = '<path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/>';
-    } else {
-        // Hide Password
-        pinInput.type = 'password';
-        // Change icon back to "Eye"
-        eyeIcon.innerHTML = '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>';
-    }
-}
-</script>
+        function togglePin() {
+            const pinInput = document.getElementById('pin');
+            const eyeIcon = document.getElementById('eyeIcon');
+
+            if (pinInput.type === 'password') {
+                // Show Password
+                pinInput.type = 'text';
+                // Change icon to "Eye Off" (Slash)
+                eyeIcon.innerHTML =
+                    '<path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/>';
+            } else {
+                // Hide Password
+                pinInput.type = 'password';
+                // Change icon back to "Eye"
+                eyeIcon.innerHTML =
+                    '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>';
+            }
+        }
+    </script>
 @endpush

@@ -107,10 +107,10 @@ class FrontController extends Controller
         $shop = DB::table('shops')->where('shop_name', $slug)->first();
 
         if (!$shop) return redirect('/');
-
-        $services = DB::table('services')->orderBy('id', 'DESC')->get();
-
-        return view('front.product_details', compact('shop', 'services'));
+        $shopId=$shop->id??0;
+        $services = DB::table('services')->where('shop_id', $shopId)->orderBy('id', 'DESC')->get();
+        $items = DB::table('items')->where('shop_id', $shopId)->get();
+        return view('front.product_details', compact('shop', 'services','items'));
     }
 
     // ─────────────────────────────────────────────

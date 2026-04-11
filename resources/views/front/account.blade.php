@@ -395,7 +395,7 @@
                     </div>
                 @endforelse
             </div>
-
+            
             <!-- Tab: Reviews -->
             <div id="shopTab-reviews" class="hidden">
                 <div class="bg-white border border-ink-100 rounded-2xl p-4 mb-4">

@@ -11,7 +11,12 @@
             <div class="flex items-start justify-between relative z-10">
                 <div>
                     <p class="text-white/70 text-xs mb-1">Namaste, {{ Session::get('shopuser')->shop_name ?? 'Sir' }} 👋</p>
-                    <h1 class="font-display text-white text-2xl font-bold leading-tight">Jhansi ka<br />Apna Bazaar</h1>
+
+                    <div class="flex items-center my-2">
+                        <img src="http://localhost/jhansibazar/logo/logo3.jpeg" alt="Logo" loading="lazy"
+                            class="h-12 w-auto object-contain" style=" border-radius: 5px;">
+                    </div>
+
                     <p class="text-white/70 text-xs mt-1">Scan · Spin · Earn · Save</p>
                 </div>
                 <div class="text-right">
@@ -413,7 +418,7 @@
 @push('script')
     <script>
         function openShop(id) {
-            showScreen('account',);
+            showScreen('account', );
         }
 
         function filterCat(btn, cat) {
