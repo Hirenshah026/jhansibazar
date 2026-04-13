@@ -44,11 +44,10 @@
         <!-- TICKER -->
         <div class="bg-ink-800 overflow-hidden py-1.5 px-4">
             <p class="ticker text-xs text-gold-300 font-medium whitespace-nowrap">
-                🔥 Flash Deal: Sharma Sweets — Free Samosa on ₹200 &nbsp;•&nbsp; 🎡 Raj Shoe Store: Spin aur 20% OFF
-                jeeto
-                &nbsp;•&nbsp; 💊 City Hospital Health Card — ₹300 mein hamesha 20% off &nbsp;•&nbsp; ✂️ Glamour Salon:
-                Navratri
-                Special ₹499 Package &nbsp;•&nbsp; 🛒 Ramesh Kirana: Aaj ke fresh rates available
+                @foreach ($shops as $sp)
+                    🎡 {{ucwords($sp->shop_name)}}   &nbsp;•&nbsp;
+                @endforeach
+                
             </p>
         </div>
 
