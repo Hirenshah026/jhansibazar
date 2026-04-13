@@ -5,7 +5,9 @@
     @include('front_layout.head')
     @stack('css_or_link')
 </head>
-
+@php
+    $shops_list = DB::table('shops')->orderBy('id', 'DESC')->get();
+@endphp
 <body class="bg-ink-100 flex items-start justify-center min-h-screen md:py-4">
 
     <div class="relative w-full max-w-md shadow-2xl md:rounded-3xl overflow-hidden bg-white min-h-screen" id="appRoot">
@@ -44,8 +46,8 @@
         <!-- TICKER -->
         <div class="bg-ink-800 overflow-hidden py-1.5 px-4">
             <p class="ticker text-xs text-gold-300 font-medium whitespace-nowrap">
-                @foreach ($shops as $sp)
-                    🎡 {{ucwords($sp->shop_name)}}   &nbsp;•&nbsp;
+                @foreach ($shops_list as $sp1)
+                    🎡 {{ucwords($sp1->shop_name)}}   &nbsp;•&nbsp;
                 @endforeach
                 
             </p>

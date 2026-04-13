@@ -14,7 +14,7 @@ class FrontController extends Controller
     // ─────────────────────────────────────────────
     public function home()
     {
-        $shops = DB::table('shops')->get();
+        $shops = DB::table('shops')->orderBy('id', 'DESC')->get();
         return view('front.index', compact('shops'));
     }
 
