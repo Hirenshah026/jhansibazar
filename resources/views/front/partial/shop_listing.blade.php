@@ -34,9 +34,16 @@
                         <img src="{{ $sp->shop_photo }}" alt="Red Velvet Cake"
                             style="width:100%;height:130px;object-fit:cover" loading="lazy"
                             onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($sp->shop_name) }}&background=random'">
-                        <div
+                        
+                        @if ($isOpen)
+                            <div
+                            style="position:absolute;top:7px;left:7px;background:#377c1c;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px">
+                            {{$isOpen ? 'Open' : 'Close'}}</div>
+                        @else
+                            <div
                             style="position:absolute;top:7px;left:7px;background:#EF4444;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px">
-                            -25%</div>
+                            {{$isOpen ? 'Open' : 'Close'}}</div>
+                        @endif
                         <div style="position:absolute;top:7px;right:7px" class="hidden"><span class="tag t-red"
                                 style="font-size:9px;padding:2px 6px">🔥 Best Seller</span></div>
 

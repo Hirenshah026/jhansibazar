@@ -13,7 +13,7 @@
                     <p class="text-white/70 text-xs mb-1">Namaste, {{ Session::get('shopuser')->shop_name ?? 'Sir' }} 👋</p>
 
                     <div class="flex items-center my-2">
-                        <img src="{{url('logo/logo3.jpeg')}}" alt="Logo" loading="lazy"
+                        <img src="{{url('logo/logo3a.png')}}" alt="Logo" loading="lazy"
                             class="h-12 w-auto object-contain" style=" border-radius: 5px;">
                     </div>
 

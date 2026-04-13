@@ -75,7 +75,7 @@
                         onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($sp->shop_name) }}&background=random'">
                 </div>
 
-                @if ($itemPhotos)
+                @if ($itemPhotos && 1==0)
                     @foreach ($itemPhotos as $pt => $photo)
                         @if (!empty($photo))
                             <div
@@ -100,14 +100,22 @@
             </div>
             </a>
             <span
-                class="absolute top-2.5 left-2.5 bg-blue-600 text-white text-[10px] font-bold rounded-md px-2 py-0.5 z-10">SALE
+                class="absolute top-2.5 left-2.5 bg-blue-600 text-white text-[10px] font-bold rounded-md px-2 py-0.5 z-10 hidden">SALE
                 20%</span>
-            <span class="absolute top-2.5 right-2.5 spin-badge z-10">🎡 Spin</span>
+            <span class="absolute top-2.5 right-2.5 spin-badge z-10 hidden">🎡 Spin</span>
+            @if ($isOpen)
+                
+                <span
+                class="absolute bottom-2.5 left-2.5 bg-openBg text-white text-[10px] font-bold rounded-md px-2 py-0.5 flex items-center z-10" style="background:#377c1c;"><span
+                    class="open-dot"></span>{{$isOpen ? 'Open' : 'Close'}}</span>
+            @else
+                <span
+                class="absolute bottom-2.5 left-2.5 bg-openBg text-white text-[10px] font-bold rounded-md px-2 py-0.5 flex items-center z-10" style="background:#EF4444;"><span
+                    class="open-dot"></span>{{$isOpen ? 'Open' : 'Close'}}</span>
+            @endif
+            
             <span
-                class="absolute bottom-2.5 left-2.5 bg-openBg text-open text-[10px] font-bold rounded-md px-2 py-0.5 flex items-center z-10"><span
-                    class="open-dot"></span>Open</span>
-            <span
-                class="absolute bottom-2.5 right-2.5 bg-black/40 text-white text-[10px] font-semibold rounded-md px-2 py-0.5 z-10">120m
+                class="absolute bottom-2.5 right-2.5 bg-black/40 text-white text-[10px] font-semibold rounded-md px-2 py-0.5 z-10 hidden">120m
                 away</span>
             <div class="card-img-dots absolute bottom-2.5 left-1/2 -translate-x-1/2 flex gap-1 z-10"></div>
 
@@ -124,9 +132,9 @@
                     class="w-8 h-8 rounded-full border border-border bg-surface flex items-center justify-center text-base shrink-0">🤍</button>
             </div>
             <div class="flex items-center gap-2 mt-2">
-                <span class="star-filled text-xs">★★★★☆</span>
+                {{-- <span class="star-filled text-xs">★★★★☆</span>
                 <span class="font-bold text-xs text-textMain">4.5</span>
-                <span class="text-xs text-muted">112 reviews</span>
+                <span class="text-xs text-muted">112 reviews</span> --}}
                 <span class="ml-auto text-xs text-muted">{{ date('g:i a', strtotime($sp->open_time)) }} -
                     {{ date('g:i a', strtotime($sp->close_time)) }}</span>
             </div>
@@ -143,13 +151,15 @@
                             class="bg-sky-50 text-sky-800 border border-sky-200 text-[10px] font-semibold rounded-lg px-2.5 py-1">{{ ucfirst($cat) }}</span>
                     @endforeach
                 @endif
-                @foreach (array_filter($offers) as $offer)
+                <span
+                        class="bg-blue-50 text-blue-700 border border-blue-100 text-[10px] font-semibold rounded-lg px-2.5 py-1">{{ count($offers) }} offers available</span>
+                {{-- @foreach (array_filter($offers) as $offer)
                     <span
                         class="bg-blue-50 text-blue-700 border border-blue-100 text-[10px] font-semibold rounded-lg px-2.5 py-1">{{ is_array($offer) ? $offer['text'] : $offer }}</span>
-                @endforeach
+                @endforeach --}}
 
             </div>
-            <div class="flex gap-2 mt-3">
+            <div class="flex gap-2 mt-3 hidden">
                 <button
                     class="flex-1 bg-surface border border-border rounded-xl py-2 text-xs font-bold text-textMain">📞
                     Call</button>

@@ -128,7 +128,7 @@
             <!-- QR Code -->
             <div
                 style="width:160px; text-align:center; font-family:sans-serif; border:1px solid #ddd; padding:10px; border-radius:12px; background:#fff; margin:10px;">
-                <img id="qrDisplay" src="https://quickchart.io/qr?text={{ urlencode(url('/')) }}&size=500"
+                <img id="qrDisplay" src="https://quickchart.io/qr?text={{ urlencode(url('/shopprofile-details/' . str_replace(' ', '-', $sp->shop_name ?? 's'))) }}&size=500"
                     style="width:140px; height:140px; border-radius:8px; display:block; margin:0 auto;">
                 <div id="shopNameTxt" style="font-size:14px; font-weight:bold; margin:8px 0; color:#000;">
                     {{ Session::get('shopuser')->shop_name ?? 'na' }}

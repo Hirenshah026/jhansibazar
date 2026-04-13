@@ -12,13 +12,13 @@
 
         <!-- STATUS BAR -->
         <div class="gradient-brand px-5 py-2 flex items-center justify-between sticky top-0 z-50">
-            <span class="text-white text-xs font-semibold">9:41</span>
+            <span class="text-white text-xs font-semibold invisible">9:41</span>
             <div class="flex items-center gap-1.5">
-                <span class="text-white font-display font-bold text-base tracking-wide">Jhansi Bazaar</span>
-                <span class="badge-new">BETA</span>
+                <span class="text-white font-display font-bold text-base tracking-wide">LISTEE</span>
+                <span class="badge-new">.org</span>
             </div>
             <div class="flex items-center gap-1.5">
-                <button onclick="showScreen('notifications')" class="relative notification-dot">
+                <button onclick="showScreen('notifications')" class="relative notification-dot invisible">
                     <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                         stroke-width="2">
                         <path
