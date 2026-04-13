@@ -1,6 +1,13 @@
 @extends('front_layout.main')
 
 @section('content')
+    @push('css_or_link')
+        <style>
+            .tracking-tighter {
+    letter-spacing: 1px;
+}
+        </style>
+    @endpush
     @php
         date_default_timezone_set('Asia/Kolkata');
         $currentTime = date('H:i:s');
