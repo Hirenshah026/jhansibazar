@@ -149,7 +149,7 @@
                         {{ $sp->tagline }}</span>
                 @endif
 
-                @if ($categories 1==0)
+                @if ($categories && 1==0)
                     @foreach ($categories as $cat)
                         <span
                             class="bg-sky-50 text-sky-800 border border-sky-200 text-[10px] font-semibold rounded-lg px-2.5 py-1">{{ ucfirst($cat) }}</span>
