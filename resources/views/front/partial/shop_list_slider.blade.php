@@ -154,9 +154,9 @@
                         <span
                             class="bg-sky-50 text-sky-800 border border-sky-200 text-[10px] font-semibold rounded-lg px-2.5 py-1">{{ ucfirst($cat) }}</span>
                     @endforeach
-                @endif
+                @endif 
                 <span
-                    class="bg-blue-50 text-blue-700 border border-blue-100 text-[10px] font-semibold rounded-lg px-2.5 py-1 {{ $isOpen ? 'hj' : 'hidden' }}">{{ count($offers) }}
+                    class="bg-blue-50 text-blue-700 border border-blue-100 text-[10px] font-semibold rounded-lg px-2.5 py-1 {{ $isOpen  ? 'hj' : 'hidden' }}">{{ count($offers) }}
                     offers available</span>
                 {{-- @foreach (array_filter($offers) as $offer)
                     <span
