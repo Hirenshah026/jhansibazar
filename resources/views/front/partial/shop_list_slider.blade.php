@@ -71,18 +71,18 @@
                     <div
                         class="card-img-slide min-w-full h-full flex items-center justify-center bg-blue-50 text-7xl select-none">
                         <img src="{{ $sp->shop_photo }}" alt="Red Velvet Cake"
-                            class="card-img-slide min-w-full h-full flex items-center justify-center bg-blue-50 text-7xl select-none"
+                            
                             style="width:100%;object-fit:cover" loading="lazy"
                             onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($sp->shop_name) }}&background=random'">
                     </div>
 
-                    @if ($itemPhotos && 1 == 0)
+                    @if ($itemPhotos )
                         @foreach ($itemPhotos as $pt => $photo)
                             @if (!empty($photo))
                                 <div
                                     class="card-img-slide min-w-full h-full flex items-center justify-center bg-blue-50 text-7xl select-none">
                                     <img src="{{ $photo['url'] }}" alt="Red Velvet Cake"
-                                        class="card-img-slide min-w-full h-full flex items-center justify-center bg-blue-50 text-7xl select-none"
+                                        
                                         style="width:100%;object-fit:cover" loading="lazy"
                                         onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($sp->shop_name) }}&background=random'">
                                 </div>
@@ -90,7 +90,7 @@
                                 <div
                                     class="card-img-slide min-w-full h-full flex items-center justify-center bg-blue-50 text-7xl select-none">
                                     <img src="{{ $sp->shop_photo }}" alt="Red Velvet Cake"
-                                        class="card-img-slide min-w-full h-full flex items-center justify-center bg-blue-50 text-7xl select-none"
+                                        
                                         style="width:100%;object-fit:cover" loading="lazy"
                                         onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($sp->shop_name . ' ' . $pt) }}&background=random'">
                                 </div>
@@ -149,7 +149,7 @@
                         {{ $sp->tagline }}</span>
                 @endif
 
-                @if ($categories)
+                @if ($categories 1==0)
                     @foreach ($categories as $cat)
                         <span
                             class="bg-sky-50 text-sky-800 border border-sky-200 text-[10px] font-semibold rounded-lg px-2.5 py-1">{{ ucfirst($cat) }}</span>

@@ -19,7 +19,7 @@
 
                     <p class="text-white/70 text-xs mt-1">Scan · Spin · Earn · Save</p>
                 </div>
-                <div class="text-right">
+                <div class="text-right hidden">
                     <div class="glass rounded-2xl px-3 py-2 text-center cursor-pointer" onclick="showScreen('wallet')">
                         <p class="text-white/70 text-xs">Wallet</p>
                         <p class="text-white font-display font-bold text-lg leading-none">340</p>
