@@ -65,4 +65,19 @@ class UserController extends Controller
             return response()->json(['status' => 'followed']);
         }
     }
+    public function save_mobile(Request $request) 
+    {
+        $request->validate(['mobile' => 'required']);
+
+        // DB Facade se insert
+        DB::table('users')->insert([
+            'mobile' => $request->mobile,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return response()->json(['success' => true]);
+    
+
+    }
 }

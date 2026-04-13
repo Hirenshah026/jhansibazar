@@ -28,6 +28,8 @@ Route::get('/clear-cache', function () {
 
 // user route 
 Route::post('/login-check', [UserController::class, 'ajaxLogin'])->name('login.check');
+Route::post('/save-mobile', [UserController::class, 'save_mobile'])->name('save.mobile');
+
 
 // Follow/Unfollow Route
 Route::post('/follow-user', [UserController::class, 'toggleFollow'])->name('follow.user');
@@ -104,3 +106,4 @@ Route::middleware(['authcheckuser'])->group(function () {
     Route::post('/services/update/{id}', [ServiceController::class, 'update']);
     Route::delete('/services/delete/{id}', [ServiceController::class, 'destroy']);
 });
+

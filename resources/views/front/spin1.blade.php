@@ -104,7 +104,7 @@
                 <div class="text-center mb-5">
                     <div class="text-6xl mb-3" id="winEmojiEl">🎉</div>
                     <h2 class="font-display font-bold text-2xl text-ink-800">Badhai ho!</h2>
-                    <p class="text-sm text-ink-400 mt-1">Shopkeeper ko yeh screen dikhao</p>
+                    <p class="text-sm text-ink-400 mt-1">Spin Offers</p>
                 </div>
 
                 {{-- <div class="gradient-brand rounded-2xl p-5 text-center text-white mb-6 shadow-md">
@@ -114,7 +114,7 @@
                 <div class="bg-gradient-to-br from-blue-600 to-indigo-900 rounded-2xl p-2 mb-6 shadow-xl">
                     <div class="border-2 border-dashed border-white/40 rounded-xl p-4 text-center text-white">
                         <p class="text-[10px] font-bold uppercase tracking-widest opacity-80 mb-1">Aapka Prize</p>
-                        <p class="font-bold text-4xl tracking-tighter" id="winPrizeText">23</p>
+                        <p class="font-bold text-xl tracking-tighter" id="winPrizeText">23</p>
                     </div>
                 </div>
 
@@ -125,6 +125,7 @@
             </div>
         </div>
     </div>
+    @include('front.partial.spin_popup')
 @endsection
 
 @push('script')
@@ -249,7 +250,7 @@
 
             // Aapka original custom modal
             document.getElementById('winPrizeText').textContent = seg.label;
-            document.getElementById('winEmojiEl').textContent = seg.emoji;
+            // document.getElementById('winEmojiEl').textContent = seg.emoji;
             document.getElementById('winModal').classList.remove('hidden');
         }
 
