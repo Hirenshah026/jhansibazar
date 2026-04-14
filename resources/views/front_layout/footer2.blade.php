@@ -47,6 +47,15 @@
                 </svg>
                 <span class="text-xs font-semibold">Account</span>
             </button>
+        @elseif (Session::has('public_user'))
+            <button onclick="showScreen('user-profile')" id="nav-account"
+                class="nav-pill flex-1 flex flex-col items-center gap-0.5 py-2.5 text-ink-400 rounded-none transition-all">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span class="text-xs font-semibold">Login</span>
+            </button>
         @else
             {{ Session::has('shopuser') }}
             <button onclick="showScreen('login')" id="nav-account"
@@ -58,6 +67,7 @@
                 <span class="text-xs font-semibold">Login</span>
             </button>
         @endif
+        
     </div>
 </div>
 

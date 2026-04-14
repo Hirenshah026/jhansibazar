@@ -4,8 +4,8 @@
     @push('css_or_link')
         <style>
             .tracking-tighter {
-    letter-spacing: 1px;
-}
+                letter-spacing: 1px;
+            }
         </style>
     @endpush
     @php
@@ -195,7 +195,7 @@
 
         function triggerSpin() {
             if (isSpinning) return;
-            
+
             if (!isShopOpen) {
                 Swal.fire({
                     icon: 'error',

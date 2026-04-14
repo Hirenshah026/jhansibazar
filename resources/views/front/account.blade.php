@@ -146,7 +146,7 @@
                     id="tab-offers">Offers</button>
                 <button onclick="shopTab(this,'items')" class="flex-1 py-2.5 text-xs font-semibold text-ink-400"
                     id="tab-items">Items</button>
-                <button onclick="shopTab(this,'service')" class="flex-1 py-2.5 text-xs font-semibold text-ink-400"
+                <button onclick="shopTab(this,'service')" class="flex-1 py-2.5 text-xs font-semibold text-ink-400 {{ (json_decode(Session::get('shopuser')->categories ?? '[]')[0] ?? '') == 'salon' ? 'rn' : 'hidden' }}"
                     id="tab-service">Services</button>
                 <button onclick="shopTab(this,'reviews')" class="flex-1 py-2.5 text-xs font-semibold text-ink-400"
                     id="tab-reviews">Reviews</button>
@@ -379,7 +379,7 @@
                             </div>
                         </div>
                         <div class="flex flex-col items-center justify-center pr-1">
-                            <a href="{{ url('services/edit/' . $service->id) }}"
+                            <a href="{{ url('services/list') }}"
                                 class="w-9 h-9 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                                     stroke-width="2">

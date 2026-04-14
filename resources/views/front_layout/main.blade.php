@@ -27,7 +27,7 @@
                             d="M15 17H20L18.595 15.595C18.21 15.21 18 14.702 18 14.172V11C18 8.386 16.301 6.165 14 5.342V5C14 3.895 13.105 3 12 3C10.895 3 10 3.895 10 5V5.342C7.699 6.165 6 8.386 6 11V14.172C6 14.702 5.79 15.21 5.405 15.595L4 17H9M15 17H9M15 17V18C15 19.657 13.657 21 12 21C10.343 21 9 19.657 9 18V17" />
                     </svg>
                 </button>
-                @if (Session::has('shopuser'))
+                @if (Session::has('shopuser') || Session::has('public_user'))
                     <button onclick="Turbo.visit('{{ url('/shop-logout') }}')"
                         class="active:scale-90 transition-transform">
                         <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -40,6 +40,7 @@
                     <span class="text-white text-xs">▮▮▮</span>
                 @endif
 
+                
             </div>
         </div>
 

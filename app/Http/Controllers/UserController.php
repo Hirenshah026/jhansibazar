@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
-    // --- LOGIN LOGIC ---
+    public function dashboard()
+    {
+        return view('front.user.dashboard');    }
     public function ajaxLogin(Request $request)
     {
         // User ko mobile aur pin se dhundo
@@ -75,6 +77,8 @@ class UserController extends Controller
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+        $user = DB::table('users')->where('mobile' , $request->mobile)->first();
+        Session::put('public_user',$user);
 
         return response()->json(['success' => true]);
     

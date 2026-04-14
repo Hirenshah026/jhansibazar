@@ -357,4 +357,26 @@
     .animate-slide-up {
         animation: slide-up 0.3s ease-out;
     }
+
+    /* Custom SweetAlert Styling to match your emerald theme */
+    .swal2-popup {
+        font-family: inherit;
+        border-radius: 15px !important;
+        padding: 1.5rem !important;
+    }
+
+    .swal2-styled.swal2-confirm {
+        background-color: #10b981 !important;
+        border-radius: 8px !important;
+        font-size: 13px !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+    }
+
+    .swal2-styled.swal2-cancel {
+        border-radius: 8px !important;
+        font-size: 13px !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+    }
 </style>
