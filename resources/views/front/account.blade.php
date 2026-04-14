@@ -59,12 +59,13 @@
                         <path d="M15 18l-6-6 6-6" />
                     </svg>
                 </button>
-                <span class="flex-1 text-center text-white text-sm font-semibold">Shop Profile</span>
+                <span
+                    class="flex-1 text-center text-white text-sm font-semibold capitalize">{{ Session::get('shopuser')->shop_name ?? 'na' }}</span>
                 <button id="toggle-profile" class="w-8 h-8 rounded-full glass flex items-center justify-center hidden">
                     <span id="arrow" class="text-white">▼</span>
                 </button>
             </div>
-            <div class="px-4 pt-3 pb-12 text-white">
+            <div class="px-4 pt-3 pb-2 text-white">
                 <div
                     class="w-16 h-16 bg-red rounded-2xl shadow-lg flex items-center justify-center text-3xl mb-3 capitalize hidden">
                     {{ Str::substr(Session::get('shopuser')->shop_name ?? 'na', 0, 1) }}
@@ -78,6 +79,35 @@
                         {{ Session::get('shopuser')->address ?? 'na' }}</span>
                     <span class="glass rounded-full px-2.5 py-0.5 text-xs">🟢 Open till
                         {{ date('h:i A', strtotime(Session::get('shopuser')->close_time ?? '0')) }}</span>
+                </div>
+                <div class="grid grid-cols-2 gap-3 p-3 bg-white1">
+                    <div
+                        class="p-3 rounded-xl border border-dotted border-slate-300 flex flex-col items-center justify-center text-center bg-transparent">
+                        <span class="text-[10px] font-bold text-white-400 uppercase tracking-widest mb-1">Profile
+                            Visits</span>
+                        <h2 id="count_visits" class="text-base font-black text-white">1,284</h2>
+                    </div>
+
+                    <div
+                        class="p-3 rounded-xl border border-dotted border-slate-300 flex flex-col items-center justify-center text-center bg-transparent">
+                        <span class="text-[10px] font-bold text-white-400 uppercase tracking-widest mb-1">Regular
+                            Customer</span>
+                        <h2 id="count_regular" class="text-base font-black text-white">450</h2>
+                    </div>
+
+                    <div
+                        class="p-3 rounded-xl border border-dotted border-slate-300 flex flex-col items-center justify-center text-center bg-transparent">
+                        <span class="text-[10px] font-bold text-white-400 uppercase tracking-widest mb-1">Repeat
+                            Customer</span>
+                        <h2 id="count_repeat" class="text-base font-black text-white">125</h2>
+                    </div>
+
+                    <div
+                        class="p-3 rounded-xl border border-dotted border-slate-300 flex flex-col items-center justify-center text-center bg-transparent">
+                        <span class="text-[10px] font-bold text-white-400 uppercase tracking-widest mb-1">Offers
+                            Display</span>
+                        <h2 id="count_sales" class="text-base font-black text-white">89</h2>
+                    </div>
                 </div>
             </div>
         </div>
@@ -127,16 +157,32 @@
 
             <!-- QR Code -->
             <div
-                style="width:160px; text-align:center; font-family:sans-serif; border:1px solid #ddd; padding:10px; border-radius:12px; background:#fff; margin:10px;">
-                <img id="qrDisplay" src="https://quickchart.io/qr?text={{ urlencode(url('/shopprofile-details/' . str_replace(' ', '-', $sp->shop_name ?? 's'))) }}&size=500"
-                    style="width:140px; height:140px; border-radius:8px; display:block; margin:0 auto;">
-                <div id="shopNameTxt" style="font-size:14px; font-weight:bold; margin:8px 0; color:#000;">
-                    {{ Session::get('shopuser')->shop_name ?? 'na' }}
+                style="margin: 10px; background: #fff; border: 1px solid #eee; border-radius: 16px; display: flex; align-items: center; padding: 12px; gap: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+
+                <div
+                    style="flex-shrink: 0; width: 110px; height: 110px; background: #f9fafb; border-radius: 12px; display: flex; align-items: center; justify-content: center; border: 1px solid #f0f0f0;">
+                    <img id="qrDisplay"
+                        src="https://quickchart.io/qr?text={{ urlencode(url('/shopprofile-details/' . str_replace(' ', '-', $sp->shop_name ?? 's'))) }}&size=400"
+                        style="width: 100px; height: 100px; border-radius: 6px; display: block;">
                 </div>
-                <button onclick="generateDownload()"
-                    style="width:100%; padding:7px; font-size:12px; background:#000; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">
-                    Download QR
-                </button>
+
+                <div style="flex: 1; min-width: 0;">
+                    <div
+                        style="font-size: 9px; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 2px;">
+                        Shop QR Code
+                    </div>
+                    <div id="shopNameTxt"
+                        style="font-size: 16px; font-weight: 900; color: #1e293b; margin-bottom: 4px; line-height: 1.2; word-wrap: break-word;" class="capitalize">
+                        {{ Session::get('shopuser')->shop_name ?? 'Shop Name' }}
+                    </div>
+                    <p style="font-size: 11px; color: #64748b; margin-bottom: 12px; line-height: 1.3;">Scan to view our
+                        profile & offers</p>
+
+                    <button onclick="generateDownload()"
+                        style="background: #000; color: #fff; border: none; padding: 7px 12px; font-size: 11px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); active:scale-95 transition:all 0.2s;">
+                        Download QR
+                    </button>
+                </div>
             </div>
             <canvas id="myCanvas" style="display:none;"></canvas>
 
@@ -146,7 +192,8 @@
                     id="tab-offers">Offers</button>
                 <button onclick="shopTab(this,'items')" class="flex-1 py-2.5 text-xs font-semibold text-ink-400"
                     id="tab-items">Items</button>
-                <button onclick="shopTab(this,'service')" class="flex-1 py-2.5 text-xs font-semibold text-ink-400 {{ (json_decode(Session::get('shopuser')->categories ?? '[]')[0] ?? '') == 'salon' ? 'rn' : 'hidden' }}"
+                <button onclick="shopTab(this,'service')"
+                    class="flex-1 py-2.5 text-xs font-semibold text-ink-400 {{ (json_decode(Session::get('shopuser')->categories ?? '[]')[0] ?? '') == 'salon' ? 'rn' : 'hidden' }}"
                     id="tab-service">Services</button>
                 <button onclick="shopTab(this,'reviews')" class="flex-1 py-2.5 text-xs font-semibold text-ink-400"
                     id="tab-reviews">Reviews</button>
@@ -184,7 +231,8 @@
                     <div
                         class="absolute top-3 right-3 gradient-brand text-white text-xs font-bold px-2.5 py-1 rounded-full">
                         +3 coins</div>
-                    <div class="absolute bottom-3 left-3 bg-black/60 text-white text-xs px-2 py-0.5 rounded-full">0:30</div>
+                    <div class="absolute bottom-3 left-3 bg-black/60 text-white text-xs px-2 py-0.5 rounded-full">0:30
+                    </div>
                 </div>
 
                 <!-- Earn coins -->
@@ -395,7 +443,7 @@
                     </div>
                 @endforelse
             </div>
-            
+
             <!-- Tab: Reviews -->
             <div id="shopTab-reviews" class="hidden">
                 <div class="bg-white border border-ink-100 rounded-2xl p-4 mb-4">

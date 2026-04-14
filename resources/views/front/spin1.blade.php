@@ -4,7 +4,7 @@
     @push('css_or_link')
         <style>
             .tracking-tighter {
-                letter-spacing: 1px;
+                letter-spacing: 1px !important;
             }
         </style>
     @endpush
@@ -136,7 +136,7 @@
 @endsection
 
 @push('script')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <script>
         const isShopOpen = {{ $isShopOpen ? 'true' : 'false' }};
         const shopOpenTime = "{{ \Carbon\Carbon::parse($openTime)->format('h:i A') }}";
