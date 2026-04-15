@@ -34,6 +34,10 @@
         } else if (currentPath.includes('account')) {
             $('#nav-account').addClass('active');
         }
+        else if (currentPath.includes('user-profile')) {
+            $('#nav-account').addClass('active');
+        }
+        
     });
 </script>
 <script>

@@ -54,7 +54,7 @@
                     <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
                     <circle cx="12" cy="7" r="4" />
                 </svg>
-                <span class="text-xs font-semibold">Login</span>
+                <span class="text-xs font-semibold">Profile</span>
             </button>
         @else
             {{ Session::has('shopuser') }}

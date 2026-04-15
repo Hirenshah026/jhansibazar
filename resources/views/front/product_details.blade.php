@@ -423,8 +423,8 @@
                         <h4 class="text-[11px] font-bold text-gray-800 truncate">{{ ucwords($shop->shop_name) }}</h4>
                         <p class="text-[10px] text-gray-400 truncate">{{ ucwords($shop->address) }}</p>
                     </div>
-
-                    <button id="followBtn"
+ 
+                    <button id="followBtn" data-shopid="{{ $shop->id }}" data-userid="{{ Session::get('public_user')->id??0 }}"
                         class="flex-shrink-0 bg-black text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm">
                         Follow
                     </button>
@@ -847,10 +847,11 @@
                 e.preventDefault();
                 let btn = $(this);
                 let userId = btn.data('userid');
+                let shopId = btn.data('shopid');
                 // 1. UI update turant kar do (Optimistic UI)
                 if (!btn.hasClass('is-following')) {
-                    btn.addClass('is-following bg-gray-100 text-gray-500').removeClass(
-                        'bg-black text-white');
+                    btn.addClass('is-following bg-green-700 text-white').removeClass(
+                        'bg-black');
                     btn.text('Following');
                 } else {
                     btn.removeClass('is-following bg-gray-100 text-gray-500').addClass(
@@ -863,6 +864,7 @@
                     method: 'POST',
                     data: {
                         user_id: userId,
+                        shopId: shopId,
                         _token: '{{ csrf_token() }}'
                     },
                     success: function(res) {
@@ -877,7 +879,7 @@
                     error: function() {
                         // Network error par reset
                         alert("Something went wrong!");
-                        location.reload();
+                        // location.reload();
                     }
                 });
             });

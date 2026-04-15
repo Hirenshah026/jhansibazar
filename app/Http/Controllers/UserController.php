@@ -33,7 +33,7 @@ class UserController extends Controller
     // --- FOLLOW / UNFOLLOW LOGIC ---
     public function toggleFollow(Request $request)
     {
-        $follower_id = Session::get('user_id'); // Logged in user
+        $follower_id = Session::get('public_user')->id??0; // Logged in user
         $following_id = $request->user_id;      // Target user/shop ID
 
         // Check if user is logged in
@@ -71,17 +71,47 @@ class UserController extends Controller
     {
         $request->validate(['mobile' => 'required']);
 
-        // DB Facade se insert
-        DB::table('users')->insert([
-            'mobile' => $request->mobile,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $user = DB::table('users')->where('mobile' , $request->mobile)->first();
+        if(!$user)
+        {
+            DB::table('users')->insert([
+                'mobile' => $request->mobile,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+        
         $user = DB::table('users')->where('mobile' , $request->mobile)->first();
         Session::put('public_user',$user);
 
         return response()->json(['success' => true]);
     
 
+    }
+    public function trackActivity($shopId, $column) 
+    {
+        // Session se user_id nikalna
+        $userId = Session::get('public_user'); 
+
+        if (!$userId) {
+            return; // Agar user logged in nahi hai toh kuch mat karo
+        }
+
+        
+        DB::table('shop_stats')->updateOrInsert(
+            [
+                'shop_id' => $shopId, 
+                'user_id' => $userId
+            ],
+            [
+                'updated_at' => now()
+                // Agar record naya banta hai, toh default values (0) SQL table se apne aap lag jayengi
+            ]
+        );
+
+        DB::table('shop_stats')
+            ->where('shop_id', $shopId)
+            ->where('user_id', $userId)
+            ->increment($column);
     }
 }
