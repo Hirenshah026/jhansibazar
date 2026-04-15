@@ -162,7 +162,7 @@
                 <div
                     style="flex-shrink: 0; width: 110px; height: 110px; background: #f9fafb; border-radius: 12px; display: flex; align-items: center; justify-content: center; border: 1px solid #f0f0f0;">
                     <img id="qrDisplay"
-                        src="https://quickchart.io/qr?text={{ urlencode(url('/shopprofile-details/' . str_replace(' ', '-', $sp->shop_name ?? 's'))) }}&size=400"
+                        src="https://quickchart.io/qr?text={{ urlencode(url('/shopprofile-details/' . str_replace(' ', '-', Session::get('shopuser')->shop_name ?? 's'))) }}&size=400"
                         style="width: 100px; height: 100px; border-radius: 6px; display: block;">
                 </div>
 
