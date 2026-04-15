@@ -38,8 +38,38 @@
             </div>
         </div>
 
+        <div class="px-3 pt-3 pb-1">
+            <div class="relative overflow-hidden rounded-2xl" id="bannerWrap">
+                <div class="flex transition-transform duration-400 ease-in-out" id="bannerTrack"
+                    style="will-change: transform;">
+                    <div class="flex-shrink-0 w-full">
+                        <img src="https://res.cloudinary.com/dhsiw4fc5/image/upload/v1776236646/1_ndf70j.png"
+                            class="w-full h-auto rounded-2xl object-cover" loading="lazy" alt="Offer 1">
+                    </div>
+                    <div class="flex-shrink-0 w-full">
+                        <img src="https://res.cloudinary.com/dhsiw4fc5/image/upload/v1776236645/2_qeo48l.png"
+                            class="w-full h-auto rounded-2xl object-cover" loading="lazy" alt="Offer 2">
+                    </div>
+                    <div class="flex-shrink-0 w-full">
+                        <img src="https://res.cloudinary.com/dhsiw4fc5/image/upload/v1776236646/3_ontuk3.png"
+                            class="w-full h-auto rounded-2xl object-cover" loading="lazy" alt="Offer 3">
+                    </div>
+                    <div class="flex-shrink-0 w-full">
+                        <img src="https://res.cloudinary.com/dhsiw4fc5/image/upload/v1776236645/4_vwmwro.png"
+                            class="w-full h-auto rounded-2xl object-cover" loading="lazy" alt="Offer 4">
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-center gap-1.5 mt-5" id="bannerDots">
+                <button class="banner-dot w-4 h-1.5 rounded-full bg-saffron-500 transition-all duration-300"></button>
+                <button class="banner-dot w-1.5 h-1.5 rounded-full bg-ink-200 transition-all duration-300"></button>
+                <button class="banner-dot w-1.5 h-1.5 rounded-full bg-ink-200 transition-all duration-300"></button>
+                <button class="banner-dot w-1.5 h-1.5 rounded-full bg-ink-200 transition-all duration-300"></button>
+            </div>
+        </div>
+
         <!-- Search Bar -->
-        <div class="px-4 -mt-5 mb-3 z-20 relative">
+        <div class="px-4 mt-5 mb-3 z-20 relative">
             <div class="bg-white rounded-2xl shadow-lg border border-ink-100 px-4 py-3 flex items-center gap-3">
                 <svg class="w-4 h-4 text-ink-300 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                     stroke-width="2">
@@ -418,6 +448,37 @@
 @endsection
 @push('script')
     <script>
+        (function () {
+            let cur = 0, total = 4, timer, startX = 0;
+            const track = document.getElementById('bannerTrack');
+            const dots = document.querySelectorAll('#bannerDots .banner-dot');
+
+            function goTo(i) {
+                cur = (i + total) % total;
+                track.style.transform = `translateX(-${cur * 100}%)`;
+                dots.forEach((d, idx) => {
+                    d.classList.toggle('bg-saffron-500', idx === cur);
+                    d.classList.toggle('w-4', idx === cur);
+                    d.classList.toggle('bg-ink-200', idx !== cur);
+                    d.classList.toggle('w-1.5', idx !== cur);
+                });
+            }
+
+            function startAuto() { timer = setInterval(() => goTo(cur + 1), 3000); }
+            function stopAuto() { clearInterval(timer); }
+
+            const wrap = document.getElementById('bannerWrap');
+            wrap.addEventListener('touchstart', e => { startX = e.touches[0].clientX; stopAuto(); }, { passive: true });
+            wrap.addEventListener('touchend', e => {
+                const diff = startX - e.changedTouches[0].clientX;
+                if (Math.abs(diff) > 40) goTo(cur + (diff > 0 ? 1 : -1));
+                startAuto();
+            }, { passive: true });
+
+            dots.forEach((d, i) => d.addEventListener('click', () => { goTo(i); stopAuto(); startAuto(); }));
+
+            startAuto();
+        })();
         function openShop(id) {
             showScreen('account', );
         }
