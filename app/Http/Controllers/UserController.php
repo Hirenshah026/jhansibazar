@@ -90,9 +90,9 @@ class UserController extends Controller
     }
     public function trackActivity($shopId, $column) 
     {
-        $userId = Session::get('public_user'); 
+        $userId = Session::get('public_user')->id??null; 
 
-        if (!$userId) return;
+        if (!$userId) return "no_user";
 
         // 1. Pehle check karo kya ye combination (user + shop) pehle se exist karta hai?
         $exists = DB::table('shop_stats')
@@ -106,6 +106,7 @@ class UserController extends Controller
                 ->where('shop_id', $shopId)
                 ->where('user_id', $userId)
                 ->increment($column, 1, ['updated_at' => now()]);
+                return "updated";
         } else {
             // 3. Agar naya hai, toh insert kar do
             DB::table('shop_stats')->insert([
@@ -115,6 +116,7 @@ class UserController extends Controller
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+            return "inserted";
         }
     }
 }
