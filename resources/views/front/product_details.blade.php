@@ -515,7 +515,7 @@
                 <span style="color:#E2E8F0;font-size:12px">|</span>
                 <span id="reviewCount" style="font-size:12px;color:#64748b">87 reviews</span>
                 <span style="color:#E2E8F0;font-size:12px">|</span>
-                <span id="soldCount" style="font-size:12px;color:#16A34A;font-weight:700">200+ sold</span>
+                <span id="soldCount" style="font-size:12px;color:#16A34A;font-weight:700" class="hidden">200+ sold</span>
             </div>
             <div
                 style="display:none; align-items:center; gap:10px; margin-bottom:15px; padding-bottom:15px; border-bottom:1.5px solid #F1F5F9">
@@ -530,7 +530,7 @@
                 class="hide-scroll">
                 <button class="dtab on" onclick="switchTab(this, 'dt-desc')">About</button>
                 <button class="dtab" onclick="switchTab(this, 'dt-details')">Timing</button>
-                <button class="dtab" onclick="switchTab(this, 'dt-offers')">Services</button>
+                <button class="dtab hidden" onclick="switchTab(this, 'dt-offers')">Services</button>
                 <button class="dtab" onclick="switchTab(this, 'dt-items')">Items</button>
                 <button class="dtab" onclick="switchTab(this, 'dt-reviews')">Reviews</button>
             </div>
