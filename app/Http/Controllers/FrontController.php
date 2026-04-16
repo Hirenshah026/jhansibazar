@@ -75,9 +75,11 @@ class FrontController extends Controller
     // ─────────────────────────────────────────────
     public function account()
     {
-        $shop = DB::table('shops')->where('id', Session::get('shopuser')->id ?? 0)->first();
+        $shopId =Session::get('shopuser')->id ?? 0;
+        $shop = DB::table('shops')->where('id', $shopId)->first();
         $services = DB::table('services')->get();
-        return view('front.account', compact('shop', 'services'));
+        $stats = DB::table('shop_stats')->where('shop_id', $shopId)->get();
+        return view('front.account', compact('shop', 'services','stats'));
     }
 
     // ─────────────────────────────────────────────

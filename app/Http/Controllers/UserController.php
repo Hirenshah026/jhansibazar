@@ -90,28 +90,31 @@ class UserController extends Controller
     }
     public function trackActivity($shopId, $column) 
     {
-        // Session se user_id nikalna
         $userId = Session::get('public_user'); 
 
-        if (!$userId) {
-            return; // Agar user logged in nahi hai toh kuch mat karo
+        if (!$userId) return;
+
+        // 1. Pehle check karo kya ye combination (user + shop) pehle se exist karta hai?
+        $exists = DB::table('shop_stats')
+                    ->where('shop_id', $shopId)
+                    ->where('user_id', $userId)
+                    ->exists();
+
+        if ($exists) {
+            // 2. Agar hai, toh sirf us column ko +1 karo aur update time badlo
+            DB::table('shop_stats')
+                ->where('shop_id', $shopId)
+                ->where('user_id', $userId)
+                ->increment($column, 1, ['updated_at' => now()]);
+        } else {
+            // 3. Agar naya hai, toh insert kar do
+            DB::table('shop_stats')->insert([
+                'shop_id'    => $shopId,
+                'user_id'    => $userId,
+                $column      => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
         }
-
-        
-        DB::table('shop_stats')->updateOrInsert(
-            [
-                'shop_id' => $shopId, 
-                'user_id' => $userId
-            ],
-            [
-                'updated_at' => now()
-                // Agar record naya banta hai, toh default values (0) SQL table se apne aap lag jayengi
-            ]
-        );
-
-        DB::table('shop_stats')
-            ->where('shop_id', $shopId)
-            ->where('user_id', $userId)
-            ->increment($column);
     }
 }

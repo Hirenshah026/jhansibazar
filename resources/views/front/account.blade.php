@@ -85,28 +85,28 @@
                         class="p-3 rounded-xl border border-dotted border-slate-300 flex flex-col items-center justify-center text-center bg-transparent">
                         <span class="text-[10px] font-bold text-white-400 uppercase tracking-widest mb-1">Profile
                             Visits</span>
-                        <h2 id="count_visits" class="text-base font-black text-white">1,284</h2>
+                        <h2 id="count_visits" class="text-base font-black text-white">{{ ($stat->profile_visits ?? 0) == 0 ? '--' : $stat->profile_visits }}</h2>
                     </div>
 
                     <div
                         class="p-3 rounded-xl border border-dotted border-slate-300 flex flex-col items-center justify-center text-center bg-transparent">
                         <span class="text-[10px] font-bold text-white-400 uppercase tracking-widest mb-1">Regular
                             Customer</span>
-                        <h2 id="count_regular" class="text-base font-black text-white">450</h2>
+                        <h2 id="count_regular" class="text-base font-black text-white">{{ ($stat->regular_customer ?? 0) == 0 ? '--' : $stat->regular_customer }}</h2>
                     </div>
 
                     <div
                         class="p-3 rounded-xl border border-dotted border-slate-300 flex flex-col items-center justify-center text-center bg-transparent">
                         <span class="text-[10px] font-bold text-white-400 uppercase tracking-widest mb-1">Repeat
                             Customer</span>
-                        <h2 id="count_repeat" class="text-base font-black text-white">125</h2>
+                        <h2 id="count_repeat" class="text-base font-black text-white">{{ ($stat->repeat_customer ?? 0) == 0 ? '--' : $stat->repeat_customer }}</h2>
                     </div>
 
                     <div
                         class="p-3 rounded-xl border border-dotted border-slate-300 flex flex-col items-center justify-center text-center bg-transparent">
                         <span class="text-[10px] font-bold text-white-400 uppercase tracking-widest mb-1">Offers
                             Display</span>
-                        <h2 id="count_sales" class="text-base font-black text-white">89</h2>
+                        <h2 id="count_sales" class="text-base font-black text-white">{{ ($stat->offer_display ?? 0) == 0 ? '--' : $stat->offer_display }}</h2>
                     </div>
                 </div>
             </div>
