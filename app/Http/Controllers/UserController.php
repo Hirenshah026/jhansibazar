@@ -90,8 +90,11 @@ class UserController extends Controller
     }
     public function trackActivity($shopId, $column) 
     {
-        $userId = Session::get('public_user')->id??null; 
-
+        $userId = Session::get('public_user')->id??'guest-'.rand(100,9999); 
+        if(Session::has('shop_user'))
+        {
+            $userId=null;
+        }
         if (!$userId) return "no_user";
 
         // 1. Pehle check karo kya ye combination (user + shop) pehle se exist karta hai?
