@@ -97,38 +97,95 @@
             </div>
         </div>
 
-        <div id="winModal"
-            class="hidden fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/70 backdrop-blur-sm">
-            <div class="bg-white rounded-3xl w-full max-w-sm p-6 relative slide-up shadow-2xl">
-
-                <button onclick="closeWin()"
-                    class="absolute -top-3 -right-3 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-500 hover:text-black border border-gray-100">
-                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-
-                <div class="text-center mb-5">
-                    <div class="text-6xl mb-3" id="winEmojiEl">🎉</div>
-                    <h2 class="font-display font-bold text-2xl text-ink-800">Badhai ho!</h2>
-                    <p class="text-sm text-ink-400 mt-1">Spin Offers</p>
+        <div id="winModal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/80 backdrop-blur-sm">
+    
+            <div class="relative w-full max-w-sm">
+                
+                {{-- Floating emoji burst --}}
+                <div class="text-center mb-4 animate-bounce">
+                    <span class="text-6xl drop-shadow-lg" id="winEmojiEl">🎉</span>
                 </div>
 
-                {{-- <div class="gradient-brand rounded-2xl p-5 text-center text-white mb-6 shadow-md">
-                    <p class="text-xs font-semibold uppercase tracking-wide opacity-80 mb-1">Aapka Prize</p>
-                    <p class="font-display font-bold text-xl" id="winPrizeText">---</p>
-                </div> --}}
-                <div class="bg-gradient-to-br from-blue-600 to-indigo-900 rounded-2xl p-2 mb-6 shadow-xl">
-                    <div class="border-2 border-dashed border-white/40 rounded-xl p-4 text-center text-white">
-                        <p class="text-[10px] font-bold uppercase tracking-widest opacity-80 mb-1">Aapka Prize</p>
-                        <p class="font-bold text-xl tracking-tighter" id="winPrizeText">23</p>
+                {{-- Main Card --}}
+                <div style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+                            border: 1px solid rgba(255,255,255,0.12);
+                            box-shadow: 0 0 60px rgba(163,230,53,0.2), 0 25px 50px rgba(0,0,0,0.6);
+                            border-radius: 2rem;
+                            overflow: hidden;
+                            position: relative;">
+
+                    {{-- Top glow line --}}
+                    <div style="height:3px; background: linear-gradient(90deg, transparent, #bef264, #ffd700, #bef264, transparent);"></div>
+
+                    <div class="p-6">
+
+                        {{-- Badge --}}
+                        <div class="flex justify-center mb-4">
+                            <div style="background: rgba(190,242,100,0.1); border: 1px solid rgba(190,242,100,0.35); border-radius:999px; padding: 4px 16px; display:inline-flex; align-items:center; gap:6px;">
+                                <span style="width:7px;height:7px;background:#bef264;border-radius:50%;display:inline-block;box-shadow:0 0 6px #bef264;"></span>
+                                <span style="color:#bef264;font-size:9px;font-weight:900;letter-spacing:0.2em;text-transform:uppercase;">Jackpot Unlocked</span>
+                            </div>
+                        </div>
+
+                        {{-- Heading --}}
+                        <div class="text-center mb-5">
+                            <h2 style="font-size:2.2rem;font-weight:900;color:#fff;line-height:1;letter-spacing:-1px;">
+                                Badhai <span style="color:#bef264;font-style:italic;">Ho!</span>
+                            </h2>
+                            <p style="color:#94a3b8;font-size:11px;margin-top:6px;font-weight:600;letter-spacing:0.1em;">AAPKA LUCKY PRIZE MILA</p>
+                        </div>
+
+                        {{-- Prize Coupon --}}
+                        <div style="background:#fff; border-radius:1.25rem; padding:2px; margin-bottom:20px; position:relative; overflow:hidden;">
+                            
+                            {{-- Dashed middle line --}}
+                            <div style="position:absolute;top:50%;left:0;right:0;border-top:2px dashed #e2e8f0;z-index:0;"></div>
+                            
+                            {{-- Left notch --}}
+                            <div style="position:absolute;left:-12px;top:50%;transform:translateY(-50%);width:24px;height:24px;background:#1e1b4b;border-radius:50%;z-index:2;"></div>
+                            {{-- Right notch --}}
+                            <div style="position:absolute;right:-12px;top:50%;transform:translateY(-50%);width:24px;height:24px;background:#1e1b4b;border-radius:50%;z-index:2;"></div>
+
+                            <div style="position:relative;z-index:1;padding:20px 24px;text-align:center;">
+                                <p style="color:#64748b;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:8px;">
+                                    🏷️ Aapka Prize
+                                </p>
+                                <p style="font-size:1.6rem;font-weight:900;color:#0f172a;letter-spacing:-0.5px;line-height:1.2;" id="winPrizeText">---</p>
+                                <div style="margin-top:10px;display:flex;justify-content:center;align-items:center;gap:8px;">
+                                    <span style="font-size:9px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;">Shop pe dikhayein</span>
+                                    <span style="width:4px;height:4px;background:#cbd5e1;border-radius:50%;display:inline-block;"></span>
+                                    <span style="font-size:9px;color:#ef4444;font-weight:800;text-transform:uppercase;">Limited Time</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Claim Button --}}
+                        <button onclick="closeWin()"
+                            style="width:100%;background:linear-gradient(135deg,#bef264,#84cc16);color:#14532d;font-weight:900;font-size:1.1rem;border:none;border-radius:1rem;padding:18px;cursor:pointer;box-shadow:0 6px 0 #4d7c0f;transition:all 0.1s;letter-spacing:-0.3px;"
+                            onmousedown="this.style.boxShadow='0 2px 0 #4d7c0f';this.style.transform='translateY(4px)'"
+                            onmouseup="this.style.boxShadow='0 6px 0 #4d7c0f';this.style.transform='translateY(0)'">
+                            CLAIM REWARD 🙌
+                            <div style="font-size:9px;opacity:0.6;font-weight:700;letter-spacing:0.15em;margin-top:2px;">SHOP PE JAAKE REDEEM KAREIN</div>
+                        </button>
+
+                        {{-- Footer --}}
+                        <div style="margin-top:16px;text-align:center;">
+                            <p style="font-size:10px;color:#475569;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;"
+                               onclick="closeWin()">
+                                💾 Save to Wallet
+                            </p>
+                        </div>
+
                     </div>
+
+                    {{-- Bottom glow line --}}
+                    <div style="height:2px; background: linear-gradient(90deg, transparent, #ffd700, transparent);"></div>
                 </div>
 
-                <button onclick="closeWin()"
-                    class="w-full gradient-brand text-white font-display font-bold text-base rounded-2xl py-4 shadow-lg active:scale-95 transition-transform">
-                    Claim! 🙌
-                </button>
+                {{-- Listee branding --}}
+                <div class="text-center mt-5" style="opacity:0.35;">
+                    <span style="color:#fff;font-weight:900;font-size:14px;font-style:italic;letter-spacing:-0.5px;">LiSTee.org</span>
+                </div>
             </div>
         </div>
     </div>
