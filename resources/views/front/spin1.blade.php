@@ -127,7 +127,7 @@
 
                 <button onclick="closeWin()"
                     class="w-full gradient-brand text-white font-display font-bold text-base rounded-2xl py-4 shadow-lg active:scale-95 transition-transform">
-                    Shukriya! 🙌
+                    Claim! 🙌
                 </button>
             </div>
         </div>

