@@ -591,7 +591,7 @@
         @csrf
         @method('DELETE')
     </form>
-
+    @include('front.partial.shop_edit_pop')
 @endsection
 
 @push('script')

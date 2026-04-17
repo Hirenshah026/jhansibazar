@@ -310,4 +310,44 @@ class ShopController extends Controller
 
         return response()->json(['status' => 'success']);
     }
+    public function update(Request $request)
+    {
+        // 1. Validation (Zaroori hai taaki data sahi rahe)
+        $request->validate([
+            'shop_id'    => 'required|exists:shops,id',
+            'shop_name'  => 'required|string|max:255',
+            'owner_name' => 'required|string|max:255',
+            'address'    => 'required|string',
+            'open_time'  => 'required',
+            'close_time' => 'required',
+        ]);
+
+        try {
+            // 2. Database Update
+            DB::table('shops')
+                ->where('id', $request->shop_id)
+                ->update([
+                    'shop_name'    => $request->shop_name,
+                    'owner_name'   => $request->owner_name,
+                    'tagline'      => $request->tagline,
+                    'address'      => $request->address,
+                    'open_time'    => $request->open_time,
+                    'close_time'   => $request->close_time,
+                    'status'       => $request->status,
+                    'updated_at'   => now(),
+                ]);
+
+            // 3. JSON Response for AJAX
+            return response()->json([
+                'status'  => 'success',
+                'message' => 'Shop information updated successfully!'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Kuch problem aayi hai: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

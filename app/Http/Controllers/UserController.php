@@ -88,38 +88,59 @@ class UserController extends Controller
     
 
     }
-    public function trackActivity($shopId, $column) 
+    public function trackActivity($shopId, $column, $ipAddress) 
     {
-        $userId = Session::get('public_user')->id??'guest-'.rand(100,9999); 
-        if(Session::has('shop_user'))
-        {
-            $userId=null;
+        if (Session::has('public_user')) {
+            $userId = Session::get('public_user')->id;
+        } 
+        // 2. Agar nahi, toh kya pehle se koi guest_id session me hai?
+        elseif (Session::has('temp_guest_id')) {
+            $userId = Session::get('temp_guest_id');
+        } 
+        // 3. Agar dono nahi, toh naya guest_id banao aur session me save karo
+        else {
+            $userId = 'guest-' . rand(100, 9999);
+            Session::put('temp_guest_id', $userId);
         }
+            
+        if (Session::has('shop_user')) {
+            $userId = null;
+        }
+
         if (!$userId) return "no_user";
 
-        // 1. Pehle check karo kya ye combination (user + shop) pehle se exist karta hai?
-        $exists = DB::table('shop_stats')
-                    ->where('shop_id', $shopId)
-                    ->where('user_id', $userId)
-                    ->exists();
+        $today = now()->toDateString(); // Aaj ki date (YYYY-MM-DD)
 
-        if ($exists) {
-            // 2. Agar hai, toh sirf us column ko +1 karo aur update time badlo
+        // 1. Check karo kya ye user aaj is shop par pehle aa chuka hai?
+        $existingRecord = DB::table('shop_stats')
+                            ->where('shop_id', $shopId)
+                            ->where('user_id', $userId)
+                            ->whereDate('visit_date', $today)
+                            ->first();
+
+        if ($existingRecord) {
+            // 2. Agar SAME user, SAME shop par AAJ hi aaya hai -> Repeat Customer +1
             DB::table('shop_stats')
-                ->where('shop_id', $shopId)
-                ->where('user_id', $userId)
-                ->increment($column, 1, ['updated_at' => now()]);
-                return "updated";
+                ->where('id', $existingRecord->id)
+                ->increment('repeat_customer', 1, ['updated_at' => now()]);
+
+            return "repeat_visitor_updated";
         } else {
-            // 3. Agar naya hai, toh insert kar do
+            // 3. Agar user is shop par aaj pehli baar aaya hai -> New Profile Visit
             DB::table('shop_stats')->insert([
-                'shop_id'    => $shopId,
-                'user_id'    => $userId,
-                $column      => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'shop_id'         => $shopId,
+                'user_id'         => $userId,
+                'ip_address'      => $ipAddress,
+                'visit_date'      => $today,
+                'profile_visits'  => 1, // Pehli baar visit
+                'regular_customer'=> 0,
+                'repeat_customer' => 0,
+                'offer_display'   => 0,
+                'created_at'      => now(),
+                'updated_at'      => now(),
             ]);
-            return "inserted";
+
+            return "new_visit_inserted";
         }
     }
 }

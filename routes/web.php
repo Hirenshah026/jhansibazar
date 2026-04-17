@@ -68,6 +68,7 @@ Route::post('/save-step1',    [ShopController::class, 'saveStep1'])->name('shop.
 Route::post('/save-step2',    [ShopController::class, 'saveStep2'])->name('shop.step2');
 Route::post('/final-submit',  [ShopController::class, 'finalSubmit'])->name('shop.final');
 
+Route::post('/shops/update', [ShopController::class, 'update'])->name('shops.update');
 // ─────────────────────────────────────────────
 // Shop Photo Delete Routes
 // ─────────────────────────────────────────────

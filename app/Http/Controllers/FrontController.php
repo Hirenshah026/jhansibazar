@@ -110,7 +110,15 @@ class FrontController extends Controller
         $shopId =Session::get('shopuser')->id ?? 0;
         $shop = DB::table('shops')->where('id', $shopId)->first();
         $services = DB::table('services')->get();
-        $stat = DB::table('shop_stats')->where('shop_id', $shopId)->first(); 
+        $stat = DB::table('shop_stats')
+        ->where('shop_id', $shopId)
+        ->select([
+            DB::raw('SUM(profile_visits) as profile_visits'),
+            DB::raw('SUM(regular_customer) as regular_customer'),
+            DB::raw('SUM(repeat_customer) as repeat_customer'),
+            DB::raw('SUM(offer_display) as offer_display')
+        ])
+        ->first();
         // dd($stats);
         return view('front.account', compact('shop', 'services','stat'));
     }
@@ -136,8 +144,9 @@ class FrontController extends Controller
         return view('front.product_show', compact('shop'));
     }
 
-    public function shopprofile_details($slug)
+    public function shopprofile_details(Request $request,$slug)
     {
+        $ipAddress = $request->ip();
         $slug = str_replace('-', ' ', $slug);
         $shop = DB::table('shops')->where('shop_name', $slug)->first();
 
@@ -146,7 +155,7 @@ class FrontController extends Controller
         $services = DB::table('services')->where('shop_id', $shopId)->orderBy('id', 'DESC')->get();
         $items = DB::table('items')->where('shop_id', $shopId)->get();
         // dd($shopId);
-        $result = (new UserController)->trackActivity($shopId,'profile_visits');
+        $result = (new UserController)->trackActivity($shopId,'profile_visits',$ipAddress);
         
         return view('front.product_details', compact('shop', 'services','items'));
     }
