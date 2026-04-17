@@ -107,9 +107,12 @@ class FrontController extends Controller
     // ─────────────────────────────────────────────
     public function account()
     {
-        $shop = DB::table('shops')->where('id', Session::get('shopuser')->id ?? 0)->first();
+        $shopId =Session::get('shopuser')->id ?? 0;
+        $shop = DB::table('shops')->where('id', $shopId)->first();
         $services = DB::table('services')->get();
-        return view('front.account', compact('shop', 'services'));
+        $stat = DB::table('shop_stats')->where('shop_id', $shopId)->first(); 
+        // dd($stats);
+        return view('front.account', compact('shop', 'services','stat'));
     }
 
     // ─────────────────────────────────────────────
@@ -142,6 +145,9 @@ class FrontController extends Controller
         $shopId=$shop->id??0;
         $services = DB::table('services')->where('shop_id', $shopId)->orderBy('id', 'DESC')->get();
         $items = DB::table('items')->where('shop_id', $shopId)->get();
+        // dd($shopId);
+        $result = (new UserController)->trackActivity($shopId,'profile_visits');
+        
         return view('front.product_details', compact('shop', 'services','items'));
     }
 
