@@ -16,34 +16,38 @@ class FrontController extends Controller
     // ─────────────────────────────────────────────
     public function home()
     {
-        $shops = Shop::get()
+        $shops = Shop::with('reviews')           // ← eager load reviews
+            ->get()
             ->map(function ($shop) {
-                // Parse open/close status
+
+                // Open/Closed
                 $now = Carbon::now()->format('H:i:s');
                 $shop->is_open = ($shop->open_time && $shop->close_time)
                     ? ($now >= $shop->open_time && $now <= $shop->close_time)
                     : null;
 
-                // Parse categories (stored as text/JSON/comma-separated)
+                // Categories
                 $shop->cats = is_array($shop->categories)
                     ? $shop->categories
-                    : json_decode($shop->categories, true) ?? explode(',', $shop->categories);
+                    : (json_decode($shop->categories, true) ?? explode(',', $shop->categories));
 
-                // Parse offers
+                // Offers
                 $shop->offers_list = is_array($shop->offers)
                     ? $shop->offers
                     : (json_decode($shop->offers, true) ?? []);
 
-                // Parse item_photos
+                // Item photos
                 $shop->photos_list = is_array($shop->item_photos)
                     ? $shop->item_photos
                     : (json_decode($shop->item_photos, true) ?? []);
 
+                // ⭐ Rating from reviews
+                $shop->avg_rating    = $shop->reviews->avg('rating') ?? 0;
+                $shop->review_count  = $shop->reviews->count();
+
                 return $shop;
             });
 
-        
-        // Group by first category for sections like in your screenshot
         $shopsByCategory = $shops->groupBy(function ($shop) {
             return $shop->cats[0] ?? 'other';
         });
