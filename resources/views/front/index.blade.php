@@ -118,15 +118,23 @@
 
         @php
             $catConfig = [
-                'food'     => ['emoji' => '🍛', 'label' => 'Food Corner',     'color' => 'from-amber-400 to-orange-400'],
-                'salon'    => ['emoji' => '✂️',  'label' => 'Salon & Beauty',  'color' => 'from-pink-400 to-rose-500'],
-                'kirana'   => ['emoji' => '🛒',  'label' => 'Kirana Stores',   'color' => 'from-green-400 to-emerald-500'],
-                'clothing' => ['emoji' => '👗',  'label' => 'Cloths & Fashion','color' => 'from-indigo-400 to-violet-500'],
-                'medical'  => ['emoji' => '💊',  'label' => 'Medical Shops',   'color' => 'from-blue-400 to-cyan-500'],
-                'footwear' => ['emoji' => '👟',  'label' => 'Footwear',        'color' => 'from-yellow-400 to-amber-500'],
-                'rozana'   => ['emoji' => '🥛',  'label' => 'Rozana Wala',     'color' => 'from-teal-400 to-green-500'],
-                'other'    => ['emoji' => '🏪',  'label' => 'Other Shops',     'color' => 'from-gray-400 to-slate-500'],
-                'paan'     => ['emoji' => '🌿',  'label' => 'Paan Shops',     'color' => 'from-gray-400 to-slate-500'],
+                'food'        => ['emoji' => '🍛', 'label' => 'Food & Dhaba',          'color' => 'from-amber-400 to-orange-400'],
+                'sweets'      => ['emoji' => '🍡', 'label' => 'Sweets & Mithai',        'color' => 'from-yellow-400 to-amber-400'],
+                'bakery'      => ['emoji' => '🎂', 'label' => 'Bakery & Cake',          'color' => 'from-pink-300 to-rose-400'],
+                'salon'       => ['emoji' => '✂️', 'label' => 'Salon & Beauty',         'color' => 'from-pink-400 to-rose-500'],
+                'kirana'      => ['emoji' => '🛒', 'label' => 'Kirana & Grocery',       'color' => 'from-green-400 to-emerald-500'],
+                'clothing'    => ['emoji' => '👗', 'label' => 'Kapde & Fashion',        'color' => 'from-indigo-400 to-violet-500'],
+                'footwear'    => ['emoji' => '👟', 'label' => 'Joote & Footwear',       'color' => 'from-yellow-400 to-amber-500'],
+                'medical'     => ['emoji' => '💊', 'label' => 'Medical & Pharmacy',     'color' => 'from-blue-400 to-cyan-500'],
+                'hospital'    => ['emoji' => '🏥', 'label' => 'Hospital & Clinic',      'color' => 'from-cyan-400 to-blue-500'],
+                'hardware'    => ['emoji' => '🔧', 'label' => 'Hardware & Tools',       'color' => 'from-slate-400 to-gray-600'],
+                'paan'        => ['emoji' => '🌿', 'label' => 'Paan & General',         'color' => 'from-lime-400 to-green-500'],
+                'electronics' => ['emoji' => '📱', 'label' => 'Electronics & Mobile',   'color' => 'from-violet-400 to-purple-500'],
+                'coaching'    => ['emoji' => '📚', 'label' => 'Coaching & Classes',     'color' => 'from-orange-400 to-red-400'],
+                'dairy'       => ['emoji' => '🥛', 'label' => 'Dairy & Milk',           'color' => 'from-teal-400 to-green-500'],
+                'taxi'        => ['emoji' => '🚖', 'label' => 'Taxi & Transport',       'color' => 'from-yellow-300 to-amber-400'],
+                'rozana'      => ['emoji' => '🥛', 'label' => 'Rozana Wala',            'color' => 'from-teal-400 to-green-500'],
+                'other'       => ['emoji' => '➕', 'label' => 'Kuch Aur',               'color' => 'from-gray-400 to-slate-500'],
             ];
         @endphp
 
