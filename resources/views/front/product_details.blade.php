@@ -423,8 +423,8 @@
                         <h4 class="text-[11px] font-bold text-gray-800 truncate">{{ ucwords($shop->shop_name) }}</h4>
                         <p class="text-[10px] text-gray-400 truncate">{{ ucwords($shop->address) }}</p>
                     </div>
-
-                    <button id="followBtn"
+ 
+                    <button id="followBtn" data-shopid="{{ $shop->id }}" data-userid="{{ Session::get('public_user')->id??0 }}"
                         class="flex-shrink-0 bg-black text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm">
                         Follow
                     </button>
@@ -515,7 +515,7 @@
                 <span style="color:#E2E8F0;font-size:12px">|</span>
                 <span id="reviewCount" style="font-size:12px;color:#64748b">87 reviews</span>
                 <span style="color:#E2E8F0;font-size:12px">|</span>
-                <span id="soldCount" style="font-size:12px;color:#16A34A;font-weight:700">200+ sold</span>
+                <span id="soldCount" style="font-size:12px;color:#16A34A;font-weight:700" class="hidden">200+ sold</span>
             </div>
             <div
                 style="display:none; align-items:center; gap:10px; margin-bottom:15px; padding-bottom:15px; border-bottom:1.5px solid #F1F5F9">
@@ -530,7 +530,7 @@
                 class="hide-scroll">
                 <button class="dtab on" onclick="switchTab(this, 'dt-desc')">About</button>
                 <button class="dtab" onclick="switchTab(this, 'dt-details')">Timing</button>
-                <button class="dtab" onclick="switchTab(this, 'dt-offers')">Services</button>
+                <button class="dtab hidden" onclick="switchTab(this, 'dt-offers')">Services</button>
                 <button class="dtab" onclick="switchTab(this, 'dt-items')">Items</button>
                 <button class="dtab" onclick="switchTab(this, 'dt-reviews')">Reviews</button>
             </div>
@@ -847,10 +847,11 @@
                 e.preventDefault();
                 let btn = $(this);
                 let userId = btn.data('userid');
+                let shopId = btn.data('shopid');
                 // 1. UI update turant kar do (Optimistic UI)
                 if (!btn.hasClass('is-following')) {
-                    btn.addClass('is-following bg-gray-100 text-gray-500').removeClass(
-                        'bg-black text-white');
+                    btn.addClass('is-following bg-green-700 text-white').removeClass(
+                        'bg-black');
                     btn.text('Following');
                 } else {
                     btn.removeClass('is-following bg-gray-100 text-gray-500').addClass(
@@ -863,6 +864,7 @@
                     method: 'POST',
                     data: {
                         user_id: userId,
+                        shopId: shopId,
                         _token: '{{ csrf_token() }}'
                     },
                     success: function(res) {
@@ -877,7 +879,7 @@
                     error: function() {
                         // Network error par reset
                         alert("Something went wrong!");
-                        location.reload();
+                        // location.reload();
                     }
                 });
             });

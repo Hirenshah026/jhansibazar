@@ -156,7 +156,7 @@
                     @endforeach
                 @endif 
                 <span
-                    class="bg-blue-50 text-blue-700 border border-blue-100 text-[10px] font-semibold rounded-lg px-2.5 py-1 {{ $isOpen  ? 'closed' : 'hidden' }}">{{ count(array_filter($offers, 'strlen')) }}
+                    class="bg-blue-50 text-blue-700 border border-blue-100 text-[10px] font-semibold rounded-lg px-2.5 py-1 {{ $isOpen  ? 'closed' : 'hidden' }} {{ count(array_filter($offers)) ==0 ? 'hidden' : 'closed'}}">{{ count(array_filter($offers)) }}
                     offers available</span>
                 {{-- @foreach (array_filter($offers) as $offer)
                     <span
