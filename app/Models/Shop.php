@@ -15,4 +15,9 @@ class Shop extends Model
         'payment_modes', 'offers', 'shop_photo', 'shop_photo_public_id',
         'owner_photo', 'item_photos', 'status',
     ];
+
+    public function reviews()
+    {
+        return $this->hasMany(\App\Models\ShopReview::class, 'shop_id');
+    }
 }

@@ -1,5 +1,11 @@
 @extends('front_layout.main')
 @section('content')
+<style>
+    .star {
+        font-size: 13px;
+        color: #FCD34D
+    }
+</style>
     <div id="screen-home" class="screen active fade-up pb-24">
 
         <!-- Hero Banner -->
@@ -18,7 +24,7 @@
                     </p>
 
                     <!-- Logo -->
-                    <img src="{{url('logo/logo3a.png')}}"
+                    <img src="{{url('logo/logo_listee.png')}}"
                          class="h-12 object-contain mb-2">
 
                     <!-- Button -->
@@ -43,39 +49,8 @@
 
             </div>
         </div>
-
-        <div class="px-3 pt-3 pb-1">
-            <div class="relative overflow-hidden rounded-2xl" id="bannerWrap">
-                <div class="flex transition-transform duration-400 ease-in-out" id="bannerTrack"
-                    style="will-change: transform;">
-                    <div class="flex-shrink-0 w-full">
-                        <img src="https://res.cloudinary.com/dhsiw4fc5/image/upload/v1776236646/1_ndf70j.png"
-                            class="w-full h-auto rounded-2xl object-cover" loading="lazy" alt="Offer 1">
-                    </div>
-                    <div class="flex-shrink-0 w-full">
-                        <img src="https://res.cloudinary.com/dhsiw4fc5/image/upload/v1776236645/2_qeo48l.png"
-                            class="w-full h-auto rounded-2xl object-cover" loading="lazy" alt="Offer 2">
-                    </div>
-                    <div class="flex-shrink-0 w-full">
-                        <img src="https://res.cloudinary.com/dhsiw4fc5/image/upload/v1776236646/3_ontuk3.png"
-                            class="w-full h-auto rounded-2xl object-cover" loading="lazy" alt="Offer 3">
-                    </div>
-                    <div class="flex-shrink-0 w-full">
-                        <img src="https://res.cloudinary.com/dhsiw4fc5/image/upload/v1776236645/4_vwmwro.png"
-                            class="w-full h-auto rounded-2xl object-cover" loading="lazy" alt="Offer 4">
-                    </div>
-                </div>
-            </div>
-            <div class="flex justify-center gap-1.5 mt-5" id="bannerDots">
-                <button class="banner-dot w-4 h-1.5 rounded-full bg-saffron-500 transition-all duration-300"></button>
-                <button class="banner-dot w-1.5 h-1.5 rounded-full bg-ink-200 transition-all duration-300"></button>
-                <button class="banner-dot w-1.5 h-1.5 rounded-full bg-ink-200 transition-all duration-300"></button>
-                <button class="banner-dot w-1.5 h-1.5 rounded-full bg-ink-200 transition-all duration-300"></button>
-            </div>
-        </div>
-
         <!-- Categories -->
-        <div class="px-4 mb-4">
+        <div class="px-4 my-4">
             <div class="flex items-center justify-between mb-2">
                 <p class="text-xs font-semibold text-ink-400 uppercase tracking-wider">Categories</p>
                 <span class="text-xs text-saffron-500 font-semibold cursor-pointer">Sab dekho →</span>
@@ -136,14 +111,46 @@
                 'rozana'      => ['emoji' => '🥛', 'label' => 'Rozana Wala',            'color' => 'from-teal-400 to-green-500'],
                 'other'       => ['emoji' => '➕', 'label' => 'Kuch Aur',               'color' => 'from-gray-400 to-slate-500'],
             ];
+            $i=0;
         @endphp
 
         @foreach($shopsByCategory as $cat => $catShops)
         @php
+            $i++;
             $cfg = $catConfig[$cat] ?? $catConfig['other'];
             $sectionId = 'section-' . $cat;
         @endphp
-
+        @if($i == 3)
+        <div class="px-3 pt-3 pb-1">
+            <div class="relative overflow-hidden rounded-2xl" id="bannerWrap">
+                <div class="flex transition-transform duration-400 ease-in-out" id="bannerTrack"
+                    style="will-change: transform;">
+                    <div class="flex-shrink-0 w-full">
+                        <img src="https://res.cloudinary.com/dhsiw4fc5/image/upload/v1776236646/1_ndf70j.png"
+                            class="w-full h-auto rounded-2xl object-cover" loading="lazy" alt="Offer 1">
+                    </div>
+                    <div class="flex-shrink-0 w-full">
+                        <img src="https://res.cloudinary.com/dhsiw4fc5/image/upload/v1776236645/2_qeo48l.png"
+                            class="w-full h-auto rounded-2xl object-cover" loading="lazy" alt="Offer 2">
+                    </div>
+                    <div class="flex-shrink-0 w-full">
+                        <img src="https://res.cloudinary.com/dhsiw4fc5/image/upload/v1776236646/3_ontuk3.png"
+                            class="w-full h-auto rounded-2xl object-cover" loading="lazy" alt="Offer 3">
+                    </div>
+                    <div class="flex-shrink-0 w-full">
+                        <img src="https://res.cloudinary.com/dhsiw4fc5/image/upload/v1776236645/4_vwmwro.png"
+                            class="w-full h-auto rounded-2xl object-cover" loading="lazy" alt="Offer 4">
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-center gap-1.5 mt-5" id="bannerDots">
+                <button class="banner-dot w-4 h-1.5 rounded-full bg-saffron-500 transition-all duration-300"></button>
+                <button class="banner-dot w-1.5 h-1.5 rounded-full bg-ink-200 transition-all duration-300"></button>
+                <button class="banner-dot w-1.5 h-1.5 rounded-full bg-ink-200 transition-all duration-300"></button>
+                <button class="banner-dot w-1.5 h-1.5 rounded-full bg-ink-200 transition-all duration-300"></button>
+            </div>
+        </div>
+        @endif
         <div class="px-4 mb-6">
             {{-- Section Header --}}
             <div class="flex items-center justify-between mb-3">
@@ -218,12 +225,37 @@
                         </p>
                         @endif
 
+                        @php
+                            $rating = round($shop->avg_rating, 1);
+                            $fullStars = floor($rating);
+                            $halfStar  = ($rating - $fullStars) >= 0.5;
+                            $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
+                        @endphp
+
+                        @if($shop->review_count > 0)
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <div style="display:flex;gap:1px">
+                                @for($s = 0; $s < $fullStars; $s++)
+                                    <span class="star">★</span>
+                                @endfor
+                                @if($halfStar)
+                                    <span class="star" style="opacity:0.5">★</span>
+                                @endif
+                                @for($s = 0; $s < $emptyStars; $s++)
+                                    <span class="star" style="opacity:0.2">★</span>
+                                @endfor
+                            </div>
+                            <span style="font-size:12px;font-weight:800;color:#1e293b">{{ $rating }}</span>
+                            <span style="font-size:10px;color:#94a3b8">({{ $shop->review_count }})</span>
+                        </div>
+                        @else
+                        <div>
+                            <span style="font-size:10px;color:#94a3b8">No reviews yet</span>
+                        </div>
+                        @endif
+
                         {{-- Action Buttons --}}
                         <div class="flex gap-1.5">
-                            <button class="flex-1 gradient-brand text-white rounded-lg py-1.5 text-[10px] font-bold btn-press"
-                                    onclick="event.stopPropagation();showScreen('spin')">
-                                🎡 Offer
-                            </button>
                             @if($shop->is_whatsapp && $shop->phone)
                             <a href="https://wa.me/91{{ $shop->phone }}"
                                onclick="event.stopPropagation()"
@@ -242,292 +274,6 @@
 
         @include('front.partial.shop_list_slider')
 
-        <!-- Flash Deals -->
-        <div class="px-4 mb-4">
-            <div class="flex items-center justify-between mb-2">
-                <p class="text-xs font-semibold text-ink-400 uppercase tracking-wider">⚡ Flash Deals</p>
-                <div class="flex items-center gap-1 bg-red-50 border border-red-200 rounded-full px-2 py-0.5">
-                    <span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
-                    <span class="text-xs text-red-600 font-semibold" id="flashTimer">1:47:23</span>
-                </div>
-            </div>
-            <div class="flex gap-3 overflow-x-auto pb-1">
-                <div class="flex-shrink-0 w-48 card-hover cursor-pointer" onclick="openShop('sharma-sweets')">
-                    <div class="bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl p-3 text-white relative overflow-hidden">
-                        <div class="absolute top-2 right-2 bg-white/20 rounded-full px-2 py-0.5 text-xs font-bold">-30%</div>
-                        <div class="text-3xl mb-1">🍡</div>
-                        <p class="font-display font-bold text-sm">Sharma Sweets</p>
-                        <p class="text-xs opacity-80">Free samosa on ₹200</p>
-                        <div class="mt-2 bg-white/20 rounded-lg px-2 py-1">
-                            <p class="text-xs font-bold">⏰ 1 hr 47 min bacha</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex-shrink-0 w-48 card-hover cursor-pointer" onclick="showScreen('spin')">
-                    <div class="bg-gradient-to-br from-saffron-500 to-saffron-700 rounded-2xl p-3 text-white relative overflow-hidden">
-                        <div class="absolute top-2 right-2 bg-white/20 rounded-full px-2 py-0.5 text-xs font-bold">SPIN</div>
-                        <div class="text-3xl mb-1">👟</div>
-                        <p class="font-display font-bold text-sm">Raj Shoe Store</p>
-                        <p class="text-xs opacity-80">Spin karo — 20% OFF jeeto</p>
-                        <div class="mt-2 bg-white/20 rounded-lg px-2 py-1">
-                            <p class="text-xs font-bold">🎡 1 free spin</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex-shrink-0 w-48 card-hover cursor-pointer" onclick="openShop('glamour-salon')">
-                    <div class="bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl p-3 text-white relative overflow-hidden">
-                        <div class="absolute top-2 right-2 bg-white/20 rounded-full px-2 py-0.5 text-xs font-bold">NEW</div>
-                        <div class="text-3xl mb-1">✂️</div>
-                        <p class="font-display font-bold text-sm">Glamour Salon</p>
-                        <p class="text-xs opacity-80">Navratri Package ₹499</p>
-                        <div class="mt-2 bg-white/20 rounded-lg px-2 py-1">
-                            <p class="text-xs font-bold">📅 Sirf 10 slots bache</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Health Card Banner -->
-        <div class="mx-4 mb-4">
-            <div class="gradient-dark rounded-2xl p-4 flex items-center gap-3 cursor-pointer card-hover"
-                onclick="showScreen('healthcard')">
-                <div class="w-12 h-12 bg-gold-500 rounded-xl flex items-center justify-center text-2xl float">🏥</div>
-                <div class="flex-1">
-                    <p class="text-gold-300 text-xs font-semibold uppercase tracking-wide">City Hospital Card</p>
-                    <p class="text-white font-display font-bold text-sm">Hamesha 20% OFF medicines</p>
-                    <p class="text-white/50 text-xs">Sirf ₹300 mein — digital card</p>
-                </div>
-                <svg class="w-5 h-5 text-gold-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path d="M9 5l7 7-7 7" />
-                </svg>
-            </div>
-        </div>
-
-        <!-- Rozana Wala Section -->
-        <div class="px-4 mb-4">
-            <div class="flex items-center justify-between mb-2">
-                <p class="text-xs font-semibold text-ink-400 uppercase tracking-wider">🥛 Rozana Wala</p>
-                <span class="text-xs text-saffron-500 font-semibold cursor-pointer" onclick="showScreen('rozana')">Sab dekho →</span>
-            </div>
-            <div class="flex gap-3 overflow-x-auto pb-1">
-                <div class="flex-shrink-0 w-36 bg-white border border-ink-100 rounded-2xl p-3 card-hover cursor-pointer"
-                    onclick="showScreen('rozana')">
-                    <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-xl mb-2">🥛</div>
-                    <p class="font-display font-bold text-xs text-ink-700">Raju Dairy</p>
-                    <p class="text-xs text-ink-400">Ward 5 • ★4.8</p>
-                    <p class="text-xs text-forest-600 font-semibold mt-1">47 customers</p>
-                </div>
-                <div class="flex-shrink-0 w-36 bg-white border border-ink-100 rounded-2xl p-3 card-hover cursor-pointer"
-                    onclick="showScreen('rozana')">
-                    <div class="w-10 h-10 bg-yellow-50 rounded-xl flex items-center justify-center text-xl mb-2">🚖</div>
-                    <p class="font-display font-bold text-xs text-ink-700">Mohan Taxi</p>
-                    <p class="text-xs text-ink-400">Civil Lines • ★4.6</p>
-                    <p class="text-xs text-forest-600 font-semibold mt-1">Available now</p>
-                </div>
-                <div class="flex-shrink-0 w-36 bg-white border border-ink-100 rounded-2xl p-3 card-hover cursor-pointer"
-                    onclick="showScreen('rozana')">
-                    <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center text-xl mb-2">🛒</div>
-                    <p class="font-display font-bold text-xs text-ink-700">Suresh Thela</p>
-                    <p class="text-xs text-ink-400">Sipri • ★4.5</p>
-                    <p class="text-xs text-forest-600 font-semibold mt-1">Aaj fresh stock</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Nearby Shops -->
-        <div class="px-4">
-            <div class="flex items-center justify-between mb-3">
-                <p class="text-xs font-semibold text-ink-400 uppercase tracking-wider">Aas-paas ki Dukaanein</p>
-                <div class="flex gap-1 overflow-x-auto">
-                    <button
-                        class="cat-chip cat-active text-xs px-2.5 py-1 rounded-full border border-saffron-200 font-medium"
-                        onclick="filterCat(this,'all')">Sab</button>
-                    <button
-                        class="cat-chip text-xs px-2.5 py-1 rounded-full border border-ink-200 text-ink-500 font-medium bg-white"
-                        onclick="filterCat(this,'food')">Food</button>
-                    <button
-                        class="cat-chip text-xs px-2.5 py-1 rounded-full border border-ink-200 text-ink-500 font-medium bg-white"
-                        onclick="filterCat(this,'salon')">Salon</button>
-                    <button
-                        class="cat-chip text-xs px-2.5 py-1 rounded-full border border-ink-200 text-ink-500 font-medium bg-white"
-                        onclick="filterCat(this,'kirana')">Kirana</button>
-                </div>
-            </div>
-
-            <div class="flex flex-col gap-3" id="shopList">
-
-                <!-- Shop: Sharma Sweets -->
-                <div class="shop-card bg-white border border-ink-100 rounded-2xl p-4 card-hover" data-cat="food"
-                    onclick="openShop('sharma-sweets')">
-                    <div class="flex gap-3 mb-3">
-                        <div class="w-14 h-14 bg-amber-50 rounded-xl flex items-center justify-center text-3xl flex-shrink-0">
-                            🍡
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-start justify-between">
-                                <div>
-                                    <h3 class="font-display font-bold text-ink-800 text-sm">Sharma Sweet House</h3>
-                                    <p class="text-xs text-ink-400">Mithai & Snacks • Sipri Bazar</p>
-                                </div>
-                                <span class="bg-forest-100 text-forest-700 text-xs font-bold px-2 py-0.5 rounded-full flex-shrink-0">Open</span>
-                            </div>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span class="text-xs text-saffron-500 font-semibold">★ 4.8</span>
-                                <span class="text-ink-200 text-xs">•</span>
-                                <span class="text-xs text-ink-400">280m</span>
-                                <span class="text-ink-200 text-xs">•</span>
-                                <span class="text-xs text-ink-400">128 reviews</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex gap-1.5 flex-wrap mb-3">
-                        <span class="bg-saffron-50 text-saffron-700 border border-saffron-200 rounded-full px-2 py-0.5 text-xs font-medium">Free samosa ₹200+</span>
-                        <span class="bg-saffron-50 text-saffron-700 border border-saffron-200 rounded-full px-2 py-0.5 text-xs font-medium">10% off sweets</span>
-                        <span class="bg-saffron-50 text-saffron-700 border border-saffron-200 rounded-full px-2 py-0.5 text-xs font-medium">🎡 Spin available</span>
-                    </div>
-                    <button
-                        class="w-full gradient-brand text-white rounded-xl py-2.5 text-sm font-display font-bold btn-press"
-                        onclick="event.stopPropagation();showScreen('spin')">🎡 Spin & Win Offers</button>
-                </div>
-
-                <!-- Shop: Glamour Salon -->
-                <div class="shop-card bg-white border border-ink-100 rounded-2xl p-4 card-hover" data-cat="salon"
-                    onclick="openShop('glamour-salon')">
-                    <div class="flex gap-3 mb-3">
-                        <div class="w-14 h-14 bg-pink-50 rounded-xl flex items-center justify-center text-3xl flex-shrink-0">
-                            ✂️
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-start justify-between">
-                                <div>
-                                    <h3 class="font-display font-bold text-ink-800 text-sm">Glamour Salon & Spa</h3>
-                                    <p class="text-xs text-ink-400">Unisex Salon • Sadar Bazar</p>
-                                </div>
-                                <span class="badge-new">NEW</span>
-                            </div>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span class="text-xs text-saffron-500 font-semibold">★ 4.7</span>
-                                <span class="text-ink-200 text-xs">•</span>
-                                <span class="text-xs text-ink-400">150m</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-pink-50 rounded-xl p-2.5 mb-3 flex items-center gap-2">
-                        <span class="text-base">💆</span>
-                        <div>
-                            <p class="text-xs font-bold text-pink-700">Navratri Special Package</p>
-                            <p class="text-xs text-pink-500">Haircut + Facial + Eyebrows — ₹499 only</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-2">
-                        <button class="flex-1 gradient-brand text-white rounded-xl py-2 text-xs font-bold btn-press"
-                            onclick="event.stopPropagation();showScreen('spin')">🎡 Spin & Win</button>
-                        <button
-                            class="flex-1 bg-ink-50 border border-ink-200 text-ink-700 rounded-xl py-2 text-xs font-bold btn-press">📅 Book Now</button>
-                    </div>
-                </div>
-
-                <!-- Shop: Ramesh Kirana -->
-                <div class="shop-card bg-white border border-ink-100 rounded-2xl p-4 card-hover" data-cat="kirana"
-                    onclick="openShop('ramesh-kirana')">
-                    <div class="flex gap-3 mb-3">
-                        <div class="w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center text-3xl flex-shrink-0">
-                            🛒
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <h3 class="font-display font-bold text-ink-800 text-sm">Ramesh Kirana Store</h3>
-                            <p class="text-xs text-ink-400">Grocery • Lohamandi</p>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span class="text-xs text-saffron-500 font-semibold">★ 4.4</span>
-                                <span class="text-ink-200 text-xs">•</span>
-                                <span class="text-xs text-ink-400">400m • WhatsApp order</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-green-50 rounded-xl p-2.5 mb-3">
-                        <p class="text-xs font-bold text-forest-700 mb-1">📋 Aaj ki Special List</p>
-                        <div class="grid grid-cols-2 gap-1 text-xs text-forest-600">
-                            <span>🍅 Tamatar — ₹30/kg</span>
-                            <span>🧅 Pyaz — ₹25/kg</span>
-                            <span>🥔 Aloo — ₹20/kg</span>
-                            <span>🫚 Tel — ₹140/L</span>
-                        </div>
-                    </div>
-                    <div class="flex gap-2">
-                        <button class="flex-1 gradient-brand text-white rounded-xl py-2 text-xs font-bold btn-press"
-                            onclick="event.stopPropagation();showScreen('spin')">🎡 Spin & Win</button>
-                        <button class="flex-1 bg-green-500 text-white rounded-xl py-2 text-xs font-bold btn-press"
-                            onclick="event.stopPropagation()">💬 WhatsApp Order</button>
-                    </div>
-                </div>
-
-                <!-- Shop: Raj Shoe Store -->
-                <div class="shop-card bg-white border border-ink-100 rounded-2xl p-4 card-hover" data-cat="footwear"
-                    onclick="openShop('raj-shoe-store')">
-                    <div class="flex gap-3 mb-3">
-                        <div class="w-14 h-14 bg-orange-50 rounded-xl flex items-center justify-center text-3xl flex-shrink-0">
-                            👟
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-start justify-between">
-                                <div>
-                                    <h3 class="font-display font-bold text-ink-800 text-sm">Raj Shoe Store</h3>
-                                    <p class="text-xs text-ink-400">Footwear • Sadar Bazar</p>
-                                </div>
-                                <div class="flex items-center gap-1 bg-red-50 border border-red-200 rounded-full px-2 py-0.5">
-                                    <span class="text-red-500 text-xs font-bold">SALE</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span class="text-xs text-saffron-500 font-semibold">★ 4.5</span>
-                                <span class="text-ink-200 text-xs">•</span>
-                                <span class="text-xs text-ink-400">120m</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex gap-1.5 flex-wrap mb-3">
-                        <span class="bg-saffron-50 text-saffron-700 border border-saffron-200 rounded-full px-2 py-0.5 text-xs font-medium">20% off formals</span>
-                        <span class="bg-saffron-50 text-saffron-700 border border-saffron-200 rounded-full px-2 py-0.5 text-xs font-medium">Free polish</span>
-                        <span class="bg-red-50 text-red-600 border border-red-200 rounded-full px-2 py-0.5 text-xs font-medium">Buy 2 get 1</span>
-                    </div>
-                    <button
-                        class="w-full gradient-brand text-white rounded-xl py-2.5 text-sm font-display font-bold btn-press"
-                        onclick="event.stopPropagation();showScreen('spin')">🎡 Spin & Win Offers</button>
-                </div>
-
-                <!-- Shop: Kapoor Fashion House -->
-                <div class="shop-card bg-white border border-ink-100 rounded-2xl p-4 card-hover" data-cat="clothing"
-                    onclick="openShop('kapoor-fashion')">
-                    <div class="flex gap-3 mb-3">
-                        <div class="w-14 h-14 bg-indigo-50 rounded-xl flex items-center justify-center text-3xl flex-shrink-0">
-                            👗
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-start justify-between">
-                                <div>
-                                    <h3 class="font-display font-bold text-ink-800 text-sm">Kapoor Fashion House</h3>
-                                    <p class="text-xs text-ink-400">Clothing • Sadar Bazar</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span class="text-xs text-saffron-500 font-semibold">★ 4.3</span>
-                                <span class="text-ink-200 text-xs">•</span>
-                                <span class="text-xs text-ink-400">350m</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-indigo-50 rounded-xl p-2.5 mb-3 flex items-center gap-2">
-                        <span class="text-base">👗</span>
-                        <p class="text-xs font-bold text-indigo-700">Naya Collection Aaya! — Navratri Special Sarees ₹899 se shuru</p>
-                    </div>
-                    <button
-                        class="w-full gradient-brand text-white rounded-xl py-2.5 text-sm font-display font-bold btn-press"
-                        onclick="event.stopPropagation();showScreen('spin')">🎡 Spin & Win Offers</button>
-                </div>
-
-            </div>
-        </div>
     </div>
 @endsection
 
