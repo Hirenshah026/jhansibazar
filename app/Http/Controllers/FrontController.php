@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use App\Models\Shop;
+use Illuminate\Support\Carbon;
 use Session;
 
 class FrontController extends Controller
@@ -14,8 +16,38 @@ class FrontController extends Controller
     // ─────────────────────────────────────────────
     public function home()
     {
-        $shops = DB::table('shops')->orderBy('id', 'DESC')->get();
-        return view('front.index', compact('shops'));
+        $shops = Shop::get()
+            ->map(function ($shop) {
+                // Parse open/close status
+                $now = Carbon::now()->format('H:i:s');
+                $shop->is_open = ($shop->open_time && $shop->close_time)
+                    ? ($now >= $shop->open_time && $now <= $shop->close_time)
+                    : null;
+
+                // Parse categories (stored as text/JSON/comma-separated)
+                $shop->cats = is_array($shop->categories)
+                    ? $shop->categories
+                    : json_decode($shop->categories, true) ?? explode(',', $shop->categories);
+
+                // Parse offers
+                $shop->offers_list = is_array($shop->offers)
+                    ? $shop->offers
+                    : (json_decode($shop->offers, true) ?? []);
+
+                // Parse item_photos
+                $shop->photos_list = is_array($shop->item_photos)
+                    ? $shop->item_photos
+                    : (json_decode($shop->item_photos, true) ?? []);
+
+                return $shop;
+            });
+
+        
+        // Group by first category for sections like in your screenshot
+        $shopsByCategory = $shops->groupBy(function ($shop) {
+            return $shop->cats[0] ?? 'other';
+        });
+        return view('front.index', compact('shops','shopsByCategory'));
     }
 
     // ─────────────────────────────────────────────

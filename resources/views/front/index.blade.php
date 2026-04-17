@@ -3,38 +3,44 @@
     <div id="screen-home" class="screen active fade-up pb-24">
 
         <!-- Hero Banner -->
-        <div class="gradient-brand px-5 pt-4 pb-8 relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full -translate-y-8 translate-x-8">
-            </div>
-            <div class="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-5 rounded-full translate-y-8 -translate-x-8">
-            </div>
-            <div class="flex items-start justify-between relative z-10">
+        <div class="bg-gradient-to-r from-green-700 to-green-500 px-4 pt-4 pb-6 relative overflow-hidden rounded-b-3xl">
+
+            <!-- Decorative -->
+            <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full -translate-y-8 translate-x-8"></div>
+            <div class="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-5 rounded-full translate-y-8 -translate-x-8"></div>
+
+            <div class="relative z-10 mt-2 grid grid-cols-2 gap-3">
+
+                <!-- LEFT SIDE -->
                 <div>
-                    <p class="text-white/70 text-xs mb-1">Namaste, {{ Session::get('shopuser')->shop_name ?? 'Sir' }} 👋</p>
+                    <p class="text-white/80 text-xs mb-1">
+                        Namaste, {{ Session::get('shopuser')->shop_name ?? 'Sir' }} 👋
+                    </p>
 
-                    <div class="flex items-center my-2">
-                        <img src="{{url('logo/logo3a.png')}}" alt="Logo" loading="lazy"
-                            class="h-12 w-auto object-contain" style=" border-radius: 5px;">
+                    <!-- Logo -->
+                    <img src="{{url('logo/logo3a.png')}}"
+                         class="h-12 object-contain mb-2">
+
+                    <!-- Button -->
+                    <button class="bg-white text-green-700 text-xs font-semibold px-4 py-1.5 rounded-full shadow">
+                        Get a daily deal 🏷️
+                    </button>
+                </div>
+
+                <!-- RIGHT SIDE -->
+                <div>
+                    <p class="text-white font-semibold text-sm mb-2">Featured Brand Offers</p>
+
+                    <!-- Dynamic Brand Slider -->
+                    <div class="relative overflow-hidden rounded-2xl" id="brandWrap">
+                        <div class="flex transition-transform duration-400 ease-in-out" id="brandTrack"
+                             style="will-change: transform;"></div>
                     </div>
 
-                    <p class="text-white/70 text-xs mt-1">Scan · Spin · Earn · Save</p>
+                    <!-- Dots -->
+                    <div class="flex justify-center gap-1.5 mt-2" id="brandDots"></div>
                 </div>
-                <div class="text-right hidden">
-                    <div class="glass rounded-2xl px-3 py-2 text-center cursor-pointer" onclick="showScreen('wallet')">
-                        <p class="text-white/70 text-xs">Wallet</p>
-                        <p class="text-white font-display font-bold text-lg leading-none">340</p>
-                        <p class="text-gold-300 text-xs font-medium">coins 🪙</p>
-                    </div>
-                </div>
-            </div>
-            <!-- Streak Bar -->
-            <div class="flex items-center gap-2 mt-4 relative z-10">
-                <div class="glass rounded-full px-3 py-1.5 flex items-center gap-1.5">
-                    <span class="text-xs">🔥</span><span class="text-white text-xs font-semibold">3-day streak</span>
-                </div>
-                <div class="glass rounded-full px-3 py-1.5 flex items-center gap-1.5">
-                    <span class="text-xs">🏆</span><span class="text-white text-xs font-semibold">Explorer Level</span>
-                </div>
+
             </div>
         </div>
 
@@ -65,25 +71,6 @@
                 <button class="banner-dot w-1.5 h-1.5 rounded-full bg-ink-200 transition-all duration-300"></button>
                 <button class="banner-dot w-1.5 h-1.5 rounded-full bg-ink-200 transition-all duration-300"></button>
                 <button class="banner-dot w-1.5 h-1.5 rounded-full bg-ink-200 transition-all duration-300"></button>
-            </div>
-        </div>
-
-        <!-- Search Bar -->
-        <div class="px-4 mt-5 mb-3 z-20 relative">
-            <div class="bg-white rounded-2xl shadow-lg border border-ink-100 px-4 py-3 flex items-center gap-3">
-                <svg class="w-4 h-4 text-ink-300 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    stroke-width="2">
-                    <circle cx="11" cy="11" r="8" />
-                    <path d="m21 21-4.35-4.35" />
-                </svg>
-                <input type="text" placeholder="Dukan, service ya offer dhundho..."
-                    class="flex-1 text-sm text-ink-600 bg-transparent border-none focus:outline-none placeholder-ink-300" />
-                <button class="w-7 h-7 gradient-brand rounded-lg flex items-center justify-center flex-shrink-0">
-                    <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        stroke-width="2.5">
-                        <path d="M3 6h18M6 12h12M10 18h4" />
-                    </svg>
-                </button>
             </div>
         </div>
 
@@ -129,8 +116,124 @@
             </div>
         </div>
 
-        @include('front.partial.shop_listing')
+        @php
+            $catConfig = [
+                'food'     => ['emoji' => '🍛', 'label' => 'Food Corner',     'color' => 'from-amber-400 to-orange-400'],
+                'salon'    => ['emoji' => '✂️',  'label' => 'Salon & Beauty',  'color' => 'from-pink-400 to-rose-500'],
+                'kirana'   => ['emoji' => '🛒',  'label' => 'Kirana Stores',   'color' => 'from-green-400 to-emerald-500'],
+                'clothing' => ['emoji' => '👗',  'label' => 'Cloths & Fashion','color' => 'from-indigo-400 to-violet-500'],
+                'medical'  => ['emoji' => '💊',  'label' => 'Medical Shops',   'color' => 'from-blue-400 to-cyan-500'],
+                'footwear' => ['emoji' => '👟',  'label' => 'Footwear',        'color' => 'from-yellow-400 to-amber-500'],
+                'rozana'   => ['emoji' => '🥛',  'label' => 'Rozana Wala',     'color' => 'from-teal-400 to-green-500'],
+                'other'    => ['emoji' => '🏪',  'label' => 'Other Shops',     'color' => 'from-gray-400 to-slate-500'],
+                'paan'     => ['emoji' => '🌿',  'label' => 'Paan Shops',     'color' => 'from-gray-400 to-slate-500'],
+            ];
+        @endphp
+
+        @foreach($shopsByCategory as $cat => $catShops)
+        @php
+            $cfg = $catConfig[$cat] ?? $catConfig['other'];
+            $sectionId = 'section-' . $cat;
+        @endphp
+
+        <div class="px-4 mb-6">
+            {{-- Section Header --}}
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 bg-gradient-to-br {{ $cfg['color'] }} rounded-lg flex items-center justify-center text-sm shadow-sm">
+                        {{ $cfg['emoji'] }}
+                    </div>
+                    <p class="text-sm font-bold text-ink-700">{{ $cfg['label'] }} <span class="text-ink-400 font-normal text-xs">({{ $catShops->count() }})</span></p>
+                </div>
+                <button onclick="filterAndNav('{{ $cat }}')" class="text-xs text-saffron-500 font-semibold">
+                    Sab dekho →
+                </button>
+            </div>
+
+            {{-- Horizontal Scroll Cards --}}
+            <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide" id="{{ $sectionId }}">
+                @foreach($catShops as $shop)
+                @php
+                    $photo      = $shop->shop_photo ?? null;
+                    $itemPhotos = $shop->photos_list ?? [];
+                    $displayPhoto = $photo ?: ($itemPhotos[0] ?? null);
+                    $offersList = $shop->offers_list ?? [];
+                    $firstOffer = $offersList[0] ?? null;
+                    $isOpen     = $shop->is_open;
+                @endphp
+
+                <div class="flex-shrink-0 w-44 bg-white rounded-2xl border border-ink-100 overflow-hidden shadow-sm card-hover cursor-pointer"
+                     onclick="location.href='{{ url('/shopprofile-details') }}/{{ str_replace(' ', '-', strtolower($shop->shop_name ?? 's')) }}';">
+
+                    {{-- Shop Image --}}
+                    <div class="relative h-24 bg-ink-50 overflow-hidden">
+                        @if($displayPhoto)
+                            <img src="{{ $displayPhoto }}"
+                                 class="w-full h-full object-cover"
+                                 loading="lazy"
+                                 alt="{{ $shop->shop_name }}">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br {{ $cfg['color'] }} opacity-20">
+                                <span class="text-4xl">{{ $cfg['emoji'] }}</span>
+                            </div>
+                        @endif
+
+                        {{-- Open/Closed Badge --}}
+                        @if($isOpen !== null)
+                            <span class="absolute top-1.5 left-1.5 text-[9px] font-bold px-1.5 py-0.5 rounded-full
+                                {{ $isOpen ? 'bg-green-500 text-white' : 'bg-red-100 text-red-600' }}">
+                                {{ $isOpen ? 'Open' : 'Closed' }}
+                            </span>
+                        @endif
+
+                        {{-- Offer Badge --}}
+                        @if($firstOffer)
+                            <span class="absolute top-1.5 right-1.5 bg-saffron-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full max-w-[70px] truncate">
+                                🏷️ Offer
+                            </span>
+                        @endif
+                    </div>
+
+                    {{-- Info --}}
+                    <div class="p-2.5">
+                        <h3 class="font-bold text-ink-800 text-xs leading-tight truncate mb-0.5">
+                            {{ $shop->shop_name }}
+                        </h3>
+                        <p class="text-[10px] text-ink-400 truncate mb-1">
+                            {{ $shop->tagline ?? $shop->address }}
+                        </p>
+
+                        {{-- Timing --}}
+                        @if($shop->open_time && $shop->close_time)
+                        <p class="text-[10px] text-ink-400 mb-1.5">
+                            🕐 {{ \Carbon\Carbon::parse($shop->open_time)->format('g A') }} – {{ \Carbon\Carbon::parse($shop->close_time)->format('g A') }}
+                        </p>
+                        @endif
+
+                        {{-- Action Buttons --}}
+                        <div class="flex gap-1.5">
+                            <button class="flex-1 gradient-brand text-white rounded-lg py-1.5 text-[10px] font-bold btn-press"
+                                    onclick="event.stopPropagation();showScreen('spin')">
+                                🎡 Offer
+                            </button>
+                            @if($shop->is_whatsapp && $shop->phone)
+                            <a href="https://wa.me/91{{ $shop->phone }}"
+                               onclick="event.stopPropagation()"
+                               target="_blank"
+                               class="flex-1 bg-green-500 text-white rounded-lg py-1.5 text-[10px] font-bold btn-press text-center">
+                                💬 Chat
+                            </a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endforeach
+
         @include('front.partial.shop_list_slider')
+
         <!-- Flash Deals -->
         <div class="px-4 mb-4">
             <div class="flex items-center justify-between mb-2">
@@ -142,10 +245,8 @@
             </div>
             <div class="flex gap-3 overflow-x-auto pb-1">
                 <div class="flex-shrink-0 w-48 card-hover cursor-pointer" onclick="openShop('sharma-sweets')">
-                    <div
-                        class="bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl p-3 text-white relative overflow-hidden">
-                        <div class="absolute top-2 right-2 bg-white/20 rounded-full px-2 py-0.5 text-xs font-bold">-30%
-                        </div>
+                    <div class="bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl p-3 text-white relative overflow-hidden">
+                        <div class="absolute top-2 right-2 bg-white/20 rounded-full px-2 py-0.5 text-xs font-bold">-30%</div>
                         <div class="text-3xl mb-1">🍡</div>
                         <p class="font-display font-bold text-sm">Sharma Sweets</p>
                         <p class="text-xs opacity-80">Free samosa on ₹200</p>
@@ -155,10 +256,8 @@
                     </div>
                 </div>
                 <div class="flex-shrink-0 w-48 card-hover cursor-pointer" onclick="showScreen('spin')">
-                    <div
-                        class="bg-gradient-to-br from-saffron-500 to-saffron-700 rounded-2xl p-3 text-white relative overflow-hidden">
-                        <div class="absolute top-2 right-2 bg-white/20 rounded-full px-2 py-0.5 text-xs font-bold">SPIN
-                        </div>
+                    <div class="bg-gradient-to-br from-saffron-500 to-saffron-700 rounded-2xl p-3 text-white relative overflow-hidden">
+                        <div class="absolute top-2 right-2 bg-white/20 rounded-full px-2 py-0.5 text-xs font-bold">SPIN</div>
                         <div class="text-3xl mb-1">👟</div>
                         <p class="font-display font-bold text-sm">Raj Shoe Store</p>
                         <p class="text-xs opacity-80">Spin karo — 20% OFF jeeto</p>
@@ -168,10 +267,8 @@
                     </div>
                 </div>
                 <div class="flex-shrink-0 w-48 card-hover cursor-pointer" onclick="openShop('glamour-salon')">
-                    <div
-                        class="bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl p-3 text-white relative overflow-hidden">
-                        <div class="absolute top-2 right-2 bg-white/20 rounded-full px-2 py-0.5 text-xs font-bold">NEW
-                        </div>
+                    <div class="bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl p-3 text-white relative overflow-hidden">
+                        <div class="absolute top-2 right-2 bg-white/20 rounded-full px-2 py-0.5 text-xs font-bold">NEW</div>
                         <div class="text-3xl mb-1">✂️</div>
                         <p class="font-display font-bold text-sm">Glamour Salon</p>
                         <p class="text-xs opacity-80">Navratri Package ₹499</p>
@@ -193,8 +290,7 @@
                     <p class="text-white font-display font-bold text-sm">Hamesha 20% OFF medicines</p>
                     <p class="text-white/50 text-xs">Sirf ₹300 mein — digital card</p>
                 </div>
-                <svg class="w-5 h-5 text-gold-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    stroke-width="2">
+                <svg class="w-5 h-5 text-gold-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path d="M9 5l7 7-7 7" />
                 </svg>
             </div>
@@ -204,9 +300,7 @@
         <div class="px-4 mb-4">
             <div class="flex items-center justify-between mb-2">
                 <p class="text-xs font-semibold text-ink-400 uppercase tracking-wider">🥛 Rozana Wala</p>
-                <span class="text-xs text-saffron-500 font-semibold cursor-pointer" onclick="showScreen('rozana')">Sab
-                    dekho
-                    →</span>
+                <span class="text-xs text-saffron-500 font-semibold cursor-pointer" onclick="showScreen('rozana')">Sab dekho →</span>
             </div>
             <div class="flex gap-3 overflow-x-auto pb-1">
                 <div class="flex-shrink-0 w-36 bg-white border border-ink-100 rounded-2xl p-3 card-hover cursor-pointer"
@@ -252,14 +346,14 @@
                         onclick="filterCat(this,'kirana')">Kirana</button>
                 </div>
             </div>
+
             <div class="flex flex-col gap-3" id="shopList">
 
                 <!-- Shop: Sharma Sweets -->
                 <div class="shop-card bg-white border border-ink-100 rounded-2xl p-4 card-hover" data-cat="food"
                     onclick="openShop('sharma-sweets')">
                     <div class="flex gap-3 mb-3">
-                        <div
-                            class="w-14 h-14 bg-amber-50 rounded-xl flex items-center justify-center text-3xl flex-shrink-0">
+                        <div class="w-14 h-14 bg-amber-50 rounded-xl flex items-center justify-center text-3xl flex-shrink-0">
                             🍡
                         </div>
                         <div class="flex-1 min-w-0">
@@ -268,8 +362,7 @@
                                     <h3 class="font-display font-bold text-ink-800 text-sm">Sharma Sweet House</h3>
                                     <p class="text-xs text-ink-400">Mithai & Snacks • Sipri Bazar</p>
                                 </div>
-                                <span
-                                    class="bg-forest-100 text-forest-700 text-xs font-bold px-2 py-0.5 rounded-full flex-shrink-0">Open</span>
+                                <span class="bg-forest-100 text-forest-700 text-xs font-bold px-2 py-0.5 rounded-full flex-shrink-0">Open</span>
                             </div>
                             <div class="flex items-center gap-2 mt-1">
                                 <span class="text-xs text-saffron-500 font-semibold">★ 4.8</span>
@@ -281,15 +374,9 @@
                         </div>
                     </div>
                     <div class="flex gap-1.5 flex-wrap mb-3">
-                        <span
-                            class="bg-saffron-50 text-saffron-700 border border-saffron-200 rounded-full px-2 py-0.5 text-xs font-medium">Free
-                            samosa ₹200+</span>
-                        <span
-                            class="bg-saffron-50 text-saffron-700 border border-saffron-200 rounded-full px-2 py-0.5 text-xs font-medium">10%
-                            off sweets</span>
-                        <span
-                            class="bg-saffron-50 text-saffron-700 border border-saffron-200 rounded-full px-2 py-0.5 text-xs font-medium">🎡
-                            Spin available</span>
+                        <span class="bg-saffron-50 text-saffron-700 border border-saffron-200 rounded-full px-2 py-0.5 text-xs font-medium">Free samosa ₹200+</span>
+                        <span class="bg-saffron-50 text-saffron-700 border border-saffron-200 rounded-full px-2 py-0.5 text-xs font-medium">10% off sweets</span>
+                        <span class="bg-saffron-50 text-saffron-700 border border-saffron-200 rounded-full px-2 py-0.5 text-xs font-medium">🎡 Spin available</span>
                     </div>
                     <button
                         class="w-full gradient-brand text-white rounded-xl py-2.5 text-sm font-display font-bold btn-press"
@@ -300,8 +387,7 @@
                 <div class="shop-card bg-white border border-ink-100 rounded-2xl p-4 card-hover" data-cat="salon"
                     onclick="openShop('glamour-salon')">
                     <div class="flex gap-3 mb-3">
-                        <div
-                            class="w-14 h-14 bg-pink-50 rounded-xl flex items-center justify-center text-3xl flex-shrink-0">
+                        <div class="w-14 h-14 bg-pink-50 rounded-xl flex items-center justify-center text-3xl flex-shrink-0">
                             ✂️
                         </div>
                         <div class="flex-1 min-w-0">
@@ -330,8 +416,7 @@
                         <button class="flex-1 gradient-brand text-white rounded-xl py-2 text-xs font-bold btn-press"
                             onclick="event.stopPropagation();showScreen('spin')">🎡 Spin & Win</button>
                         <button
-                            class="flex-1 bg-ink-50 border border-ink-200 text-ink-700 rounded-xl py-2 text-xs font-bold btn-press">📅
-                            Book Now</button>
+                            class="flex-1 bg-ink-50 border border-ink-200 text-ink-700 rounded-xl py-2 text-xs font-bold btn-press">📅 Book Now</button>
                     </div>
                 </div>
 
@@ -339,8 +424,7 @@
                 <div class="shop-card bg-white border border-ink-100 rounded-2xl p-4 card-hover" data-cat="kirana"
                     onclick="openShop('ramesh-kirana')">
                     <div class="flex gap-3 mb-3">
-                        <div
-                            class="w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center text-3xl flex-shrink-0">
+                        <div class="w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center text-3xl flex-shrink-0">
                             🛒
                         </div>
                         <div class="flex-1 min-w-0">
@@ -365,18 +449,16 @@
                     <div class="flex gap-2">
                         <button class="flex-1 gradient-brand text-white rounded-xl py-2 text-xs font-bold btn-press"
                             onclick="event.stopPropagation();showScreen('spin')">🎡 Spin & Win</button>
-                        <button class="flex-1 bg-green-500 text-white rounded-xl py-2 text-xs font-bold btn-press">💬
-                            WhatsApp
-                            Order</button>
+                        <button class="flex-1 bg-green-500 text-white rounded-xl py-2 text-xs font-bold btn-press"
+                            onclick="event.stopPropagation()">💬 WhatsApp Order</button>
                     </div>
                 </div>
 
                 <!-- Shop: Raj Shoe Store -->
                 <div class="shop-card bg-white border border-ink-100 rounded-2xl p-4 card-hover" data-cat="footwear"
-                    onclick="showScreen('shopprofile','Raj Shoe Store')">
+                    onclick="openShop('raj-shoe-store')">
                     <div class="flex gap-3 mb-3">
-                        <div
-                            class="w-14 h-14 bg-orange-50 rounded-xl flex items-center justify-center text-3xl flex-shrink-0">
+                        <div class="w-14 h-14 bg-orange-50 rounded-xl flex items-center justify-center text-3xl flex-shrink-0">
                             👟
                         </div>
                         <div class="flex-1 min-w-0">
@@ -385,8 +467,7 @@
                                     <h3 class="font-display font-bold text-ink-800 text-sm">Raj Shoe Store</h3>
                                     <p class="text-xs text-ink-400">Footwear • Sadar Bazar</p>
                                 </div>
-                                <div
-                                    class="flex items-center gap-1 bg-red-50 border border-red-200 rounded-full px-2 py-0.5">
+                                <div class="flex items-center gap-1 bg-red-50 border border-red-200 rounded-full px-2 py-0.5">
                                     <span class="text-red-500 text-xs font-bold">SALE</span>
                                 </div>
                             </div>
@@ -398,32 +479,29 @@
                         </div>
                     </div>
                     <div class="flex gap-1.5 flex-wrap mb-3">
-                        <span
-                            class="bg-saffron-50 text-saffron-700 border border-saffron-200 rounded-full px-2 py-0.5 text-xs font-medium">20%
-                            off formals</span>
-                        <span
-                            class="bg-saffron-50 text-saffron-700 border border-saffron-200 rounded-full px-2 py-0.5 text-xs font-medium">Free
-                            polish</span>
-                        <span
-                            class="bg-red-50 text-red-600 border border-red-200 rounded-full px-2 py-0.5 text-xs font-medium">Buy
-                            2
-                            get 1</span>
+                        <span class="bg-saffron-50 text-saffron-700 border border-saffron-200 rounded-full px-2 py-0.5 text-xs font-medium">20% off formals</span>
+                        <span class="bg-saffron-50 text-saffron-700 border border-saffron-200 rounded-full px-2 py-0.5 text-xs font-medium">Free polish</span>
+                        <span class="bg-red-50 text-red-600 border border-red-200 rounded-full px-2 py-0.5 text-xs font-medium">Buy 2 get 1</span>
                     </div>
                     <button
                         class="w-full gradient-brand text-white rounded-xl py-2.5 text-sm font-display font-bold btn-press"
                         onclick="event.stopPropagation();showScreen('spin')">🎡 Spin & Win Offers</button>
                 </div>
 
-                <!-- Shop: Kapoor Cloth -->
-                <div class="shop-card bg-white border border-ink-100 rounded-2xl p-4 card-hover" data-cat="clothing">
+                <!-- Shop: Kapoor Fashion House -->
+                <div class="shop-card bg-white border border-ink-100 rounded-2xl p-4 card-hover" data-cat="clothing"
+                    onclick="openShop('kapoor-fashion')">
                     <div class="flex gap-3 mb-3">
-                        <div
-                            class="w-14 h-14 bg-indigo-50 rounded-xl flex items-center justify-center text-3xl flex-shrink-0">
+                        <div class="w-14 h-14 bg-indigo-50 rounded-xl flex items-center justify-center text-3xl flex-shrink-0">
                             👗
                         </div>
                         <div class="flex-1 min-w-0">
-                            <h3 class="font-display font-bold text-ink-800 text-sm">Kapoor Fashion House</h3>
-                            <p class="text-xs text-ink-400">Clothing • Sadar Bazar</p>
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <h3 class="font-display font-bold text-ink-800 text-sm">Kapoor Fashion House</h3>
+                                    <p class="text-xs text-ink-400">Clothing • Sadar Bazar</p>
+                                </div>
+                            </div>
                             <div class="flex items-center gap-2 mt-1">
                                 <span class="text-xs text-saffron-500 font-semibold">★ 4.3</span>
                                 <span class="text-ink-200 text-xs">•</span>
@@ -433,80 +511,153 @@
                     </div>
                     <div class="bg-indigo-50 rounded-xl p-2.5 mb-3 flex items-center gap-2">
                         <span class="text-base">👗</span>
-                        <p class="text-xs font-bold text-indigo-700">Naya Collection Aaya! — Navratri Special Sarees ₹899
-                            se shuru
-                        </p>
+                        <p class="text-xs font-bold text-indigo-700">Naya Collection Aaya! — Navratri Special Sarees ₹899 se shuru</p>
                     </div>
                     <button
                         class="w-full gradient-brand text-white rounded-xl py-2.5 text-sm font-display font-bold btn-press"
-                        onclick="showScreen('spin')">🎡 Spin & Win Offers</button>
+                        onclick="event.stopPropagation();showScreen('spin')">🎡 Spin & Win Offers</button>
                 </div>
 
             </div>
         </div>
     </div>
 @endsection
+
 @push('script')
-    <script>
-        (function () {
-            let cur = 0, total = 4, timer, startX = 0;
-            const track = document.getElementById('bannerTrack');
-            const dots = document.querySelectorAll('#bannerDots .banner-dot');
+<script>
+    // ── Banner Slider ──────────────────────────────────────────────
+    (function () {
+        let cur = 0, total = 4, timer, startX = 0;
+        const track = document.getElementById('bannerTrack');
+        const dots  = document.querySelectorAll('#bannerDots .banner-dot');
 
-            function goTo(i) {
-                cur = (i + total) % total;
-                track.style.transform = `translateX(-${cur * 100}%)`;
-                dots.forEach((d, idx) => {
-                    d.classList.toggle('bg-saffron-500', idx === cur);
-                    d.classList.toggle('w-4', idx === cur);
-                    d.classList.toggle('bg-ink-200', idx !== cur);
-                    d.classList.toggle('w-1.5', idx !== cur);
-                });
-            }
+        function goTo(i) {
+            cur = (i + total) % total;
+            track.style.transform = `translateX(-${cur * 100}%)`;
+            dots.forEach((d, idx) => {
+                d.classList.toggle('bg-saffron-500', idx === cur);
+                d.classList.toggle('w-4',            idx === cur);
+                d.classList.toggle('bg-ink-200',     idx !== cur);
+                d.classList.toggle('w-1.5',          idx !== cur);
+            });
+        }
 
-            function startAuto() { timer = setInterval(() => goTo(cur + 1), 3000); }
-            function stopAuto() { clearInterval(timer); }
+        function startAuto() { timer = setInterval(() => goTo(cur + 1), 3000); }
+        function stopAuto()  { clearInterval(timer); }
 
-            const wrap = document.getElementById('bannerWrap');
-            wrap.addEventListener('touchstart', e => { startX = e.touches[0].clientX; stopAuto(); }, { passive: true });
-            wrap.addEventListener('touchend', e => {
-                const diff = startX - e.changedTouches[0].clientX;
-                if (Math.abs(diff) > 40) goTo(cur + (diff > 0 ? 1 : -1));
-                startAuto();
-            }, { passive: true });
-
-            dots.forEach((d, i) => d.addEventListener('click', () => { goTo(i); stopAuto(); startAuto(); }));
-
+        const wrap = document.getElementById('bannerWrap');
+        wrap.addEventListener('touchstart', e => { startX = e.touches[0].clientX; stopAuto(); }, { passive: true });
+        wrap.addEventListener('touchend',   e => {
+            const diff = startX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 40) goTo(cur + (diff > 0 ? 1 : -1));
             startAuto();
-        })();
-        function openShop(id) {
-            showScreen('account', );
+        }, { passive: true });
+
+        dots.forEach((d, i) => d.addEventListener('click', () => { goTo(i); stopAuto(); startAuto(); }));
+        startAuto();
+    })();
+
+    // ── Brand Slider ───────────────────────────────────────────────
+    (function () {
+        const brands = [
+            { emoji: '🌿', name: 'Kaushal',   offer: 'Flat 20% Off' },
+            { emoji: '🧴', name: 'Samsara',   offer: 'Flat 20% Off' },
+            { emoji: '🍃', name: 'Patanjali', offer: 'Flat 30% Off' },
+            { emoji: '🥤', name: 'Dabur',     offer: 'Flat 15% Off' },
+            { emoji: '🧼', name: 'Himalaya',  offer: 'Buy 2 Get 1'  },
+        ];
+
+        const track = document.getElementById('brandTrack');
+        const dotsEl = document.getElementById('brandDots');
+        const wrap   = document.getElementById('brandWrap');
+        let cur = 0, autoTimer;
+
+        brands.forEach(b => {
+            const card = document.createElement('div');
+            card.className = 'min-w-[90px] bg-white rounded-2xl p-2 text-center shadow-md flex-shrink-0 mr-2';
+            card.innerHTML = `
+                <div class="text-2xl mb-1">${b.emoji}</div>
+                <p class="text-[10px] font-semibold text-gray-700">${b.name}</p>
+                <span class="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full">${b.offer}</span>
+            `;
+            track.appendChild(card);
+        });
+
+        brands.forEach((_, i) => {
+            const dot = document.createElement('button');
+            dot.className = `brand-dot h-1.5 rounded-full transition-all duration-300 ${i === 0 ? 'w-4 bg-white' : 'w-1.5 bg-white/40'}`;
+            dot.addEventListener('click', () => { goTo(i); resetAuto(); });
+            dotsEl.appendChild(dot);
+        });
+
+        function cardWidth() {
+            const c = track.querySelector('div');
+            return c ? c.offsetWidth + 8 : 98;
         }
 
-        function filterCat(btn, cat) {
-            const container = btn.closest('.flex') || btn.parentElement;
-            container.querySelectorAll('.cat-chip').forEach(c => {
-                c.classList.remove('cat-active');
+        function goTo(i) {
+            cur = (i + brands.length) % brands.length;
+            const maxOffset = (brands.length - 1) * cardWidth();
+            track.style.transform = `translateX(-${Math.min(cur * cardWidth(), maxOffset)}px)`;
+            dotsEl.querySelectorAll('.brand-dot').forEach((d, idx) => {
+                d.className = `brand-dot h-1.5 rounded-full transition-all duration-300 ${idx === cur ? 'w-4 bg-white' : 'w-1.5 bg-white/40'}`;
+            });
+        }
+
+        function resetAuto() {
+            clearInterval(autoTimer);
+            autoTimer = setInterval(() => goTo(cur + 1), 2500);
+        }
+
+        let startX = 0;
+        wrap.addEventListener('touchstart', e => { startX = e.touches[0].clientX; clearInterval(autoTimer); }, { passive: true });
+        wrap.addEventListener('touchend',   e => {
+            const diff = startX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 30) goTo(cur + (diff > 0 ? 1 : -1));
+            resetAuto();
+        }, { passive: true });
+
+        goTo(0);
+        resetAuto();
+    })();
+
+    // ── Flash Deal Timer ───────────────────────────────────────────
+    let flashSecs = 6443;
+    function updateFlash() {
+        const h = Math.floor(flashSecs / 3600);
+        const m = Math.floor((flashSecs % 3600) / 60);
+        const s = flashSecs % 60;
+        const el = document.getElementById('flashTimer');
+        if (el) el.textContent = `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        if (flashSecs > 0) flashSecs--;
+    }
+    setInterval(updateFlash, 1000);
+
+    // ── Open Shop ──────────────────────────────────────────────────
+    function openShop(id) {
+        showScreen('shopprofile', id);
+    }
+
+    // ── Category Filter (Nearby Shops) ────────────────────────────
+    function filterCat(btn, cat) {
+        // Update chip styles
+        const chipContainer = btn.closest('.flex');
+        if (chipContainer) {
+            chipContainer.querySelectorAll('.cat-chip').forEach(c => {
+                c.classList.remove('cat-active', 'border-saffron-200');
                 c.classList.add('bg-white', 'text-ink-500', 'border-ink-200');
-                c.classList.remove('border-saffron-200');
-            });
-            btn.classList.add('cat-active');
-            btn.classList.remove('bg-white', 'text-ink-500');
-            const items = document.querySelectorAll('#shopList .shop-card, .flex.flex-col.gap-3 [data-cat]');
-            items.forEach(c => {
-                c.style.display = (cat === 'all' || c.dataset.cat === cat) ? '' : 'none';
             });
         }
-        let flashSecs = 6443;
+        btn.classList.add('cat-active');
+        btn.classList.remove('bg-white', 'text-ink-500', 'border-ink-200');
+        btn.classList.add('border-saffron-200');
 
-        function updateFlash() {
-            const h = Math.floor(flashSecs / 3600),
-                m = Math.floor((flashSecs % 3600) / 60),
-                s = flashSecs % 60;
-            const el = document.getElementById('flashTimer');
-            if (el) el.textContent = `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-            if (flashSecs > 0) flashSecs--;
-        }
-        setInterval(updateFlash, 1000);
-    </script>
+        // Show / hide shop cards
+        const items = document.querySelectorAll('#shopList .shop-card');
+        items.forEach(card => {
+            const match = cat === 'all' || card.dataset.cat === cat;
+            card.style.display = match ? '' : 'none';
+        });
+    }
+</script>
 @endpush
