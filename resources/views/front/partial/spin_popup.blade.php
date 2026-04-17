@@ -4,9 +4,6 @@
 
         <div class="p-6">
             <div class="flex flex-col items-center text-center mb-6">
-                <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mb-3">
-                    <i class="fa-solid fa-shield-halved text-xl"></i>
-                </div>
                 <p class="text-xs text-gray-500 mt-1">Please enter your mobile number to unlock your reward</p>
             </div>
 
