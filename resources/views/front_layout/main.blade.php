@@ -13,6 +13,10 @@
     <div class="relative w-full max-w-md shadow-2xl md:rounded-3xl overflow-hidden bg-white min-h-screen" id="appRoot">
 
         <!-- STATUS BAR -->
+        <?php 
+            if(request()->path() == '/')
+            {
+        ?>
         <div class="w-full max-w-md mx-auto bg-white overflow-hidden">
           <div class="pt-4 pb-8 px-4">
             
@@ -50,7 +54,6 @@
                     </button>
                 </div>
             </div>
-
           </div>
         </div>
         <div class="gradient-brand px-5 py-2 flex items-center justify-between sticky top-0 z-50">
@@ -67,7 +70,7 @@
                 
             </div>
         </div>
-
+    <?php } ?>
 
 
         <turbo-frame id="main-content">

@@ -33,9 +33,9 @@ class UserController extends Controller
     // --- FOLLOW / UNFOLLOW LOGIC ---
     public function toggleFollow(Request $request)
     {
-        $follower_id = Session::get('public_user')->id??0; // Logged in user
+        $follower_id = $request->user_id;
         $following_id = $request->shopId;      // Target user/shop ID
-        $check_type=$request->only_check??'work';
+        $check_type=$request->flw_check??'work';
 
         // Check if user is logged in
         if (!$follower_id) {
@@ -47,6 +47,7 @@ class UserController extends Controller
                         ->where('follower_id', $follower_id)
                         ->where('following_id', $following_id)
                         ->first();
+        
         if($check_type!='work')
         {
             if (!$followCheck)
@@ -71,8 +72,8 @@ class UserController extends Controller
             DB::table('follows')->insert([
                 'follower_id'  => $follower_id,
                 'following_id' => $following_id,
-                'created_at'   => now(), // Manual timestamp
-                'updated_at'   => now()  // Manual timestamp
+                'created_at'   => now(),
+                'updated_at'   => now()
             ]);
 
             return response()->json(['status' => 'followed']);

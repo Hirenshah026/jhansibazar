@@ -148,21 +148,70 @@ class FrontController extends Controller
         return view('front.product_show', compact('shop'));
     }
 
-    public function shopprofile_details(Request $request,$slug)
+    public function shopprofile_details(Request $request, $slug)
     {
         $ipAddress = $request->ip();
         $slug = str_replace('-', ' ', $slug);
         $shop = DB::table('shops')->where('shop_name', $slug)->first();
-
         if (!$shop) return redirect('/');
-        $shopId=$shop->id??0;
-        $services = DB::table('services')->where('shop_id', $shopId)->orderBy('id', 'DESC')->get();
-        $items = DB::table('items')->where('shop_id', $shopId)->get();
-        // dd($shopId);
-        $result = (new UserController)->trackActivity($shopId,'profile_visits',$ipAddress);
+
+        $shopId    = $shop->id ?? 0;
+        $services  = DB::table('services')->where('shop_id', $shopId)->orderBy('id', 'DESC')->get();
+        $items     = DB::table('items')->where('shop_id', $shopId)->get();
+        $result    = (new UserController)->trackActivity($shopId, 'profile_visits', $ipAddress);
         $followCount = DB::table('follows')->where('following_id', $shopId)->get();
-        
-        return view('front.product_details', compact('shop', 'services','items','followCount'));
+
+        $shopSlug = str_replace(' ', '-', strtolower($shop->shop_name));
+
+        // Pick best image: shop_photo (Cloudinary URL) → fallback
+        $ogImage = !empty($shop->shop_photo)
+            ? $shop->shop_photo
+            : asset('logo/logo_listee.png');
+
+        // Pick best description: description → tagline → fallback
+        $metaDesc = !empty($shop->description)
+            ? \Str::limit(strip_tags($shop->description), 155)
+            : (!empty($shop->tagline)
+                ? \Str::limit($shop->tagline, 155)
+                : $shop->shop_name . ' ki profile Jhansi Bazaar par dekhein — services, items aur offers.');
+
+        $seo = [
+            // Basic
+            'title'       => $shop->shop_name . ' — Jhansi Bazaar',
+            'description' => $metaDesc,
+            'keywords'    => $shop->shop_name . ', ' . $shop->categories . ', jhansi bazaar, local shop, jhansi',
+            'canonical'   => url('/shopprofile-details/' . $shopSlug),
+            'robots'      => 'index, follow',
+
+            // Open Graph
+            'og_title'       => $shop->shop_name . ' — Jhansi Bazaar',
+            'og_description' => $metaDesc,
+            'og_image'       => $ogImage,
+            'og_url'         => url('/shopprofile-details/' . $shopSlug),
+            'og_type'        => 'business.business',
+            'og_site_name'   => 'Jhansi Bazaar',
+            'og_locale'      => 'hi_IN',
+        ];
+
+        $shopSlug = str_replace(' ', '-', strtolower($shop->shop_name));
+        $shopUrl  = url('/shopprofile-details/' . $shopSlug);
+
+        $shareText = "*{$shop->shop_name}* - Jhansi Bazaar par dekhein!\n\n";
+
+        if (!empty($shop->tagline)) {
+            $shareText .= "{$shop->tagline}\n\n";
+        }
+        if (!empty($shop->address)) {
+            $shareText .= "Pata: {$shop->address}\n";
+        }
+        if (!empty($shop->open_time) && !empty($shop->close_time)) {
+            $shareText .= "Samay: " . date('h:i A', strtotime($shop->open_time)) . " - " . date('h:i A', strtotime($shop->close_time)) . "\n\n";
+        }
+        $shareText .= "Profile dekhein:\n" . $shopUrl;
+
+        $whatsappShareUrl = "https://wa.me/?text=" . rawurlencode($shareText);
+
+        return view('front.product_details', compact('shop', 'services', 'items', 'followCount', 'seo','whatsappShareUrl'));
     }
 
     // ─────────────────────────────────────────────
