@@ -33,11 +33,10 @@
             $('#nav-wallet').addClass('active');
         } else if (currentPath.includes('account')) {
             $('#nav-account').addClass('active');
-        }
-        else if (currentPath.includes('user-profile')) {
+        } else if (currentPath.includes('user-profile')) {
             $('#nav-account').addClass('active');
         }
-        
+
     });
 </script>
 <script>
@@ -82,51 +81,53 @@
     });
 
     $(document).ready(function() {
-    
-    // Modal Open Karne Ke Liye (Is class ko apne login button par add kar dena)
-    $('.trigger-login').click(function() {
-        $('#loginModal').removeClass('hidden').addClass('flex');
-        $('body').addClass('overflow-hidden'); // Background scroll rokne ke liye
-    });
 
-    // Modal Close logic
-    $('#closeLogin, .absolute.inset-0').click(function() {
-        $('#loginModal').addClass('hidden').removeClass('flex');
-        $('body').removeClass('overflow-hidden');
-    });
+       lucide.createIcons();
+        $('.trigger-login').click(function() {
+            $('#loginModal').removeClass('hidden').addClass('flex');
+            $('body').addClass('overflow-hidden'); // Background scroll rokne ke liye
+        });
 
-    // AJAX Submission
-    $('#ajaxLoginForm').on('submit', function(e) {
-        e.preventDefault();
+        // Modal Close logic
+        $('#closeLogin, .absolute.inset-0').click(function() {
+            $('#loginModal').addClass('hidden').removeClass('flex');
+            $('body').removeClass('overflow-hidden');
+        });
 
-        const loginBtn = $('#loginBtn');
-        const loginMsg = $('#loginMsg');
-        
-        // UI Feedback
-        loginBtn.prop('disabled', true).addClass('opacity-70').html('<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...');
+        // AJAX Submission
+        $('#ajaxLoginForm').on('submit', function(e) {
+            e.preventDefault();
 
-        $.ajax({
-            url: 'api/login.php', // Tera endpoint
-            type: 'POST',
-            data: $(this).serialize(),
-            success: function(res) {
-                if(res.status === 'success') {
-                    loginMsg.addClass('text-green-600').text('Success! Redirecting...');
-                    window.location.href = 'dashboard.php';
-                } else {
-                    loginMsg.addClass('text-red-500').text('Invalid Mobile or PIN');
+            const loginBtn = $('#loginBtn');
+            const loginMsg = $('#loginMsg');
+
+            // UI Feedback
+            loginBtn.prop('disabled', true).addClass('opacity-70').html(
+                '<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...'
+                );
+
+            $.ajax({
+                url: 'api/login.php', // Tera endpoint
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(res) {
+                    if (res.status === 'success') {
+                        loginMsg.addClass('text-green-600').text('Success! Redirecting...');
+                        window.location.href = 'dashboard.php';
+                    } else {
+                        loginMsg.addClass('text-red-500').text('Invalid Mobile or PIN');
+                        resetBtn(loginBtn);
+                    }
+                },
+                error: function() {
+                    loginMsg.addClass('text-red-500').text('Connection error!');
                     resetBtn(loginBtn);
                 }
-            },
-            error: function() {
-                loginMsg.addClass('text-red-500').text('Connection error!');
-                resetBtn(loginBtn);
-            }
+            });
         });
-    });
 
-    function resetBtn(btn) {
-        btn.prop('disabled', false).removeClass('opacity-70').html('Login Securely');
-    }
-});
+        function resetBtn(btn) {
+            btn.prop('disabled', false).removeClass('opacity-70').html('Login Securely');
+        }
+    });
 </script>

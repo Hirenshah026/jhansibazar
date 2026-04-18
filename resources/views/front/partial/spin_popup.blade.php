@@ -1,23 +1,27 @@
 <div id="spinPopup"
     class="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden p-4">
-    <div class="bg-white w-full max-w-[320px] rounded-2xl shadow-xl overflow-hidden border border-gray-200">
+    <div class="bg-white w-full max-w-[320px] rounded-2xl shadow-xl overflow-hidden border border-gray-200 relative">
+
+        <button id="closePopup" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
+            <i data-lucide="x-circle" class="w-6 h-6"></i>
+        </button>
 
         <div class="p-6">
             <div class="flex flex-col items-center text-center mb-6">
-                <p class="text-xs text-gray-500 mt-1">Please enter your mobile number to unlock your reward</p>
+                <p class="text-xs text-gray-500 mt-1">Please enter your mobile number </p>
             </div>
 
             <div class="space-y-4">
                 <div class="relative">
-                    <input type="tel" id="userMobile"
+                    <input type="tel" id="userMobile" maxlength="10"
                         class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-center text-lg font-semibold tracking-widest transition-all"
                         placeholder="Enter Mobile Number">
                 </div>
 
                 <button id="spinBtn"
                     class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
-                    <span>Proceed to Spin</span>
-                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                    <span>Proceed</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
                 </button>
             </div>
 
@@ -79,6 +83,10 @@
                     }
                 })
                 .catch(err => console.error("Database error:", err));
+        });
+        $('#closePopup').on('click', function() {
+            $('#spinPopup').addClass('hidden');
+            
         });
     </script>
     @if (!Session::has('public_user'))

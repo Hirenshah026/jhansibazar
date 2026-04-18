@@ -423,11 +423,21 @@
                         <h4 class="text-[11px] font-bold text-gray-800 truncate">{{ ucwords($shop->shop_name) }}</h4>
                         <p class="text-[10px] text-gray-400 truncate">{{ ucwords($shop->address) }}</p>
                     </div>
- 
-                    <button id="followBtn" data-shopid="{{ $shop->id }}" data-userid="{{ Session::get('public_user')->id??0 }}"
-                        class="flex-shrink-0 bg-black text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm">
-                        Follow
-                    </button>
+
+
+                    @if (Session::has('shopuser'))
+                        <button id="followBtn2" data-shopid="{{ $shop->id }}"
+                            data-userid="{{ Session::get('public_user')->id ?? 0 }}"
+                            class="flex-shrink-0 bg-black text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm">
+                            Follower ( {{ count($followCount) }} )
+                        </button>
+                    @else
+                        <button id="followBtn" data-shopid="{{ $shop->id }}"
+                            data-userid="{{ Session::get('public_user')->id ?? 0 }}"
+                            class="flex-shrink-0 bg-black text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm">
+                            Follow
+                        </button>
+                    @endif
                 </div>
 
                 <div class="flex flex-shrink-0 items-center gap-1.5">
@@ -627,7 +637,7 @@
                     <div class="flex flex-col items-center justify-center py-14 text-center">
                         <div class="text-5xl mb-3">📦</div>
                         <p class="text-sm font-bold text-ink-700">Koi item nahi mila</p>
-                     
+
                     </div>
                 @else
                     <div class="grid grid-cols-2 gap-3 mb-4">
@@ -804,11 +814,10 @@
 
     </div>
     @include('front.partial.img_popup')
-    
+    @include('front.partial.follow_login')
 
 @endsection
 @push('script')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function switchTab(btn, tabId) {
             $('.dtab').removeClass('on');
@@ -842,46 +851,52 @@
             });
         }
         $(document).ready(function() {
-            // Event delegation taaki dynamic cards par bhi chale
-            $(document).on('click', '#followBtn', function(e) {
-                e.preventDefault();
-                let btn = $(this);
-                let userId = btn.data('userid');
-                let shopId = btn.data('shopid');
-                // 1. UI update turant kar do (Optimistic UI)
-                if (!btn.hasClass('is-following')) {
-                    btn.addClass('is-following bg-green-700 text-white').removeClass(
-                        'bg-black');
-                    btn.text('Following');
-                } else {
-                    btn.removeClass('is-following bg-gray-100 text-gray-500').addClass(
-                        'bg-black text-white');
-                    btn.text('Follow');
-                }
-                // 2. AJAX Request (Toggle logic)
-                $.ajax({
-                    url: "{{ url('/follow-user') }}",
-                    method: 'POST',
-                    data: {
-                        user_id: userId,
-                        shopId: shopId,
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function(res) {
-                        if (res.status === 'error') {
-                            $('.trigger-login').click();
-                            btn.removeClass('is-following bg-gray-100 text-gray-500').addClass(
-                                'bg-black text-white');
-                            btn.text('Follow');
-                        }
-                        // console.log('Status: ' + res.status);
-                    },
-                    error: function() {
-                        // Network error par reset
-                        alert("Something went wrong!");
-                        // location.reload();
+            let btn = $('#followBtn');
+            let userId = btn.data('userid');
+            let shopId = btn.data('shopid');
+            // // 1. UI update turant kar do (Optimistic UI)
+            // if (!btn.hasClass('is-following')) {
+            //     btn.addClass('is-following bg-green-700 text-white').removeClass(
+            //         'bg-black');
+            //     btn.text('Following');
+            // } else {
+            //     btn.removeClass('is-following bg-gray-100 text-gray-500').addClass(
+            //         'bg-black text-white');
+            //     btn.text('Follow');
+            // }
+            // 2. AJAX Request (Toggle logic)
+            $.ajax({
+                url: "{{ url('/follow-user') }}",
+                method: 'POST',
+                data: {
+                    user_id: userId,
+                    shopId: shopId,
+                    flw_check:'only_check',
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(res) {
+                    if (res.status == 'followed') {
+                        // $('.trigger-login').click();
+                        // document.getElementById('spinPopup').classList.remove('hidden');
+                        
+
+                        btn.addClass('is-following bg-green-700 text-white').removeClass(
+                            'bg-black');
+                        btn.text('Following');
                     }
-                });
+                    else
+                    {
+                        btn.removeClass('is-following bg-gray-100 text-gray-500 bg-green-700 text-white').addClass(
+                            'bg-black text-white');
+                        btn.text('Follow');
+                    }
+                    // console.log('Status: ' + res.status);
+                },
+                error: function() {
+                    // Network error par reset
+                    alert("Something went wrong!");
+                    // location.reload();
+                }
             });
         });
     </script>

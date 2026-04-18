@@ -273,6 +273,11 @@
                 });
                 return;
             }
+            if (!localStorage.getItem('user_mobile')) {
+                $('#spinPopup').removeClass('hidden');
+                
+                return;
+            }
 
             isSpinning = true;
             spinsLeft--; // Spin count turant kam karo

@@ -160,8 +160,9 @@ class FrontController extends Controller
         $items = DB::table('items')->where('shop_id', $shopId)->get();
         // dd($shopId);
         $result = (new UserController)->trackActivity($shopId,'profile_visits',$ipAddress);
+        $followCount = DB::table('follows')->where('following_id', $shopId)->get();
         
-        return view('front.product_details', compact('shop', 'services','items'));
+        return view('front.product_details', compact('shop', 'services','items','followCount'));
     }
 
     // ─────────────────────────────────────────────

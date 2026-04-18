@@ -34,7 +34,8 @@ class UserController extends Controller
     public function toggleFollow(Request $request)
     {
         $follower_id = Session::get('public_user')->id??0; // Logged in user
-        $following_id = $request->user_id;      // Target user/shop ID
+        $following_id = $request->shopId;      // Target user/shop ID
+        $check_type=$request->only_check??'work';
 
         // Check if user is logged in
         if (!$follower_id) {
@@ -46,7 +47,17 @@ class UserController extends Controller
                         ->where('follower_id', $follower_id)
                         ->where('following_id', $following_id)
                         ->first();
-
+        if($check_type!='work')
+        {
+            if (!$followCheck)
+            {
+                return response()->json(['status' => 'unfollowed']);
+            }
+            else
+            {
+                return response()->json(['status' => 'followed']);
+            }
+        }
         if ($followCheck) {
             // Agar pehle se follow hai, toh Unfollow (Delete)
             DB::table('follows')
