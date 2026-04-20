@@ -83,6 +83,12 @@
         input:checked+.slider:before {
             transform: translateX(14px);
         }
+
+        /* Custom error class */
+        .input-error {
+            border-color: #ef4444 !important;
+            background-color: #fef2f2 !important;
+        }
     </style>
 
     <div class="max-w-md mx-auto bg-slate-50 min-h-screen pb-12 shadow-2xl">
@@ -118,6 +124,8 @@
                                     {{ $offer['text'] ?? 'No Description' }}</p>
                                 <div class="flex flex-wrap items-center gap-2 mt-0.5">
                                     <span
+                                        class="text-[8px] px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded font-bold uppercase">{{ ($offer['category'] ?? 'spin') == 'spin' ? 'Spin Wheeler' : 'Direct Offer' }}</span>
+                                    <span
                                         class="text-[8px] px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded font-bold uppercase">Qty:
                                         {{ $offer['quantity'] ?? 0 }}</span>
                                     @if (isset($offer['expiry_date']))
@@ -138,6 +146,7 @@
                                 class="edit-offer-btn p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 rounded-md"
                                 data-index="{{ $index }}" data-text="{{ $offer['text'] ?? '' }}"
                                 data-qty="{{ $offer['quantity'] ?? 0 }}" data-expiry="{{ $offer['expiry_date'] ?? '' }}"
+                                data-category="{{ $offer['category'] ?? 'spin' }}"
                                 data-active="{{ $offer['is_active'] ?? 1 }}">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path
@@ -183,6 +192,15 @@
                     </label>
                 </div>
 
+                <div class="mb-4">
+                    <label class="text-[9px] font-black text-slate-400 uppercase ml-1">Offer Category</label>
+                    <select id="offer_category_val"
+                        class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-emerald-500">
+                        <option value="spin" selected>1. Spin Wheeler (Default)</option>
+                        <option value="direct">2. Direct Offer</option>
+                    </select>
+                </div>
+
                 <div class="mb-4 flex items-center gap-3">
                     <div id="img_select_box"
                         class="w-12 h-12 border border-dashed border-slate-300 rounded-lg flex items-center justify-center bg-slate-50 cursor-pointer overflow-hidden">
@@ -194,24 +212,29 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="text-[9px] font-black text-slate-400 uppercase ml-1">Offer Description</label>
-                    <textarea id="offer_text_val" placeholder="e.g. Buy 1 Get 1 Free" rows="2"
-                        class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-emerald-500"></textarea>
+                    <label class="text-[9px] font-black text-slate-400 uppercase ml-1 flex justify-between">
+                        <span>Offer Description (Title)</span>
+                        <span id="char_count" class="text-emerald-500">0/15</span>
+                    </label>
+                    <input type="text" id="offer_text_val" maxlength="15" placeholder="Buy 1 Get 1 Free"
+                        class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-emerald-500">
                 </div>
 
-                <div class="grid grid-cols-2 gap-3 mb-6">
+                <div class="grid grid-cols-2 gap-3 mb-2">
                     <div>
                         <label class="text-[9px] font-black text-slate-400 uppercase ml-1">Quantity</label>
-                        <input type="number" id="offer_qty_val" value="0" min="0"
+                        <input type="number" id="offer_qty_val" value="0" min="1"
                             class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 outline-none">
                     </div>
                     <div>
                         <label class="text-[9px] font-black text-slate-400 uppercase ml-1">Expiry Date</label>
                         <input type="date" id="offer_expiry_val"
-                            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 outline-none"
-                            value="{{ date('Y/m/d') }}" min="{{ date('Y-m-d') }}">
+                            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 outline-none">
                     </div>
                 </div>
+
+                <p id="qty_error_note" class="hidden text-[8px] text-red-500 font-bold uppercase mb-4 ml-1">* Quantity is
+                    required & must be greater than 0</p>
 
                 <div class="flex gap-2">
                     <button type="button"
@@ -226,39 +249,49 @@
         </div>
     </div>
 @endsection
-
 @push('script')
     <script>
         $(document).ready(function() {
-            // Past date disable logic
+            // Disable Past Dates
             const today = new Date().toISOString().split('T')[0];
             $('#offer_expiry_val').attr('min', today);
 
+            // Character Count Logic
+            $('#offer_text_val').on('input', function() {
+                const len = $(this).val().length;
+                $('#char_count').text(len + '/15');
+            });
+
             // Open Modal for New
             $('#trigger_add_modal').on('click', function() {
+                resetValidation();
                 $('#modal_title').text('New Offer');
                 $('#offer_index_val').val('');
+                $('#offer_category_val').val('spin'); // Default category
                 $('#offer_text_val').val('');
                 $('#offer_qty_val').val(0);
-                $('#offer_expiry_val').val('');
+                $('#offer_expiry_val').val(today);
                 $('#offer_active_toggle').prop('checked', true);
                 $('#img_preview_tag').addClass('hidden');
                 $('#plus_icon').removeClass('hidden');
+                $('#char_count').text('0/15');
                 $('#appModal').removeClass('hidden').addClass('flex');
             });
 
-            // Open Modal for Edit (Fix: All fields now populating)
+            // Open Modal for Edit
             $(document).on('click', '.edit-offer-btn', function() {
+                resetValidation();
                 const btn = $(this);
                 $('#modal_title').text('Update Offer');
-
                 $('#offer_index_val').val(btn.data('index'));
-                $('#offer_text_val').val(btn.data('text')); // Description
-                $('#offer_qty_val').val(btn.data('qty')); // Quantity
-                $('#offer_expiry_val').val(btn.data('expiry')); // Expiry
+                $('#offer_category_val').val(btn.data('category'));
+                $('#offer_text_val').val(btn.data('text'));
+                $('#offer_qty_val').val(btn.data('qty'));
+                $('#offer_expiry_val').val(btn.data('expiry'));
                 $('#offer_active_toggle').prop('checked', btn.data('active') == 1);
 
-                // Image handle
+                $('#char_count').text(btn.data('text').length + '/15');
+
                 const currentImg = btn.closest('.offer-item-card').find('img').attr('src');
                 if (currentImg && !currentImg.includes('gift.png')) {
                     $('#img_preview_tag').attr('src', currentImg).removeClass('hidden');
@@ -267,9 +300,13 @@
                     $('#img_preview_tag').addClass('hidden');
                     $('#plus_icon').removeClass('hidden');
                 }
-
                 $('#appModal').removeClass('hidden').addClass('flex');
             });
+
+            function resetValidation() {
+                $('#offer_qty_val').removeClass('input-error');
+                $('#qty_error_note').addClass('hidden');
+            }
 
             $('.close-modal-trigger').on('click', function() {
                 $('#appModal').addClass('hidden').removeClass('flex');
@@ -294,31 +331,36 @@
             // Save Logic
             $('#main_save_btn').on('click', function() {
                 const text = $('#offer_text_val').val();
+                const qty = parseInt($('#offer_qty_val').val());
+
+                // Reset error state
+                resetValidation();
+
                 if (!text) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops',
                         text: 'Offer text is required!'
                     });
+                    $('#offer_text_val').focus();
                     return;
                 }
-                //alert($('#offer_qty_val').val())
-                if ($('#offer_qty_val').val() <= 0) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops',
-                        text: 'Quantity required!'
-                    });
+
+                if (!qty || qty <= 0) {
+                    $('#offer_qty_val').addClass('input-error').focus();
+                    $('#qty_error_note').removeClass('hidden');
                     return;
                 }
+
                 const $btn = $(this);
                 $btn.prop('disabled', true);
                 $('#btn_spinner').removeClass('hidden');
 
                 const formData = new FormData();
                 formData.append('_token', "{{ csrf_token() }}");
+                formData.append('category', $('#offer_category_val').val());
                 formData.append('offer_text', text);
-                formData.append('quantity', $('#offer_qty_val').val());
+                formData.append('quantity', qty);
                 formData.append('expiry_date', $('#offer_expiry_val').val());
                 formData.append('is_active', $('#offer_active_toggle').is(':checked') ? 1 : 0);
                 formData.append('index', $('#offer_index_val').val());
@@ -333,6 +375,11 @@
                     processData: false,
                     contentType: false,
                     success: function() {
+                         Swal.fire({
+                            icon: 'success',
+                            title: 'Info',
+                            text: 'Saved Offer'
+                        });
                         location.reload();
                     },
                     error: function() {
@@ -349,16 +396,28 @@
             // Delete Logic
             $(document).on('click', '.delete-offer-btn', function() {
                 const idx = $(this).data('index');
+
                 Swal.fire({
-                    title: 'Delete?',
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
                     icon: 'warning',
-                    showCancelButton: true
+                    showCancelButton: true,
+                    // Left side button (Cancel)
+                    cancelButtonColor: '#ef4444', // Red color
+                    cancelButtonText: 'Cancel',
+                    // Right side button (Delete)
+                    confirmButtonColor: '#10b981', // Emerald green (ya aapka primary color)
+                    confirmButtonText: 'Yes, Delete',
+                    // Buttons ka order flip karne ke liye (agar zarurat ho)
+                    reverseButtons: true
                 }).then((res) => {
                     if (res.isConfirmed) {
                         $.post("{{ route('shop.offers.delete') }}", {
                             _token: "{{ csrf_token() }}",
                             index: idx
-                        }, () => location.reload());
+                        }, () => {
+                            location.reload();
+                        });
                     }
                 });
             });
