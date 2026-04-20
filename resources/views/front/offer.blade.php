@@ -302,7 +302,7 @@
                     });
                     return;
                 }
-                alert($('#offer_qty_val').val())
+                //alert($('#offer_qty_val').val())
                 if ($('#offer_qty_val').val() <= 0) {
                     Swal.fire({
                         icon: 'error',
