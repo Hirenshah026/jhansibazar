@@ -376,6 +376,15 @@
             if (badge) badge.textContent = `${spinsLeft} spin`;
         }
 
-        setTimeout(() => drawWheel(0), 100);
+        setTimeout(() => {
+            drawWheel(0);
+            // Agar already verified hai toh auto spin
+            if (localStorage.getItem('user_mobile')) {
+                setTimeout(() => {
+                    document.getElementById('spinStatusMsg').textContent = '🎉 Spin ho raha hai...';
+                    triggerSpin();
+                }, 800);
+            }
+        }, 100);
     </script>
 @endpush

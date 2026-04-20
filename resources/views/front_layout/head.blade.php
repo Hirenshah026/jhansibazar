@@ -2,7 +2,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <meta name="turbo-visit-control" content="reload">
-<title>Jhansi Bazaar — Apna Sheher, Apna Platform</title>
+@include('front_layout.seo')
 
 <script src="https://unpkg.com/@hotwired/turbo@7.3.0/dist/turbo.es2017-umd.js"></script>
 <style>

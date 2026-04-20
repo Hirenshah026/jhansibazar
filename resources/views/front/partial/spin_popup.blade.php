@@ -80,6 +80,10 @@
                 .then(data => {
                     if (data.success) {
                         document.getElementById('spinPopup').classList.add('hidden');
+                        setTimeout(() => {
+                            document.getElementById('spinStatusMsg').textContent = '🎉 Spin ho raha hai...';
+                            triggerSpin();
+                        }, 500);
                     }
                 })
                 .catch(err => console.error("Database error:", err));
