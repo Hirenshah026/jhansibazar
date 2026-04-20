@@ -73,7 +73,7 @@
                     <span class="text-xs font-bold text-gold-700">🪙 340 coins</span>
                 </div>
                 <div class="flex items-center gap-1.5 bg-saffron-50 border border-saffron-200 rounded-full px-3 py-1">
-                    <span class="text-xs font-bold text-saffron-600" id="spinsCount">1 spin bacha</span>
+                    <span class="text-xs font-bold text-saffron-600" id="spinsCount"><?= $shop->spins_left; ?> spin bacha</span>
                 </div>
             </div>
 
@@ -195,6 +195,7 @@
 @push('script')
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>    
     <script>
+        const isLoggedIn = {{ Session::has('public_user') ? 'true' : 'false' }};
         const isShopOpen = {{ $isShopOpen ? 'true' : 'false' }};
         const shopOpenTime = "{{ \Carbon\Carbon::parse($openTime)->format('h:i A') }}";
         const shopCloseTime = "{{ \Carbon\Carbon::parse($closeTime)->format('h:i A') }}";
@@ -273,14 +274,17 @@
                 });
                 return;
             }
+
             if (!localStorage.getItem('user_mobile')) {
                 $('#spinPopup').removeClass('hidden');
-                
                 return;
             }
 
+            doSpin();
+        }
+
+        function doSpin() {
             isSpinning = true;
-            spinsLeft--; // Spin count turant kam karo
             updateSpinUI();
 
             const btn = document.getElementById('spinMainBtn');
@@ -288,21 +292,22 @@
             btn.innerHTML = '🌀 Spinning...';
 
             const extra = 7 + Math.floor(Math.random() * 5);
-            const rand = Math.random() * 2 * Math.PI;
+            const rand  = Math.random() * 2 * Math.PI;
             const target = curAngle + (extra * 2 * Math.PI) + rand;
-            const dur = 3500;
-            const t0 = performance.now();
-            const a0 = curAngle;
+            const dur   = 3500;
+            const t0    = performance.now();
+            const a0    = curAngle;
 
             function frame(now) {
-                const p = Math.min((now - t0) / dur, 1);
+                const p    = Math.min((now - t0) / dur, 1);
                 const ease = 1 - Math.pow(1 - p, 4);
-                curAngle = a0 + (target - a0) * ease;
+                curAngle   = a0 + (target - a0) * ease;
                 drawWheel(curAngle);
-                if (p < 1) requestAnimationFrame(frame);
-                else {
+                if (p < 1) {
+                    requestAnimationFrame(frame);
+                } else {
                     isSpinning = false;
-                    btn.disabled = false;
+                    btn.disabled  = false;
                     btn.textContent = spinsLeft > 0 ? 'SPIN AGAIN 🎡' : 'Spins Khatam 😅';
                     showWin(curAngle);
                 }
@@ -343,6 +348,21 @@
 
         function closeWin() {
             document.getElementById('winModal').classList.add('hidden');
+            if (isLoggedIn) {
+                $.ajax({
+                    url: '{{ route("spin.decrement") }}',
+                    method: 'POST',
+                    data: { _token: '{{ csrf_token() }}' },
+                    success: function(res) {
+                        spinsLeft = res.spinsLeft;
+                        updateSpinUI();
+                    },
+                    error: function() {
+                        // silent fail — already spun, just update locally
+                        updateSpinUI();
+                    }
+                });
+            }
         }
 
         function earnBonus(type) {

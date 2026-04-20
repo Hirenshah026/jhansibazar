@@ -85,9 +85,10 @@ body { background: #F0F4FF; min-height: 100vh }
 }
 .info-pill svg { flex-shrink: 0 }
 
+/* Stat cards — no border, subtle shadow only */
 .stat-card {
-    flex: 1; background: #fff; border-radius: 16px;
-    border: 1px solid #E0E8FF; padding: 12px 10px; text-align: center;
+    flex: 1; background: #F8FAFF; border-radius: 16px;
+    padding: 12px 10px; text-align: center;
 }
 
 .action-btn {
@@ -139,6 +140,32 @@ body { background: #F0F4FF; min-height: 100vh }
     font-size: 11px; font-weight: 800; letter-spacing: 0.08em;
     text-transform: uppercase; color: #94a3b8; margin-bottom: 10px;
 }
+
+/* ── Review form styles ── */
+.review-star { font-size: 28px; cursor: pointer; color: #e2e8f0; transition: color .15s; line-height: 1 }
+.review-star.active, .review-star:hover { color: #FCD34D }
+.review-textarea {
+    width: 100%; border: 1.5px solid #E0E8FF; border-radius: 14px;
+    padding: 12px 14px; font-size: 13px; font-family: 'Nunito', sans-serif;
+    color: #1e293b; resize: none; outline: none; transition: border-color .15s;
+    background: #F8FAFF;
+}
+.review-textarea:focus { border-color: #3B5BDB; background: #fff }
+.review-input {
+    width: 100%; border: 1.5px solid #E0E8FF; border-radius: 12px;
+    padding: 10px 14px; font-size: 13px; font-family: 'Nunito', sans-serif;
+    color: #1e293b; outline: none; transition: border-color .15s; background: #F8FAFF;
+}
+.review-input:focus { border-color: #3B5BDB; background: #fff }
+
+/* ── Followed label (non-clickable) ── */
+.followed-label {
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; gap: 5px;
+    color: #16A34A; font-size: 12px; font-weight: 800;
+    padding: 7px 12px;
+    pointer-events: none; user-select: none;
+}
 </style>
 @endpush
 
@@ -153,6 +180,19 @@ body { background: #F0F4FF; min-height: 100vh }
     $payments = json_decode($shop->payment_modes, true) ?? [];
     $offDays = json_decode($shop->off_days, true) ?? [];
     $shopInitial = strtoupper(substr($shop->shop_name, 0, 1));
+
+    /* ── Dynamic review stats ── */
+    $reviewCount   = $reviews->count();
+    $avgRating     = $reviewCount > 0 ? round($reviews->avg('rating'), 1) : 0;
+    $starCounts    = [5=>0, 4=>0, 3=>0, 2=>0, 1=>0];
+    foreach ($reviews as $r) { $starCounts[(int)$r->rating] = ($starCounts[(int)$r->rating] ?? 0) + 1; }
+
+    /* ── Is current user logged in? ── */
+    $loggedUser = Session::get('public_user');
+    $isLogged   = Session::has('shopuser') && $loggedUser;
+
+    /* ── Is already following? ── */
+    $isFollowing = $isFollowed ?? false; // pass $isFollowed boolean from controller
 @endphp
 
 <div id="screen-detail" class="sr" style="background:#F0F4FF; min-height:100vh; padding-bottom:110px; max-width:480px; margin:0 auto; position:relative;">
@@ -179,11 +219,9 @@ body { background: #F0F4FF; min-height: 100vh }
         <img id="detailMainImg" src="{{ $mainImg }}"
             style="width:100%; height:280px; object-fit:cover; display:block;">
 
-        {{-- Dark gradient overlay --}}
         <div style="position:absolute; bottom:0; left:0; right:0; height:100px;
             background:linear-gradient(to top, rgba(15,20,40,0.7), transparent); pointer-events:none"></div>
 
-        {{-- Shop name overlay on image --}}
         <div style="position:absolute; bottom:14px; left:14px; right:14px">
             <p class="fd" style="font-size:20px; font-weight:800; color:#fff; text-shadow:0 1px 6px rgba(0,0,0,0.4); line-height:1.2">
                 {{ ucwords($shop->shop_name) }}
@@ -193,14 +231,12 @@ body { background: #F0F4FF; min-height: 100vh }
             @endif
         </div>
 
-        {{-- Status badge --}}
         @if($shop->status == 'pending')
         <div style="position:absolute; top:12px; right:12px">
             <span class="tag t-amber">🕒 Pending</span>
         </div>
         @endif
 
-        {{-- SPIN THE WHEEL FLOATING BUTTON - placed on hero --}}
         @if($hasSpin)
         <div style="position:absolute; top:12px; left:12px">
             <div class="spin-btn-wrap">
@@ -250,21 +286,27 @@ body { background: #F0F4FF; min-height: 100vh }
                 </p>
             </div>
 
-            {{-- Follow button --}}
-            @if(Session::has('shopuser'))
-                <button id="followBtn2" data-shopid="{{ $shop->id }}" data-userid="{{ Session::get('public_user')->id ?? 0 }}"
-                    style="flex-shrink:0; background:#E8EEFF; color:#3B5BDB; font-size:11px; font-weight:800; padding:7px 12px; border-radius:20px; border:1.5px solid #C7D7FF; cursor:pointer; white-space:nowrap">
+            {{-- ── Follow / Followed state ── --}}
+            @if($isFollowing)
+                {{-- Already following: plain non-clickable text --}}
+                <span class="followed-label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    Followed
+                </span>
+            @elseif($isLogged)
+                <button id="followBtn2" data-shopid="{{ $shop->id }}" data-userid="{{ $loggedUser->id ?? 0 }}"
+                    style="flex-shrink:0; background:#EEF2FF; color:#3B5BDB; font-size:11px; font-weight:800; padding:7px 12px; border-radius:20px; border:1.5px solid #C7D7FF; cursor:pointer; white-space:nowrap">
                     👥 {{ count($followCount) }}
                 </button>
             @else
-                <button id="followBtn" data-shopid="{{ $shop->id }}" data-userid="{{ Session::get('public_user')->id ?? 0 }}"
+                <button id="followBtn" data-shopid="{{ $shop->id }}" data-userid="0"
                     style="flex-shrink:0; background:#3B5BDB; color:#fff; font-size:11px; font-weight:800; padding:7px 14px; border-radius:20px; border:none; cursor:pointer">
                     + Follow
                 </button>
             @endif
         </div>
 
-        {{-- Quick stats row --}}
+        {{-- Quick stats row — no borders, just background tint --}}
         <div style="display:flex; padding:12px 14px; gap:8px; border-bottom:1px solid #F1F5F9">
             <div class="stat-card">
                 <p style="font-size:18px; font-weight:800; color:#1e293b" class="fd">{{ count($followCount) }}</p>
@@ -279,7 +321,7 @@ body { background: #F0F4FF; min-height: 100vh }
                 <p style="font-size:10px; color:#94a3b8; font-weight:700; margin-top:2px">Items</p>
             </div>
             @if($hasSpin)
-            <div class="stat-card" style="border-color:#FDE68A; background:#FFFBEB">
+            <div class="stat-card" style="background:#FFFBEB">
                 <p style="font-size:18px; font-weight:800; color:#B45309" class="fd">{{ count($cleanOffers) }}</p>
                 <p style="font-size:10px; color:#B45309; font-weight:700; margin-top:2px">Offers</p>
             </div>
@@ -311,18 +353,16 @@ body { background: #F0F4FF; min-height: 100vh }
         </div>
     </div>
 
-    {{-- ── SPIN THE WHEEL BANNER (big, below card) ── --}}
+    {{-- ── SPIN THE WHEEL BANNER ── --}}
     @if($hasSpin)
     <a href="{{ url('/spin/' . $shopSlug) }}"
         style="display:flex; align-items:center; gap:14px; margin:10px 12px 0;
             background:linear-gradient(135deg,#1a1a2e 0%,#16213e 60%,#0f3460 100%);
             border:1.5px solid rgba(245,158,11,0.5); border-radius:20px; padding:16px 18px;
             text-decoration:none; position:relative; overflow:hidden;">
-        {{-- shimmer --}}
         <div style="position:absolute;top:0;left:-60%;width:40%;height:100%;
             background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);
             animation:shimmer-move 3s ease-in-out infinite; pointer-events:none"></div>
-
         <div style="width:52px;height:52px;border-radius:14px;background:rgba(245,158,11,0.15);
             border:1.5px solid rgba(245,158,11,0.4);display:flex;align-items:center;justify-content:center;flex-shrink:0">
             <svg class="spin-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round">
@@ -346,7 +386,6 @@ body { background: #F0F4FF; min-height: 100vh }
     {{-- ── TABS & CONTENT ── --}}
     <div style="margin:12px 12px 0; background:#fff; border-radius:20px; border:1px solid #E0E8FF; overflow:hidden">
 
-        {{-- Tab row --}}
         <div style="display:flex; border-bottom:1px solid #F1F5F9; overflow-x:auto" class="hide-scroll">
             <button class="dtab on" onclick="switchTab(this,'dt-desc')">About</button>
             <button class="dtab" onclick="switchTab(this,'dt-details')">Timing</button>
@@ -354,7 +393,11 @@ body { background: #F0F4FF; min-height: 100vh }
             <button class="dtab hidden" onclick="switchTab(this,'dt-offers')">Services</button>
             @endif
             <button class="dtab" onclick="switchTab(this,'dt-items')">Items</button>
-            <button class="dtab" onclick="switchTab(this,'dt-reviews')">Reviews</button>
+            <button class="dtab" onclick="switchTab(this,'dt-reviews')">Reviews
+                @if($reviewCount > 0)
+                <span style="display:inline-block;margin-left:4px;background:#EEF2FF;color:#3B5BDB;font-size:10px;font-weight:800;padding:1px 6px;border-radius:10px">{{ $reviewCount }}</span>
+                @endif
+            </button>
         </div>
 
         {{-- ── ABOUT TAB ── --}}
@@ -362,8 +405,6 @@ body { background: #F0F4FF; min-height: 100vh }
             <p style="font-size:14px; color:#475569; line-height:1.75; margin-bottom:16px">
                 {{ $shop->description ?? 'No description available for this shop.' }}
             </p>
-
-            {{-- Owner --}}
             <div style="background:#F8FAFF; border-radius:14px; padding:12px 14px; border:1px solid #E0E8FF; display:flex; gap:12px; align-items:center; margin-bottom:14px">
                 <div style="width:40px;height:40px;border-radius:50%;background:#EEF2FF;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">👤</div>
                 <div>
@@ -371,8 +412,6 @@ body { background: #F0F4FF; min-height: 100vh }
                     <p style="font-size:14px;font-weight:800;color:#1e293b">{{ $shop->owner_name }}</p>
                 </div>
             </div>
-
-            {{-- Tags --}}
             <div style="display:flex;gap:6px;flex-wrap:wrap">
                 @if($shop->tagline)
                     <span class="tag t-green">✨ {{ $shop->tagline }}</span>
@@ -389,7 +428,6 @@ body { background: #F0F4FF; min-height: 100vh }
         {{-- ── TIMING TAB ── --}}
         <div id="dt-details" class="tab-content" style="display:none; padding:16px">
             <div style="display:flex;flex-direction:column;gap:10px">
-
                 <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:#F8FAFF;border-radius:14px;border:1px solid #E0E8FF">
                     <div style="display:flex;align-items:center;gap:8px">
                         <div style="width:32px;height:32px;background:#EEF2FF;border-radius:10px;display:flex;align-items:center;justify-content:center">
@@ -401,7 +439,6 @@ body { background: #F0F4FF; min-height: 100vh }
                         {{ date('g:i a', strtotime($shop->open_time)) }} — {{ date('g:i a', strtotime($shop->close_time)) }}
                     </span>
                 </div>
-
                 <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:#F8FAFF;border-radius:14px;border:1px solid #E0E8FF">
                     <div style="display:flex;align-items:center;gap:8px">
                         <div style="width:32px;height:32px;background:#FEF2F2;border-radius:10px;display:flex;align-items:center;justify-content:center">
@@ -413,7 +450,6 @@ body { background: #F0F4FF; min-height: 100vh }
                         {{ count($offDays) > 0 ? implode(', ', $offDays) : 'Open Everyday' }}
                     </span>
                 </div>
-
                 <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:#F8FAFF;border-radius:14px;border:1px solid #E0E8FF">
                     <div style="display:flex;align-items:center;gap:8px">
                         <div style="width:32px;height:32px;background:#FFFBEB;border-radius:10px;display:flex;align-items:center;justify-content:center">
@@ -425,7 +461,6 @@ body { background: #F0F4FF; min-height: 100vh }
                         {{ count($payments) > 0 ? implode(', ', $payments) : 'Cash & Online' }}
                     </span>
                 </div>
-
                 <div style="padding:12px 14px;background:#F8FAFF;border-radius:14px;border:1px solid #E0E8FF">
                     <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
                         <div style="width:32px;height:32px;background:#DCFCE7;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
@@ -508,7 +543,6 @@ body { background: #F0F4FF; min-height: 100vh }
                             @else
                                 <span style="font-size:36px">{{ $emoji }}</span>
                             @endif
-
                             @if($hasDiscount && $discountPercent > 0)
                             <div style="position:absolute;bottom:6px;right:6px;background:#EF4444;color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:20px">
                                 -{{ $discountPercent }}%
@@ -546,53 +580,112 @@ body { background: #F0F4FF; min-height: 100vh }
             @endif
         </div>
 
-        {{-- ── REVIEWS TAB ── --}}
+        {{-- ── REVIEWS TAB (Dynamic) ── --}}
         <div id="dt-reviews" class="tab-content" style="display:none; padding:16px">
+
+            {{-- Rating summary --}}
             <div style="display:flex;gap:16px;margin-bottom:18px;align-items:center">
                 <div style="text-align:center;flex-shrink:0">
-                    <p class="fd" style="font-size:44px;font-weight:800;color:#1e293b;line-height:1">4.8</p>
-                    <div style="display:flex;gap:2px;justify-content:center;margin:5px 0;font-size:14px;color:#FCD34D">★★★★★</div>
-                    <p style="font-size:11px;color:#94a3b8">12 Reviews</p>
+                    <p class="fd" style="font-size:44px;font-weight:800;color:#1e293b;line-height:1">
+                        {{ $reviewCount > 0 ? $avgRating : '—' }}
+                    </p>
+                    <div style="display:flex;gap:2px;justify-content:center;margin:5px 0;font-size:14px;color:#FCD34D">
+                        @for($s = 1; $s <= 5; $s++)
+                            {{ $s <= round($avgRating) ? '★' : '☆' }}
+                        @endfor
+                    </div>
+                    <p style="font-size:11px;color:#94a3b8">{{ $reviewCount }} {{ Str::plural('Review', $reviewCount) }}</p>
                 </div>
                 <div style="flex:1">
-                    @foreach([['5','85%'],['4','10%'],['3','5%']] as [$star,$pct])
+                    @foreach([5,4,3,2,1] as $star)
+                    @php
+                        $cnt = $starCounts[$star] ?? 0;
+                        $pct = $reviewCount > 0 ? round(($cnt / $reviewCount) * 100) : 0;
+                    @endphp
                     <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
                         <span style="font-size:11px;color:#64748b;width:10px">{{ $star }}</span>
                         <div style="flex:1;height:6px;background:#F1F5F9;border-radius:10px;overflow:hidden">
-                            <div style="width:{{ $pct }};height:100%;background:#FCD34D;border-radius:10px"></div>
+                            <div style="width:{{ $pct }}%;height:100%;background:#FCD34D;border-radius:10px;transition:width .4s"></div>
                         </div>
+                        <span style="font-size:10px;color:#94a3b8;width:24px;text-align:right">{{ $cnt }}</span>
                     </div>
                     @endforeach
                 </div>
             </div>
 
-            <div style="display:flex;flex-direction:column;gap:10px">
-                <div style="background:#F8FAFF;border-radius:14px;padding:13px;border:1px solid #E0E8FF">
+            {{-- ── ADD REVIEW FORM ── --}}
+            <div style="background:#F8FAFF;border-radius:16px;padding:14px;border:1px solid #E0E8FF;margin-bottom:16px">
+                <p style="font-size:12px;font-weight:800;color:#1e293b;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.05em">✍️ Write a Review</p>
+
+                {{-- Star picker --}}
+                <div style="display:flex;gap:6px;margin-bottom:12px" id="starPicker">
+                    @for($s = 1; $s <= 5; $s++)
+                    <span class="review-star" data-val="{{ $s }}" onclick="setRating({{ $s }})">★</span>
+                    @endfor
+                </div>
+                <input type="hidden" id="selectedRating" value="0">
+
+                {{-- Name + Phone (only if not logged in) --}}
+                @if(!$isLogged)
+                <div style="display:flex;gap:8px;margin-bottom:10px">
+                    <input class="review-input" id="reviewerName" type="text" placeholder="Your name" style="flex:1">
+                    <input class="review-input" id="reviewerPhone" type="tel" placeholder="Phone" style="flex:1">
+                </div>
+                @endif
+
+                <textarea class="review-textarea" id="reviewComment" rows="3" placeholder="Share your experience with this shop..."></textarea>
+
+                <button onclick="submitReview()"
+                    style="margin-top:10px;width:100%;background:#3B5BDB;color:#fff;border:none;border-radius:12px;
+                        padding:12px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;
+                        transition:opacity .15s" id="reviewSubmitBtn">
+                    Submit Review
+                </button>
+                <div id="reviewMsg" style="margin-top:8px;font-size:12px;font-weight:700;text-align:center;display:none"></div>
+            </div>
+
+            {{-- ── REVIEWS LIST ── --}}
+            <div id="reviews-list" style="display:flex;flex-direction:column;gap:10px">
+                @forelse($reviews as $review)
+                @php
+                    $initials = strtoupper(substr($review->reviewer_name, 0, 2));
+                    $avatarColors = ['#EEF2FF|#3B5BDB', '#DCFCE7|#15803D', '#FDF2F8|#9D174D', '#FFF7ED|#C2410C', '#F0FDF4|#166534'];
+                    [$avatarBg, $avatarColor] = explode('|', $avatarColors[$review->id % count($avatarColors)]);
+                @endphp
+                <div class="review-item" style="background:#F8FAFF;border-radius:14px;padding:13px;border:1px solid #E0E8FF">
                     <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-                        <div style="width:32px;height:32px;border-radius:50%;background:#EEF2FF;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#3B5BDB">RK</div>
-                        <div>
-                            <p style="font-size:13px;font-weight:800;color:#1e293b">Rahul Kumar</p>
-                            <p style="font-size:10px;color:#FCD34D">★★★★★</p>
+                        <div style="width:34px;height:34px;border-radius:50%;background:{{ $avatarBg }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:{{ $avatarColor }};flex-shrink:0">
+                            {{ $initials }}
+                        </div>
+                        <div style="flex:1">
+                            <p style="font-size:13px;font-weight:800;color:#1e293b">{{ ucwords($review->reviewer_name) }}</p>
+                            <div style="display:flex;align-items:center;gap:6px">
+                                <span style="font-size:11px;color:#FCD34D">
+                                    @for($s=1;$s<=5;$s++){{ $s<=$review->rating ? '★' : '☆' }}@endfor
+                                </span>
+                                @if($review->created_at)
+                                <span style="font-size:10px;color:#94a3b8">· {{ \Carbon\Carbon::parse($review->created_at)->diffForHumans() }}</span>
+                                @endif
+                            </div>
                         </div>
                     </div>
-                    <p style="font-size:13px;color:#475569;line-height:1.6">Sahi rate aur acchi quality. Jhansi mein best shop hai!</p>
+                    @if($review->comment)
+                    <p style="font-size:13px;color:#475569;line-height:1.6">{{ $review->comment }}</p>
+                    @endif
                 </div>
-                <div style="background:#F8FAFF;border-radius:14px;padding:13px;border:1px solid #E0E8FF">
-                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-                        <div style="width:32px;height:32px;border-radius:50%;background:#FDF2F8;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#9D174D">AS</div>
-                        <div>
-                            <p style="font-size:13px;font-weight:800;color:#1e293b">Anjali S.</p>
-                            <p style="font-size:10px;color:#FCD34D">★★★★☆</p>
-                        </div>
-                    </div>
-                    <p style="font-size:13px;color:#475569;line-height:1.6">Bohot accha collection hai. Jarur jayein!</p>
+                @empty
+                <div style="text-align:center;padding:30px 20px">
+                    <div style="font-size:40px;margin-bottom:8px">💬</div>
+                    <p style="font-size:13px;font-weight:800;color:#94a3b8">No reviews yet</p>
+                    <p style="font-size:11px;color:#cbd5e1;margin-top:4px">Be the first to share your experience!</p>
                 </div>
+                @endforelse
             </div>
         </div>
 
     </div>{{-- end tabs card --}}
 
-    {{-- ── BOTTOM SPIN BANNER (if has spin) ── --}}
+    {{-- ── BOTTOM SPIN BANNER ── --}}
     @if($hasSpin)
     <div style="margin:12px 12px 0">
         <a href="{{ url('/spin/' . $shopSlug) }}"
@@ -614,18 +707,23 @@ body { background: #F0F4FF; min-height: 100vh }
 
 @push('script')
 <script>
+/* ── Tab switching ── */
 function switchTab(btn, tabId) {
     $('.dtab').removeClass('on');
     $(btn).addClass('on');
     $('.tab-content').hide();
     $('#' + tabId).fadeIn(200);
 }
+
+/* ── Image thumbnail ── */
 function changeImg(el) {
     $('.thumb').removeClass('active');
     $(el).addClass('active');
     const src = $(el).attr('src');
     $('#detailMainImg').fadeOut(150, function() { $(this).attr('src', src).fadeIn(150) });
 }
+
+/* ── Service filter ── */
 function filter(cat, btn) {
     document.querySelectorAll('.t-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
@@ -635,6 +733,103 @@ function filter(cat, btn) {
         else card.classList.add('hide');
     });
 }
+
+/* ── Star rating picker ── */
+function setRating(val) {
+    document.getElementById('selectedRating').value = val;
+    document.querySelectorAll('.review-star').forEach((el, i) => {
+        el.classList.toggle('active', i < val);
+    });
+}
+
+/* ── Submit review via AJAX ── */
+function submitReview() {
+    const rating = parseInt(document.getElementById('selectedRating').value);
+    const comment = document.getElementById('reviewComment').value.trim();
+
+    @if(!$isLogged)
+    const name  = document.getElementById('reviewerName').value.trim();
+    const phone = document.getElementById('reviewerPhone').value.trim();
+    @else
+    const name  = '{{ $loggedUser->name ?? '' }}';
+    const phone = '{{ $loggedUser->phone ?? '' }}';
+    @endif
+
+    const msgEl  = document.getElementById('reviewMsg');
+    const btnEl  = document.getElementById('reviewSubmitBtn');
+
+    if (rating < 1) { showReviewMsg('Please select a star rating.', '#EF4444'); return; }
+    if (!name)      { showReviewMsg('Please enter your name.', '#EF4444'); return; }
+
+    btnEl.disabled = true;
+    btnEl.textContent = 'Submitting…';
+
+    $.ajax({
+        url: '{{ url("/shop-review/store") }}',
+        method: 'POST',
+        data: {
+            shop_id:       {{ $shop->id }},
+            reviewer_name:  name,
+            reviewer_phone: phone,
+            rating:        rating,
+            comment:       comment,
+            _token:        '{{ csrf_token() }}'
+        },
+        success: function(res) {
+            if (res.success) {
+                showReviewMsg('✅ Review submitted! Thank you.', '#16A34A');
+                // Prepend new review card
+                const colors = ['#EEF2FF|#3B5BDB','#DCFCE7|#15803D','#FDF2F8|#9D174D','#FFF7ED|#C2410C'];
+                const [bg, col] = colors[Math.floor(Math.random() * colors.length)].split('|');
+                const initials = name.substring(0, 2).toUpperCase();
+                const stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+                const html = `
+                    <div class="review-item" style="background:#F8FAFF;border-radius:14px;padding:13px;border:1px solid #E0E8FF;animation:bounce-in .3s ease both">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                            <div style="width:34px;height:34px;border-radius:50%;background:${bg};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:${col};flex-shrink:0">${initials}</div>
+                            <div style="flex:1">
+                                <p style="font-size:13px;font-weight:800;color:#1e293b">${name}</p>
+                                <div style="display:flex;align-items:center;gap:6px">
+                                    <span style="font-size:11px;color:#FCD34D">${stars}</span>
+                                    <span style="font-size:10px;color:#94a3b8">· just now</span>
+                                </div>
+                            </div>
+                        </div>
+                        ${comment ? `<p style="font-size:13px;color:#475569;line-height:1.6">${comment}</p>` : ''}
+                    </div>`;
+                // Remove empty state if present
+                $('#reviews-list').find('[style*="No reviews"]').closest('div').remove();
+                $('#reviews-list').prepend(html);
+                // Reset form
+                document.getElementById('reviewComment').value = '';
+                @if(!$isLogged)
+                document.getElementById('reviewerName').value = '';
+                document.getElementById('reviewerPhone').value = '';
+                @endif
+                setRating(0);
+            } else {
+                showReviewMsg(res.message || 'Something went wrong.', '#EF4444');
+            }
+            btnEl.disabled = false;
+            btnEl.textContent = 'Submit Review';
+        },
+        error: function() {
+            showReviewMsg('Server error. Please try again.', '#EF4444');
+            btnEl.disabled = false;
+            btnEl.textContent = 'Submit Review';
+        }
+    });
+}
+
+function showReviewMsg(text, color) {
+    const el = document.getElementById('reviewMsg');
+    el.textContent = text;
+    el.style.color = color;
+    el.style.display = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
+/* ── Follow check on load (for non-logged route) ── */
 $(document).ready(function() {
     let btn = $('#followBtn');
     if (!btn.length) return;
@@ -644,7 +839,8 @@ $(document).ready(function() {
         data: { user_id: btn.data('userid'), shopId: btn.data('shopid'), flw_check:'only_check', _token: '{{ csrf_token() }}' },
         success: function(res) {
             if (res.status == 'followed') {
-                btn.css({background:'#DCFCE7', color:'#15803D'}).text('✓ Following');
+                // Replace button with followed label
+                btn.replaceWith('<span class="followed-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Followed</span>');
             }
         }
     });

@@ -13,12 +13,12 @@
     <div class="relative w-full max-w-md shadow-2xl md:rounded-3xl overflow-hidden bg-white min-h-screen" id="appRoot">
 
         <!-- STATUS BAR -->
-        <?php 
-            if(request()->path() == '/')
+        <?php
+            if(request()->path() == 'home' || request()->path() == '/')
             {
         ?>
         <div class="w-full max-w-md mx-auto bg-white overflow-hidden">
-          <div class="pt-4 pb-8 px-4">
+          <div class="pt-4 pb-4 px-4">
             
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-1">
@@ -37,7 +37,7 @@
                 @endif
             </div>
 
-            <div class="mt-5 w-full mb-3 z-[9999] absolute left-0 px-4">
+            <div class="mt-5 w-full mb-3 z-[9999] absolute hidden left-0 px-4">
                 <div class="bg-white rounded-2xl shadow-lg border border-ink-100 px-4 py-3 flex items-center gap-3">
                     <svg class="w-4 h-4 text-ink-300 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                         stroke-width="2">
@@ -56,7 +56,7 @@
             </div>
           </div>
         </div>
-        <div class="gradient-brand px-5 py-2 flex items-center justify-between sticky top-0 z-50">
+        <div class="gradient-brand px-5 py-2 hidden flex items-center justify-between sticky top-0 z-50">
             <span class="text-white text-xs font-semibold invisible">9:41</span>
             <div class="flex items-center gap-1.5">
                 <button onclick="showScreen('notifications')" class="relative notification-dot invisible">

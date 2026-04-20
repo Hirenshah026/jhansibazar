@@ -69,6 +69,7 @@ class UserController extends Controller
             return response()->json(['status' => 'unfollowed']);
         } else {
             // Agar follow nahi hai, toh Follow (Insert)
+            DB::table('users')->where('id', $follower_id)->increment('freeSpin', 1);
             DB::table('follows')->insert([
                 'follower_id'  => $follower_id,
                 'following_id' => $following_id,

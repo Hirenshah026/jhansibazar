@@ -13,7 +13,7 @@
             <span class="text-xs font-semibold">Home</span>
         </button>
         <button onclick="showScreen('rozana')" id="nav-rozana"
-            class="nav-pill flex-1 flex flex-col items-center gap-0.5 py-2.5 text-ink-400 rounded-none transition-all">
+            class="nav-pill flex-1 flex flex-col hidden items-center gap-0.5 py-2.5 text-ink-400 rounded-none transition-all">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="3" />
                 <path
@@ -30,7 +30,7 @@
             <span class="text-xs font-semibold text-saffron-500 mt-0.5">Spin</span>
         </button>
         <button onclick="showScreen('wallet')" id="nav-wallet"
-            class="nav-pill flex-1 flex flex-col items-center gap-0.5 py-2.5 text-ink-400 rounded-none transition-all">
+            class="nav-pill flex-1 hidden flex flex-col items-center gap-0.5 py-2.5 text-ink-400 rounded-none transition-all">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <rect x="2" y="5" width="20" height="14" rx="2" />
                 <path d="M2 10h20" />

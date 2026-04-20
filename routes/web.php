@@ -34,6 +34,7 @@ Route::any('/user-profile', [UserController::class, 'dashboard'])->name('user.da
 
 // Follow/Unfollow Route
 Route::post('/follow-user', [UserController::class, 'toggleFollow'])->name('follow.user');
+Route::post('/spin/decrement', [FrontController::class, 'decrementSpin'])->name('spin.decrement');
 
 // ─────────────────────────────────────────────
 // Public Routes
@@ -74,7 +75,7 @@ Route::post('/shops/update', [ShopController::class, 'update'])->name('shops.upd
 // ─────────────────────────────────────────────
 Route::post('/shop/delete-item-photo', [ShopController::class, 'deleteItemPhoto'])->name('shop.photo.item.delete');
 Route::post('/shop/delete/{id}',       [ShopController::class, 'deleteShop'])->name('shop.delete');
-
+Route::post('/shop-review/store', [FrontController::class, 'storeReview'])->name('shop.review.store');
 
 
 // ─────────────────────────────────────────────

@@ -8,9 +8,36 @@ use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use App\Models\Shop;
 use Illuminate\Support\Carbon;
 use Session;
+use App\Models\ShopReview;
 
 class FrontController extends Controller
 {
+    public function storeReview(Request $request)
+    {
+        $request->validate([
+            'shop_id'        => 'required|exists:shops,id',
+            'reviewer_name'  => 'required|string|max:100',
+            'reviewer_phone' => 'required|string|max:20',
+            'rating'         => 'required|integer|min:1|max:5',
+            'comment'        => 'nullable|string|max:1000',
+        ]);
+
+        $getUserDetail = DB::table('users')->where('mobile',$request->reviewer_phone)->get();
+        if($getUserDetail->count() > 0)
+        {
+            DB::table('users')->where('id', $getUserDetail[0]->id)->increment('freeSpin', 1);
+        }
+     
+        \App\Models\ShopReview::create([
+            'shop_id'        => $request->shop_id,
+            'reviewer_name'  => $request->reviewer_name,
+            'reviewer_phone' => $request->reviewer_phone,
+            'rating'         => $request->rating,
+            'comment'        => $request->comment,
+        ]);
+     
+        return response()->json(['success' => true, 'message' => 'Review saved!']);
+    }
     // ─────────────────────────────────────────────
     // Home
     // ─────────────────────────────────────────────
@@ -95,7 +122,49 @@ class FrontController extends Controller
             return view('spin_avail', compact('shops'));
         }
 
+        // ── Determine spins_left based on login status ──
+        $spinsLeft = 1; // default for guests
+
+        if (Session::has('public_user')) {
+            $user = Session::get('public_user');
+            if ($user) {
+                // Fresh fetch from DB to get latest freeSpin value
+                $freshUser = DB::table('users')->where('id', $user->id)->first();
+                $spinsLeft = $freshUser->freeSpin ?? 0;
+            }
+        }
+
+        // Attach spins_left to shop object so view can use $shop->spins_left
+        $shop = (object) array_merge((array) $shop, ['spins_left' => $spinsLeft]);
+
         return view('front.spin1', compact('shop'));
+    }
+
+    public function decrementSpin(Request $request)
+    {
+        if (!Session::has('public_user')) {
+            return response()->json(['success' => false, 'message' => 'Not logged in', 'spinsLeft' => 0]);
+        }
+
+        $user = Session::get('public_user');
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'User not found', 'spinsLeft' => 0]);
+        }
+
+        $freshUser = DB::table('users')->where('id', $user->id)->first();
+
+        if (!$freshUser || $freshUser->freeSpin <= 0) {
+            return response()->json(['success' => false, 'message' => 'No spins left', 'spinsLeft' => 0]);
+        }
+
+        // Decrement freeSpin by 1
+        DB::table('users')
+            ->where('id', $user->id)
+            ->decrement('freeSpin');
+
+        $newCount = $freshUser->freeSpin - 1;
+
+        return response()->json(['success' => true, 'spinsLeft' => $newCount]);
     }
 
     // ─────────────────────────────────────────────
@@ -211,7 +280,20 @@ class FrontController extends Controller
 
         $whatsappShareUrl = "https://wa.me/?text=" . rawurlencode($shareText);
 
-        return view('front.product_details', compact('shop', 'services', 'items', 'followCount', 'seo','whatsappShareUrl'));
+        $reviews = \App\Models\ShopReview::where('shop_id', $shop->id)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+
+        $isFollowed = false;
+        if (session()->has('public_user')) {
+            $userId = session('public_user')->id ?? 0;
+            $isFollowed = \DB::table('follows')   // adjust table name to yours
+                ->where('following_id', $shop->id)
+                ->where('follower_id', $userId)
+                ->exists();
+        }
+
+        return view('front.product_details', compact('shop', 'services', 'items', 'followCount', 'seo','whatsappShareUrl','reviews','isFollowed'));
     }
 
     // ─────────────────────────────────────────────
