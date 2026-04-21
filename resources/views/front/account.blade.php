@@ -53,16 +53,25 @@
 
     <div id="screen-shopprofile" class="screen active fade-up pb-24">
         <div class="gradient-brand relative">
+
             <div class="flex items-center gap-2 px-4 pt-3">
                 <button onclick="goBack()" class="w-8 h-8 rounded-full glass flex items-center justify-center">
                     <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path d="M15 18l-6-6 6-6" />
                     </svg>
                 </button>
-                <span
-                    class="flex-1 text-center text-white text-sm font-semibold capitalize">{{ Session::get('shopuser')->shop_name ?? 'na' }}</span>
-                <button id="toggle-profile" class="w-8 h-8 rounded-full glass flex items-center justify-center hidden">
-                    <span id="arrow" class="text-white">▼</span>
+
+                <span class="flex-1 text-center text-white text-sm font-semibold capitalize">
+                    {{ Session::get('shopuser')->shop_name ?? 'na' }}
+                </span>
+
+                <button onclick='openEditModal(@json($shop))'
+                    class="w-8 h-8 rounded-full glass flex items-center justify-center">
+                    <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
                 </button>
             </div>
             <div class="px-4 pt-3 pb-2 text-white">
@@ -85,28 +94,32 @@
                         class="p-3 rounded-xl border border-dotted border-slate-300 flex flex-col items-center justify-center text-center bg-transparent">
                         <span class="text-[10px] font-bold text-white-400 uppercase tracking-widest mb-1">Profile
                             Visits</span>
-                        <h2 id="count_visits" class="text-base font-black text-white">{{ ($stat->profile_visits ?? 0) == 0 ? '--' : $stat->profile_visits }}</h2>
+                        <h2 id="count_visits" class="text-base font-black text-white">
+                            {{ ($stat->profile_visits ?? 0) == 0 ? '--' : $stat->profile_visits }}</h2>
                     </div>
 
                     <div
                         class="p-3 rounded-xl border border-dotted border-slate-300 flex flex-col items-center justify-center text-center bg-transparent">
                         <span class="text-[10px] font-bold text-white-400 uppercase tracking-widest mb-1">Regular
                             Customer</span>
-                        <h2 id="count_regular" class="text-base font-black text-white">{{ ($stat->regular_customer ?? 0) == 0 ? '--' : $stat->regular_customer }}</h2>
+                        <h2 id="count_regular" class="text-base font-black text-white">
+                            {{ ($stat->regular_customer ?? 0) == 0 ? '--' : $stat->regular_customer }}</h2>
                     </div>
 
                     <div
                         class="p-3 rounded-xl border border-dotted border-slate-300 flex flex-col items-center justify-center text-center bg-transparent">
                         <span class="text-[10px] font-bold text-white-400 uppercase tracking-widest mb-1">Repeat
                             Customer</span>
-                        <h2 id="count_repeat" class="text-base font-black text-white">{{ ($stat->repeat_customer ?? 0) == 0 ? '--' : $stat->repeat_customer }}</h2>
+                        <h2 id="count_repeat" class="text-base font-black text-white">
+                            {{ ($stat->repeat_customer ?? 0) == 0 ? '--' : $stat->repeat_customer }}</h2>
                     </div>
 
                     <div
                         class="p-3 rounded-xl border border-dotted border-slate-300 flex flex-col items-center justify-center text-center bg-transparent">
                         <span class="text-[10px] font-bold text-white-400 uppercase tracking-widest mb-1">Offers
                             Display</span>
-                        <h2 id="count_sales" class="text-base font-black text-white">{{ ($stat->offer_display ?? 0) == 0 ? '--' : $stat->offer_display }}</h2>
+                        <h2 id="count_sales" class="text-base font-black text-white">
+                            {{ ($stat->offer_display ?? 0) == 0 ? '--' : $stat->offer_display }}</h2>
                     </div>
                 </div>
             </div>
@@ -172,7 +185,8 @@
                         Shop QR Code
                     </div>
                     <div id="shopNameTxt"
-                        style="font-size: 16px; font-weight: 900; color: #1e293b; margin-bottom: 4px; line-height: 1.2; word-wrap: break-word;" class="capitalize">
+                        style="font-size: 16px; font-weight: 900; color: #1e293b; margin-bottom: 4px; line-height: 1.2; word-wrap: break-word;"
+                        class="capitalize">
                         {{ Session::get('shopuser')->shop_name ?? 'Shop Name' }}
                     </div>
                     <p style="font-size: 11px; color: #64748b; margin-bottom: 12px; line-height: 1.3;">Scan to view our

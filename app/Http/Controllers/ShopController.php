@@ -407,4 +407,9 @@ class ShopController extends Controller
             ], 500 );
         }
     }
+    public function showIdCard($id) {
+        $shop =  DB::table( 'shops' )
+            ->where( 'id', $id)->first(); // Ya aapka jo bhi Model name hai
+        return view('front.partial.shop_card', compact('shop'));
+    }
 }
