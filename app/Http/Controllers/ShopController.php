@@ -301,6 +301,8 @@ class ShopController extends Controller
         $offerData = [
             'text'        => $request->offer_text,
             'quantity'    => $request->quantity ?? 0,
+            'category'    => $request->category ?? null,
+            'offer_description'    => $request->offer_description ?? null,
             'expiry_date' => $request->expiry_date,
             'is_active'   => ( int ) $request->is_active,
             'image'       => $imageUrl, // Initial image

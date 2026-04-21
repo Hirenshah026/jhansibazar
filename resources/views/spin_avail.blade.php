@@ -23,7 +23,9 @@
             @forelse($shops as $shop)
                 @php
                     $offers = json_decode($shop->offers, true) ?? [];
-                    $cleanOffers = array_filter($offers, fn($v) => !empty(trim((string)$v)));
+                    $cleanOffers = array_filter($offers, function($v) {
+                        return isset($v['text']) && !empty(trim((string)$v['text']));
+                    });
                     $hasSpin = count($cleanOffers) > 0;
                     // Generating Clean Slug for URL
                     $shopSlug = str_replace(' ', '-', strtolower($shop->shop_name));
