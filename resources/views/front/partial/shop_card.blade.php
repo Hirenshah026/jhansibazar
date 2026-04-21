@@ -46,11 +46,11 @@
         <div class="px-6 py-5 border-b border-slate-200 flex items-center justify-between bg-slate-50/80">
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 bg-indigo-900 rounded-lg flex items-center justify-center text-white font-black text-sm shadow-md">
-                    JB
+                    JHS
                 </div>
                 <div>
                     <h2 class="text-[10px] font-black text-indigo-900 uppercase tracking-tighter leading-none">Marketplace Regulatory Authority</h2>
-                    <p class="text-[16px] font-extrabold text-slate-800 tracking-tight">Jhansi Bazaar Verified Merchant</p>
+                    <p class="text-[16px] font-extrabold text-slate-800 tracking-tight">Listee Verified Merchant</p>
                 </div>
             </div>
             <div class="text-right">
@@ -95,7 +95,7 @@
 
             <div class="bg-indigo-50/40 rounded-xl p-5 border border-indigo-100 relative overflow-hidden shadow-inner">
                 <div class="absolute inset-0 flex items-center justify-center opacity-[0.04] pointer-events-none">
-                    <span class="text-5xl font-black rotate-12 uppercase tracking-[0.2em]">JHANSI BAZAAR</span>
+                    <span class="text-5xl font-black rotate-12 uppercase tracking-[0.2em]">Listee</span>
                 </div>
 
                 <div class="relative z-10 grid grid-cols-2 gap-y-5">
