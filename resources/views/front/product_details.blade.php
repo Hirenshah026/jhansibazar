@@ -171,7 +171,13 @@ body { background: #F0F4FF; min-height: 100vh }
 
 @php
     $offers = json_decode($shop->offers, true) ?? [];
-    $cleanOffers = array_filter($offers, fn($v) => !empty(trim((string)$v)));
+
+    // Filter based on the 'text' key inside each offer array
+    $cleanOffers = array_filter($offers, function($v) {
+        return isset($v['text']) && !empty(trim((string)$v['text']));
+    });
+
+
     $hasSpin = count($cleanOffers) > 0;
     $shopSlug = str_replace(' ', '-', strtolower($shop->shop_name));
     $mainImg = $shop->shop_photo ?: 'https://placehold.co/600x400?text=Jhansi+Bazaar';
