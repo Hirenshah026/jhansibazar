@@ -123,7 +123,7 @@
                     <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
                     Verified Business Partner
                 </p>
-                <p class="text-[7px] font-medium text-slate-400 mt-1 uppercase tracking-tighter italic">Digitally issued by JhansiBazaar.com Merchant Portal</p>
+                <p class="text-[7px] font-medium text-slate-400 mt-1 uppercase tracking-tighter italic">Digitally issued by listee.org Merchant Portal</p>
             </div>
             <div class="text-center">
                 <div class="w-24 border-b-2 border-slate-300 h-6 mb-1 mx-auto"></div>

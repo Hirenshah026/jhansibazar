@@ -1,147 +1,111 @@
-<div class="p-6 bg-gray-50 border-b hidden">
-    <div class="flex items-center justify-between">
-        <div>
-            <h2 class="text-2xl font-black text-gray-900 tracking-tight">Manage Shop</h2>
-            <p class="text-sm text-gray-500">Configure your digital storefront</p>
-        </div>
-        <button onclick='openEditModal(@json($shop))'
-            class="flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all active:scale-95 font-bold text-sm">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-            </svg>
-            Edit Profile
-        </button>
-    </div>
-</div>
-
 <div id="updateShopModal"
-    class="fixed inset-0 bg-slate-900/40 hidden z-50 flex items-center justify-center p-0 md:p-4 backdrop-blur-md transition-opacity duration-300">
-    <div
-        class="bg-white md:rounded-3xl shadow-2xl w-full max-w-2xl max-h-screen md:max-h-[85vh] overflow-hidden flex flex-col transform transition-all scale-100">
+    class="fixed inset-0 bg-black/60 hidden z-[100] flex items-end md:items-center justify-center p-0 md:p-4 backdrop-blur-sm transition-all duration-300">
+    
+    <div class="bg-white rounded-t-[2rem] md:rounded-2xl shadow-2xl w-full max-w-xl max-h-[92vh] md:max-h-[85vh] overflow-hidden flex flex-col transform transition-all">
 
-        
-        <div class="px-6 py-5 border-b flex justify-between items-center bg-white">
+        <div class="w-12 h-1 bg-gray-200 rounded-full mx-auto mt-3 mb-1 md:hidden"></div>
+
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white">
             <div class="flex items-center gap-3">
-                <div
-                    class="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 shadow-inner">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
+                <div class="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-600">
+                    <i data-lucide="store" class="w-5 h-5"></i>
                 </div>
-
                 <div>
-                    <div class="flex items-center gap-2">
-                        <h3 class="text-lg font-extrabold text-gray-900 leading-tight">Shop Settings</h3>
-                        <button type="button" onclick="viewShopID()"
-                            class="flex items-center gap-1 bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-tighter hover:bg-amber-200 transition-colors border border-amber-200 shadow-sm">
-                            <span>🪪</span> View ID Card
-                        </button>
-                    </div>
-                    <p class="text-[11px] uppercase tracking-wider text-gray-400 font-bold">Jhansi Bazaar Partner</p>
+                    <h3 class="text-base font-bold text-gray-800">Edit Shop Details</h3>
+                    <p class="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Merchant Dashboard</p>
                 </div>
             </div>
+            
+            <div class="flex items-center gap-2">
+                <button type="button" onclick="viewShopID()" 
+                    class="bg-blue-50 text-blue-600 p-2 rounded-lg hover:bg-blue-100 transition-all border border-blue-100" title="View ID Card">
+                    <i data-lucide="id-card" class="w-5 h-5"></i>
+                </button>
 
-            <button onclick="toggleModal()"
-                class="w-9 h-9 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-red-50 hover:text-red-500 transition-all">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
+                <button onclick="toggleModal()" 
+                    class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-red-50 hover:text-red-500 transition-all">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
         </div>
 
-        <form id="updateShopForm" class="overflow-y-auto p-6 space-y-6 bg-gray-50/50">
+        <form id="updateShopForm" class="overflow-y-auto p-6 space-y-6 bg-gray-50/30 flex-grow">
             @csrf
             <input type="hidden" name="shop_id" id="modal_shop_id">
 
-            <div class="space-y-4">
-                <h4 class="text-xs font-bold text-indigo-500 uppercase tracking-widest">Basic Information</h4>
+            <div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="space-y-1">
-                        <label class="text-xs font-bold text-gray-600 ml-1">Shop Name</label>
-                        <input type="text" name="shop_name" id="modal_shop_name" placeholder="e.g. Sharma Sweets"
-                            class="w-full bg-white border border-gray-200 rounded-2xl p-3.5 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all shadow-sm">
+                        <label class="text-[11px] font-bold text-gray-400 ml-1 uppercase">Shop Name</label>
+                        <input type="text" name="shop_name" id="modal_shop_name" class="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none">
                     </div>
-
                     <div class="space-y-1">
-                        <label class="text-xs font-bold text-gray-600 ml-1">Owner Name</label>
-                        <input type="text" name="owner_name" id="modal_owner_name" placeholder="Full Name"
-                            class="w-full bg-white border border-gray-200 rounded-2xl p-3.5 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all shadow-sm">
+                        <label class="text-[11px] font-bold text-gray-400 ml-1 uppercase">Owner Name</label>
+                        <input type="text" name="owner_name" id="modal_owner_name" class="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none">
                     </div>
                 </div>
-
                 <div class="space-y-1">
-                    <label class="text-xs font-bold text-gray-600 ml-1">Tagline</label>
-                    <input type="text" name="tagline" id="modal_tagline"
-                        placeholder="Slogan jo customer ko impress kare"
-                        class="w-full bg-white border border-gray-200 rounded-2xl p-3.5 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all shadow-sm">
+                    <label class="text-[11px] font-bold text-gray-400 ml-1 uppercase">Tagline</label>
+                    <input type="text" name="tagline" id="modal_tagline" class="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none">
                 </div>
             </div>
 
-            <div class="space-y-4 pt-2">
-                <h4 class="text-xs font-bold text-indigo-500 uppercase tracking-widest">Contact & Location</h4>
+            <div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm space-y-4">
                 <div class="space-y-1">
-                    <label class="text-xs font-bold text-gray-600 ml-1">Shop Address</label>
-                    <textarea name="address" id="modal_address" rows="2" placeholder="Complete address..."
-                        class="w-full bg-white border border-gray-200 rounded-2xl p-3.5 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all shadow-sm"></textarea>
+                    <label class="text-[11px] font-bold text-gray-400 ml-1 uppercase">Address</label>
+                    <textarea name="address" id="modal_address" rows="2" class="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"></textarea>
                 </div>
-
-                <div class="space-y-1">
-                    <label class="text-xs font-bold text-gray-600 ml-1">Phone (Contact Support to change)</label>
-                    <div class="relative">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">📞</span>
-                        <input type="text" name="phone" id="modal_phone"
-                            class="w-full bg-gray-100 border border-gray-200 rounded-2xl p-3.5 pl-10 text-gray-500 cursor-not-allowed font-medium"
-                            readonly>
+                <div class="bg-gray-50 p-3 rounded-xl flex items-center justify-between border border-gray-200 border-dashed">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="phone" class="w-4 h-4 text-gray-400"></i>
+                        <input type="text" id="modal_phone" class="bg-transparent text-sm font-bold text-gray-500" readonly>
                     </div>
+                    <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">VERIFIED</span>
                 </div>
             </div>
 
-            <div class="space-y-4 pt-2">
-                <h4 class="text-xs font-bold text-indigo-500 uppercase tracking-widest">Operational Hours & Status</h4>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    <div class="space-y-1">
-                        <label class="text-xs font-bold text-gray-600 ml-1">Opening</label>
-                        <input type="time" name="open_time" id="modal_open_time"
-                            class="w-full bg-white border border-gray-200 rounded-2xl p-3.5 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all shadow-sm">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-xs font-bold text-gray-600 ml-1">Closing</label>
-                        <input type="time" name="close_time" id="modal_close_time"
-                            class="w-full bg-white border border-gray-200 rounded-2xl p-3.5 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all shadow-sm">
-                    </div>
-                    <div class="space-y-1 col-span-2 md:col-span-1">
-                        <label class="text-xs font-bold text-gray-600 ml-1">Account Status</label>
-                        <select name="status" id="modal_status"
-                            class="w-full bg-white border border-gray-200 rounded-2xl p-3.5 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all shadow-sm appearance-none font-bold text-indigo-600">
-                            <option value="draft">Draft</option>
-                            <option value="pending">Pending Review</option>
-                            <option value="active">Active ✅</option>
-                        </select>
-                    </div>
+            <div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm space-y-4 mb-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="time" name="open_time" id="modal_open_time" class="w-full border border-gray-200 rounded-xl p-3 text-sm font-bold">
+                    <input type="time" name="close_time" id="modal_close_time" class="w-full border border-gray-200 rounded-xl p-3 text-sm font-bold">
                 </div>
-            </div>
-
-            <div class="pt-6 border-t flex flex-col md:flex-row justify-end gap-3 pb-2">
-                <button type="button" onclick="toggleModal()"
-                    class="order-2 md:order-1 px-6 py-3.5 text-gray-500 hover:text-gray-700 font-bold transition-all">Dismiss</button>
-                <button type="submit" id="saveBtn"
-                    class="order-1 md:order-2 px-10 py-3.5 bg-indigo-600 text-white rounded-2xl hover:bg-indigo-700 font-black shadow-xl shadow-indigo-100 transition-all flex items-center justify-center gap-2 group">
-                    <span id="btnText">Update Profile</span>
-                    <svg id="loadingSpinner" class="hidden animate-spin h-5 w-5 text-white"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                            stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                        </path>
-                    </svg>
-                </button>
+                <select name="status" id="modal_status" class="w-full border border-gray-200 rounded-xl p-3 text-sm font-bold text-blue-600 outline-none">
+                    <option value="draft">Draft</option>
+                    <option value="pending">Pending Review</option>
+                    <option value="active">Active ✅</option>
+                </select>
             </div>
         </form>
+
+        <div class="p-4 border-t border-gray-100 bg-white flex items-center gap-3">
+            <button type="button" onclick="toggleModal()" 
+                class="flex-1 py-3.5 text-gray-600 font-bold text-sm hover:bg-gray-100 rounded-xl transition-all border border-gray-200">
+                Cancel
+            </button>
+            <button type="submit" form="updateShopForm" id="saveBtn" 
+                class="flex-[2] py-3.5 bg-[#fb641b] text-white rounded-xl font-bold text-sm shadow-lg shadow-orange-100 active:scale-95 transition-all">
+                Update Store
+            </button>
+        </div>
     </div>
 </div>
+
+
+@push('css_or_link')
+  <style>
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
+    
+    @keyframes slideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+    }
+    @media (max-width: 768px) {
+        #updateShopModal > div { animation: slideUp 0.3s ease-out; }
+    }
+</style>
+@endpush
 
 @push('script')
     <script>
