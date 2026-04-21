@@ -231,7 +231,7 @@
                 const formData = new FormData();
                 formData.append('_token', "{{ csrf_token() }}");
                 formData.append('index', $('#offer_index_val').val());
-                formData.append('text', text);
+                formData.append('offer_text', text);
                 formData.append('offer_description', $('#offer_desc_val').val().trim());
                 formData.append('quantity', qty);
                 formData.append('expiry_date', expiry);
