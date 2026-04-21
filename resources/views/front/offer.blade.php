@@ -75,7 +75,7 @@
                             <button type="button" class="edit-offer-btn p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 rounded-md" 
                                 data-index="{{ $index }}" 
                                 data-text="{{ $offer['text'] ?? '' }}"
-                                data-desc="{{ $offer['description'] ?? '' }}"
+                                data-desc="{{ $offer['offer_description'] ?? '' }}"
                                 data-qty="{{ $offer['quantity'] ?? 0 }}" 
                                 data-expiry="{{ $offer['expiry_date'] ?? '' }}"
                                 data-category="{{ $offer['category'] ?? 'spin' }}"
