@@ -12,6 +12,7 @@
                 position: fixed; inset: 0; z-index: 60;
                 background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
                 display: flex; align-items: flex-end; justify-content: center;
+                bottom: 30px;
             }
             .fr-modal-sheet {
                 background: #fff; border-radius: 24px 24px 0 0;
