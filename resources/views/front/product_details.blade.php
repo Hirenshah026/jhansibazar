@@ -299,11 +299,6 @@ body { background: #F0F4FF; min-height: 100vh }
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                     Followed
                 </span>
-            @elseif($isLogged)
-                <button id="followBtn2" data-shopid="{{ $shop->id }}" data-userid="{{ $loggedUser->id ?? 0 }}"
-                    style="flex-shrink:0; background:#EEF2FF; color:#3B5BDB; font-size:11px; font-weight:800; padding:7px 12px; border-radius:20px; border:1.5px solid #C7D7FF; cursor:pointer; white-space:nowrap">
-                    👥 {{ count($followCount) }}
-                </button>
             @else
                 <button id="followBtn" data-shopid="{{ $shop->id }}" data-userid="0"
                     style="flex-shrink:0; background:#3B5BDB; color:#fff; font-size:11px; font-weight:800; padding:7px 14px; border-radius:20px; border:none; cursor:pointer">
