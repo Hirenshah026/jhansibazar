@@ -87,7 +87,7 @@ $(document).ready(function() {
         $.ajax({
             url: "{{ route('save.mobile') }}",
             type: "POST",
-            data: { _token: "{{ csrf_token() }}", mobile: mobile },
+            data: { _token: "{{ csrf_token() }}", mobile: mobile,shopId: $('#followBtn').attr('data-shopid') },
             beforeSend: function() {
                 $btn.prop('disabled', true);
                 $('#btnLoader').removeClass('hidden');
@@ -96,19 +96,20 @@ $(document).ready(function() {
             },
             success: function(data) {
                 if (data.success) {
-                    localStorage.setItem('user_mobile', mobile);
-                    $('#followBtn').attr('data-userid',data.id);
-                    $('#spinPopup').fadeOut(300);
-
-                    // Re-trigger following
-                    if (pendingFollowBtn) {
-                        pendingFollowBtn.trigger('click');
-                        pendingFollowBtn = null;
-                    }
-                    setTimeout(function()
+                    if(data.followCheck)
                     {
                         location.reload();
-                    },2000);
+                    }else{
+                        localStorage.setItem('user_mobile', mobile);
+                        $('#followBtn').attr('data-userid',data.id);
+                        $('#spinPopup').fadeOut(300);
+
+                        // Re-trigger following
+                        if (pendingFollowBtn) {
+                            pendingFollowBtn.trigger('click');
+                            pendingFollowBtn = null;
+                        }
+                    }
                 }
             },
             complete: function() {

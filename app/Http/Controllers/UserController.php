@@ -96,9 +96,16 @@ class UserController extends Controller
         
         $user = DB::table('users')->where('mobile' , $request->mobile)->first();
         Session::put('public_user',$user);
-
-        return response()->json(['success' => true,'id' => $user->id]);
-    
+        $followCheck = DB::table('follows')
+                        ->where('follower_id', $user->id)
+                        ->where('following_id', $request->shopid)
+                        ->exists();
+        if($followCheck)
+        {
+            return response()->json(['success' => true,'id' => $user->id,'isFollowed' => $followCheck]);
+        }else{
+            return response()->json(['success' => true,'id' => $user->id,'isFollowed' => $followCheck]);
+        }
 
     }
     public function trackActivity($shopId, $column, $ipAddress) 
