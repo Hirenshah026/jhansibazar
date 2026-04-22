@@ -95,7 +95,7 @@ $(document).ready(function () {
     $(document).on('click', '#followBtn', function (e) {
         e.preventDefault();
         const btn      = $(this);
-        const shopId   = btn.data('shopid');
+        const shopId   = btn.attr('data-shopid');
         const userId   = btn.data('userid');
         const isLogged = btn.data('islogged') === 'true';
 
