@@ -97,6 +97,7 @@ $(document).ready(function() {
             success: function(data) {
                 if (data.success) {
                     localStorage.setItem('user_mobile', mobile);
+                    $('#followBtn').attr('data-userid',data.id);
                     $('#spinPopup').fadeOut(300);
 
                     // Re-trigger following
