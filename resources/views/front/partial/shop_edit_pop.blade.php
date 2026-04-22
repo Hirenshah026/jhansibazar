@@ -60,7 +60,7 @@
                         <i data-lucide="phone" class="w-4 h-4 text-gray-400"></i>
                         <input type="text" id="modal_phone" class="bg-transparent text-sm font-bold text-gray-500" readonly>
                     </div>
-                    <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">VERIFIED</span>
+                    <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded hidden">VERIFIED</span>
                 </div>
             </div>
 
