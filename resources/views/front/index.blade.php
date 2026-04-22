@@ -325,8 +325,7 @@
                                 @if($halfStar)<span class="star" style="opacity:0.5">★</span>@endif
                                 @for($s = 0; $s < $emptyStars; $s++)<span class="star" style="opacity:0.2">★</span>@endfor
                             </div>
-                            <span style="font-size:12px;font-weight:800;color:#1e293b">{{ $rating }}</span>
-                            <span style="font-size:10px;color:#94a3b8">({{ $shop->review_count }})</span>
+                            <span style="font-size:12px;color:#1e293b">{{ $rating }}</span>
                         </div>
                         @else
                         <span style="font-size:10px;color:#94a3b8">No reviews yet</span>
