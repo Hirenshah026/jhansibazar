@@ -830,21 +830,5 @@ function showReviewMsg(text, color) {
     setTimeout(() => { el.style.display = 'none'; }, 4000);
 }
 
-/* ── Follow check on load (for non-logged route) ── */
-$(document).ready(function() {
-    let btn = $('#followBtn');
-    if (!btn.length) return;
-    $.ajax({
-        url: "{{ url('/follow-user') }}",
-        method: 'POST',
-        data: { user_id: btn.data('userid'), shopId: btn.data('shopid'), flw_check:'only_check', _token: '{{ csrf_token() }}' },
-        success: function(res) {
-            if (res.status == 'followed') {
-                // Replace button with followed label
-                btn.replaceWith('<span class="followed-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Followed</span>');
-            }
-        }
-    });
-});
 </script>
 @endpush
