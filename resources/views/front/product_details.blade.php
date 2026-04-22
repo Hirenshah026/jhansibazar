@@ -195,7 +195,7 @@ body { background: #F0F4FF; min-height: 100vh }
 
     /* ── Is current user logged in? ── */
     $loggedUser = Session::get('public_user');
-    $isLogged   = Session::has('shopuser') && $loggedUser;
+    $isLogged   = Session::has('public_user') && $loggedUser;
 
     /* ── Is already following? ── */
     $isFollowing = $isFollowed ?? false; // pass $isFollowed boolean from controller
