@@ -57,7 +57,7 @@
         // Offers decode
         $offers = is_array($sp->offers) ? $sp->offers : json_decode($sp->offers, true);
         $slug = str_replace(' ', '-', strtolower($sp->shop_name));
-        $itemPhotos = json_decode($sp->item_photos, true);
+        $itemPhotos = $sp->item_photos;
         $categories = json_decode($sp->categories, true);
     @endphp
 

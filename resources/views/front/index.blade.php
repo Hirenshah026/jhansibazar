@@ -77,6 +77,33 @@
     }
 </style>
 
+@php
+    // ── Build dynamic brand offers from all shops ──────────────────
+    $brandOffers = [];
+    foreach($shopsByCategory as $cat => $catShops) {
+        foreach($catShops as $shop) {
+            $offers = $shop->offers_list ?? [];
+            foreach($offers as $offer) {
+                if (!empty($offer['is_active']) && isset($offer['category']) &&$offer['category'] != 'spin') {
+                    $offerText = isset($offer['text'])
+                        ? $offer['text']
+                        : 'Special Offer';
+
+                    $brandOffers[] = [
+                        'shop_name'  => $shop->shop_name,
+                        'image'      => (!empty($offer['image']) ? $offer['image'] : ($shop->shop_photo ?? null)),
+                        'offer_text' => $offerText,
+                        'category'   => $offer['category'] ?? 'offer',
+                        'shop_slug'  => str_replace(' ', '-', strtolower($shop->shop_name ?? 's')),
+                    ];
+                }
+            }
+        }
+    }
+    shuffle($brandOffers);
+    $brandOffers = array_slice($brandOffers, 0, 8);
+@endphp
+
     <div id="screen-home" class="screen active fade-up pb-24">
 
         <!-- Hero Banner -->
@@ -96,9 +123,35 @@
                 </div>
                 <div>
                     <p class="text-white font-semibold text-sm mb-2">Featured Brand Offers</p>
+
+                    {{-- Brand slider wrapper --}}
                     <div class="relative overflow-hidden rounded-2xl" id="brandWrap">
-                        <div class="flex transition-transform duration-400 ease-in-out" id="brandTrack" style="will-change: transform;"></div>
+                        <div class="flex transition-transform duration-400 ease-in-out" id="brandTrack" style="will-change: transform;">
+                            @forelse($brandOffers as $bo)
+                            <a href="{{ url('/shopprofile-details') }}/{{ $bo['shop_slug'] }}"
+                               class="flex-shrink-0 w-[110px] bg-white rounded-2xl p-2 text-center shadow-md mr-2 block"
+                               style="text-decoration:none">
+                                @if($bo['image'])
+                                    <img src="{{ $bo['image'] }}"
+                                         class="w-14 h-14 rounded-xl object-cover mx-auto mb-1"
+                                         loading="lazy"
+                                         alt="{{ $bo['shop_name'] }}">
+                                @else
+                                    <div class="w-12 h-12 rounded-xl mx-auto mb-1 bg-orange-100 flex items-center justify-center text-2xl">🏪</div>
+                                @endif
+                                <p class="text-[10px] font-semibold text-gray-700 leading-tight line-clamp-2 min-h-[24px]">{{ $bo['shop_name'] }}</p>
+                                <span class="bg-green-100 text-green-700 text-[9px] px-1.5 py-0.5 rounded-full block leading-tight">
+                                    {{ ($bo['category'] === 'spin') ? '🎡 ' : '🏷️ ' }}{{ $bo['offer_text'] }}
+                                </span>
+                            </a>
+                            @empty
+                            <div class="flex-shrink-0 w-[90px] bg-white/20 rounded-2xl p-2 text-center">
+                                <p class="text-white text-[10px] font-medium">No offers yet</p>
+                            </div>
+                            @endforelse
+                        </div>
                     </div>
+
                     <div class="flex justify-center gap-1.5 mt-2" id="brandDots"></div>
                 </div>
             </div>
@@ -333,9 +386,7 @@
 
                 {{-- Targeted Ad Campaigns --}}
                 <div class="gs-card" style="background:#FFF7ED; border:1px solid #FED7AA; color:#c2410c">
-                    <div class="gs-icon-wrap" style="background:#FFEDD5">
-                        📢
-                    </div>
+                    <div class="gs-icon-wrap" style="background:#FFEDD5">📢</div>
                     <p class="text-[11px] font-black text-gray-800 leading-tight mb-1">Targeted Ad Campaigns</p>
                     <p class="text-[9px] text-gray-500 leading-snug">Sahi audience tak pahuncho Listee Ads se</p>
                     <button class="gs-btn" style="background:#c2410c; color:#fff">Learn More</button>
@@ -343,9 +394,7 @@
 
                 {{-- Exclusive Offer Creator --}}
                 <div class="gs-card" style="background:#FFF0F6; border:1px solid #FBCFE8; color:#9d174d">
-                    <div class="gs-icon-wrap" style="background:#FCE7F3">
-                        🎁
-                    </div>
+                    <div class="gs-icon-wrap" style="background:#FCE7F3">🎁</div>
                     <p class="text-[11px] font-black text-gray-800 leading-tight mb-1">Exclusive Offer Creator</p>
                     <p class="text-[9px] text-gray-500 leading-snug">Offers banao aur shop traffic badhao</p>
                     <button class="gs-btn" style="background:#ec4899; color:#fff">Create Offer</button>
@@ -353,9 +402,7 @@
 
                 {{-- Customer Loyalty Program --}}
                 <div class="gs-card" style="background:#FFF7ED; border:1px solid #FDE68A; color:#92400e">
-                    <div class="gs-icon-wrap" style="background:#FFFBEB">
-                        🏅
-                    </div>
+                    <div class="gs-icon-wrap" style="background:#FFFBEB">🏅</div>
                     <p class="text-[11px] font-black text-gray-800 leading-tight mb-1">Customer Loyalty Program</p>
                     <p class="text-[9px] text-gray-500 leading-snug">Digital points se repeat customers banao</p>
                     <button class="gs-btn" style="background:#f59e0b; color:#fff">Set Up</button>
@@ -363,9 +410,7 @@
 
                 {{-- WhatsApp Integration --}}
                 <div class="gs-card" style="background:#F0FDF4; border:1px solid #BBF7D0; color:#15803d">
-                    <div class="gs-icon-wrap" style="background:#DCFCE7">
-                        💬
-                    </div>
+                    <div class="gs-icon-wrap" style="background:#DCFCE7">💬</div>
                     <p class="text-[11px] font-black text-gray-800 leading-tight mb-1">WhatsApp Integration</p>
                     <p class="text-[9px] text-gray-500 leading-snug">Customers se seedha WhatsApp pe baat karo</p>
                     <button class="gs-btn" style="background:#16a34a; color:#fff">Integrate</button>
@@ -373,9 +418,7 @@
 
                 {{-- Spin the Wheel --}}
                 <div class="gs-card" style="background:#EEF2FF; border:1px solid #C7D7FF; color:#3730a3">
-                    <div class="gs-icon-wrap" style="background:#E0E7FF">
-                        🎡
-                    </div>
+                    <div class="gs-icon-wrap" style="background:#E0E7FF">🎡</div>
                     <p class="text-[11px] font-black text-gray-800 leading-tight mb-1">Spin the Wheel Offers</p>
                     <p class="text-[9px] text-gray-500 leading-snug">Customers ko spin se engage karo</p>
                     <button class="gs-btn" style="background:#4f46e5; color:#fff">Activate</button>
@@ -383,9 +426,7 @@
 
                 {{-- Digital Storefront --}}
                 <div class="gs-card" style="background:#F0FDFA; border:1px solid #99F6E4; color:#0f766e">
-                    <div class="gs-icon-wrap" style="background:#CCFBF1">
-                        🏪
-                    </div>
+                    <div class="gs-icon-wrap" style="background:#CCFBF1">🏪</div>
                     <p class="text-[11px] font-black text-gray-800 leading-tight mb-1">Digital Storefront</p>
                     <p class="text-[9px] text-gray-500 leading-snug">Apni online dukan set karo ek minute mein</p>
                     <button class="gs-btn" style="background:#0d9488; color:#fff">Get Started</button>
@@ -394,6 +435,7 @@
             </div>
         </div>
         {{-- ═══════════════════════ END GROWTH SERVICES ══════════ --}}
+
         @include('front.partial.shop_list_slider')
     </div>
 @endsection
@@ -432,33 +474,22 @@
         startAuto();
     })();
 
-    // ── Brand Slider ───────────────────────────────────────────────
+    // ── Brand Slider (dynamic — cards rendered by Blade) ──────────
     (function () {
-        const brands = [
-            { emoji: '🌿', name: 'Kaushal',   offer: 'Flat 20% Off' },
-            { emoji: '🧴', name: 'Samsara',   offer: 'Flat 20% Off' },
-            { emoji: '🍃', name: 'Patanjali', offer: 'Flat 30% Off' },
-            { emoji: '🥤', name: 'Dabur',     offer: 'Flat 15% Off' },
-            { emoji: '🧼', name: 'Himalaya',  offer: 'Buy 2 Get 1'  },
-        ];
-
-        const track = document.getElementById('brandTrack');
+        const track  = document.getElementById('brandTrack');
         const dotsEl = document.getElementById('brandDots');
         const wrap   = document.getElementById('brandWrap');
+
+        if (!track || !wrap) return;
+
+        const cards = Array.from(track.children);
+        const total = cards.length;
+        if (!total) return;
+
         let cur = 0, autoTimer;
 
-        brands.forEach(b => {
-            const card = document.createElement('div');
-            card.className = 'min-w-[90px] bg-white rounded-2xl p-2 text-center shadow-md flex-shrink-0 mr-2';
-            card.innerHTML = `
-                <div class="text-2xl mb-1">${b.emoji}</div>
-                <p class="text-[10px] font-semibold text-gray-700">${b.name}</p>
-                <span class="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full">${b.offer}</span>
-            `;
-            track.appendChild(card);
-        });
-
-        brands.forEach((_, i) => {
+        // Build dots dynamically based on card count
+        cards.forEach((_, i) => {
             const dot = document.createElement('button');
             dot.className = `brand-dot h-1.5 rounded-full transition-all duration-300 ${i === 0 ? 'w-4 bg-white' : 'w-1.5 bg-white/40'}`;
             dot.addEventListener('click', () => { goTo(i); resetAuto(); });
@@ -466,16 +497,17 @@
         });
 
         function cardWidth() {
-            const c = track.querySelector('div');
-            return c ? c.offsetWidth + 8 : 98;
+            return cards[0] ? cards[0].offsetWidth + 8 : 98;
         }
 
         function goTo(i) {
-            cur = (i + brands.length) % brands.length;
-            const maxOffset = (brands.length - 1) * cardWidth();
+            cur = (i + total) % total;
+            const maxOffset = (total - 1) * cardWidth();
             track.style.transform = `translateX(-${Math.min(cur * cardWidth(), maxOffset)}px)`;
             dotsEl.querySelectorAll('.brand-dot').forEach((d, idx) => {
-                d.className = `brand-dot h-1.5 rounded-full transition-all duration-300 ${idx === cur ? 'w-4 bg-white' : 'w-1.5 bg-white/40'}`;
+                d.className = `brand-dot h-1.5 rounded-full transition-all duration-300 ${
+                    idx === cur ? 'w-4 bg-white' : 'w-1.5 bg-white/40'
+                }`;
             });
         }
 
@@ -485,8 +517,12 @@
         }
 
         let startX = 0;
-        wrap.addEventListener('touchstart', e => { startX = e.touches[0].clientX; clearInterval(autoTimer); }, { passive: true });
-        wrap.addEventListener('touchend',   e => {
+        wrap.addEventListener('touchstart', e => {
+            startX = e.touches[0].clientX;
+            clearInterval(autoTimer);
+        }, { passive: true });
+
+        wrap.addEventListener('touchend', e => {
             const diff = startX - e.changedTouches[0].clientX;
             if (Math.abs(diff) > 30) goTo(cur + (diff > 0 ? 1 : -1));
             resetAuto();
@@ -529,4 +565,4 @@
         });
     }
 </script>
-@endpush    
+@endpush

@@ -313,7 +313,7 @@ body { background: #F0F4FF; min-height: 100vh }
         </div>
 
         {{-- Quick stats row — no borders, just background tint --}}
-        <div style="display:flex; padding:12px 14px; gap:8px; border-bottom:1px solid #F1F5F9">
+        <div class="hidden" style="display:flex; padding:12px 14px; gap:8px; border-bottom:1px solid #F1F5F9">
             <div class="stat-card">
                 <p style="font-size:18px; font-weight:800; color:#1e293b" class="fd">{{ count($followCount) }}</p>
                 <p style="font-size:10px; color:#94a3b8; font-weight:700; margin-top:2px">Followers</p>
@@ -343,7 +343,7 @@ body { background: #F0F4FF; min-height: 100vh }
                 Call
             </a>
             <a href="{{ $whatsappShareUrl }}" target="_blank" class="action-btn" style="background:#DCFCE7; color:#15803D">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                <svg width="27" height="27" viewBox="0 0 24 24" stroke-width="2.5" fill="currentColor">
                     <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.587-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.005c.101.005.237-.038.37.281.144.354.491 1.197.534 1.284.045.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.303c-.087.101-.177.211-.077.383.101.173.448.739.961 1.197.661.59 1.218.774 1.391.859.173.087.274.072.376-.043.101-.116.433-.505.548-.678.116-.173.231-.144.39-.087s1.011.477 1.184.563.289.13.332.202c.045.072.045.477-.099.882z"/>
                 </svg>
                 Share
