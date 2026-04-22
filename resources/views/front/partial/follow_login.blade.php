@@ -42,7 +42,7 @@ $(document).ready(function() {
     $(document).on('click', '#followBtn', function(e) {
         e.preventDefault();
         let btn = $(this);
-        let userId = btn.data('userid');
+        let userId = btn.attr('data-userid');
         let shopId = btn.data('shopid');
 
         // UI toggle
