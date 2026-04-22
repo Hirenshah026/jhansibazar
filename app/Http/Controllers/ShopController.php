@@ -301,6 +301,8 @@ class ShopController extends Controller
         $offerData = [
             'text'        => $request->offer_text,
             'quantity'    => $request->quantity ?? 0,
+            'category'    => $request->category ?? null,
+            'offer_description'    => $request->offer_description ?? null,
             'expiry_date' => $request->expiry_date,
             'is_active'   => ( int ) $request->is_active,
             'image'       => $imageUrl, // Initial image
@@ -404,5 +406,10 @@ class ShopController extends Controller
                 'message' => 'Kuch problem aayi hai: ' . $e->getMessage()
             ], 500 );
         }
+    }
+    public function showIdCard($id) {
+        $shop =  DB::table( 'shops' )
+            ->where( 'id', $id)->first(); // Ya aapka jo bhi Model name hai
+        return view('front.partial.shop_card', compact('shop'));
     }
 }

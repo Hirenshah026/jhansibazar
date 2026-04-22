@@ -55,6 +55,8 @@ Route::get('/shop-register',             [FrontController::class, 'add_shop'])->
 Route::get('/login',                     [FrontController::class, 'shop_login'])->name('shop_login');
 Route::get('/set-pin-shop',                     [FrontController::class, 'shop_set_pin'])->name('shop_set_pin');
 Route::post('/update-shop-pin', [FrontController::class, 'shop_updatePin'])->name('settings.update-pin');
+// Shop ID Card view karne ke liye
+Route::get('/shop/id-card/{id}', [ShopController::class, 'showIdCard'])->name('shops.idcard');
 
 // ─────────────────────────────────────────────
 // Auth Routes

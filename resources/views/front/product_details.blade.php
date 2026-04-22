@@ -542,7 +542,7 @@ body { background: #F0F4FF; min-height: 100vh }
                     <div class="item-card">
                         <div style="height:100px;background:{{ $bg }};display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
                             @if($firstPhoto)
-                                <img src="{{ $firstPhoto }}" alt="{{ $item->item_name }}"
+                                <img src="{{ $firstPhoto }}" alt="{{ $item->item_name }}" class="pop_show"
                                     style="width:100%;height:100%;object-fit:cover" loading="lazy"
                                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                                 <span style="font-size:36px;display:none;width:100%;height:100%;align-items:center;justify-content:center">{{ $emoji }}</span>

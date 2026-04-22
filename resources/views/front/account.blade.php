@@ -53,16 +53,25 @@
 
     <div id="screen-shopprofile" class="screen active fade-up pb-24">
         <div class="gradient-brand relative">
+
             <div class="flex items-center gap-2 px-4 pt-3">
                 <button onclick="goBack()" class="w-8 h-8 rounded-full glass flex items-center justify-center">
                     <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path d="M15 18l-6-6 6-6" />
                     </svg>
                 </button>
-                <span
-                    class="flex-1 text-center text-white text-sm font-semibold capitalize">{{ Session::get('shopuser')->shop_name ?? 'na' }}</span>
-                <button id="toggle-profile" class="w-8 h-8 rounded-full glass flex items-center justify-center hidden">
-                    <span id="arrow" class="text-white">▼</span>
+
+                <span class="flex-1 text-center text-white text-sm font-semibold capitalize">
+                    {{ Session::get('shopuser')->shop_name ?? 'na' }}
+                </span>
+
+                <button onclick='openEditModal(@json($shop))'
+                    class="w-8 h-8 rounded-full glass flex items-center justify-center">
+                    <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
                 </button>
             </div>
             <div class="px-4 pt-3 pb-2 text-white">
@@ -85,28 +94,32 @@
                         class="p-3 rounded-xl border border-dotted border-slate-300 flex flex-col items-center justify-center text-center bg-transparent">
                         <span class="text-[10px] font-bold text-white-400 uppercase tracking-widest mb-1">Profile
                             Visits</span>
-                        <h2 id="count_visits" class="text-base font-black text-white">{{ ($stat->profile_visits ?? 0) == 0 ? '--' : $stat->profile_visits }}</h2>
+                        <h2 id="count_visits" class="text-base font-black text-white">
+                            {{ ($stat->profile_visits ?? 0) == 0 ? '--' : $stat->profile_visits }}</h2>
                     </div>
 
                     <div
                         class="p-3 rounded-xl border border-dotted border-slate-300 flex flex-col items-center justify-center text-center bg-transparent">
                         <span class="text-[10px] font-bold text-white-400 uppercase tracking-widest mb-1">Regular
                             Customer</span>
-                        <h2 id="count_regular" class="text-base font-black text-white">{{ ($stat->regular_customer ?? 0) == 0 ? '--' : $stat->regular_customer }}</h2>
+                        <h2 id="count_regular" class="text-base font-black text-white">
+                            {{ ($stat->regular_customer ?? 0) == 0 ? '--' : $stat->regular_customer }}</h2>
                     </div>
 
                     <div
                         class="p-3 rounded-xl border border-dotted border-slate-300 flex flex-col items-center justify-center text-center bg-transparent">
                         <span class="text-[10px] font-bold text-white-400 uppercase tracking-widest mb-1">Repeat
                             Customer</span>
-                        <h2 id="count_repeat" class="text-base font-black text-white">{{ ($stat->repeat_customer ?? 0) == 0 ? '--' : $stat->repeat_customer }}</h2>
+                        <h2 id="count_repeat" class="text-base font-black text-white">
+                            {{ ($stat->repeat_customer ?? 0) == 0 ? '--' : $stat->repeat_customer }}</h2>
                     </div>
 
                     <div
                         class="p-3 rounded-xl border border-dotted border-slate-300 flex flex-col items-center justify-center text-center bg-transparent">
                         <span class="text-[10px] font-bold text-white-400 uppercase tracking-widest mb-1">Offers
                             Display</span>
-                        <h2 id="count_sales" class="text-base font-black text-white">{{ ($stat->offer_display ?? 0) == 0 ? '--' : $stat->offer_display }}</h2>
+                        <h2 id="count_sales" class="text-base font-black text-white">
+                            {{ ($stat->offer_display ?? 0) == 0 ? '--' : $stat->offer_display }}</h2>
                     </div>
                 </div>
             </div>
@@ -172,7 +185,8 @@
                         Shop QR Code
                     </div>
                     <div id="shopNameTxt"
-                        style="font-size: 16px; font-weight: 900; color: #1e293b; margin-bottom: 4px; line-height: 1.2; word-wrap: break-word;" class="capitalize">
+                        style="font-size: 16px; font-weight: 900; color: #1e293b; margin-bottom: 4px; line-height: 1.2; word-wrap: break-word;"
+                        class="capitalize">
                         {{ Session::get('shopuser')->shop_name ?? 'Shop Name' }}
                     </div>
                     <p style="font-size: 11px; color: #64748b; margin-bottom: 12px; line-height: 1.3;">Scan to view our
@@ -203,16 +217,48 @@
 
             <!-- Tab: Offers -->
             <div id="shopTab-offers">
-                <div class="grid grid-cols-3 gap-2 mb-4">
+                <div class="space-y-3 mb-6">
                     @forelse(array_filter($offers) as $offer)
-                        <div class="bg-saffron-50 border border-saffron-200 rounded-xl p-3 text-center">
-                            <p class="font-display font-bold text-saffron-700 text-xl">
-                                {{ is_array($offer) ? $offer['text'] : $offer }}
-                            </p>
-                            <p class="text-xs text-saffron-600 mt-0.5 leading-tight hidden">off formal shoes</p>
+                        <div
+                            class="relative w-full bg-white border border-dashed border-orange-200 rounded-2xl p-4 flex items-center justify-between overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
+
+                            <div
+                                class="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-slate-100 rounded-full border-r border-orange-200">
+                            </div>
+
+                            <div class="flex items-center gap-4 pl-4">
+                                <div
+                                    class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="ticket-percent" class="w-6 h-6 text-orange-600"></i>
+                                </div>
+
+                                <div>
+                                    <h4 class="font-black text-slate-800 text-lg leading-tight uppercase tracking-tight">
+                                        {{ is_array($offer) ? $offer['text'] : $offer }}
+                                    </h4>
+                                    <p class="text-[10px] font-bold text-orange-500 uppercase tracking-widest mt-0.5">
+                                        Limited Time Deal • Exclusive
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="pr-2 hidden">
+                                <div
+                                    class="bg-slate-900 text-white text-[10px] font-black px-3 py-2 rounded-lg group-hover:bg-orange-600 transition-colors cursor-pointer">
+                                    CLAIM
+                                </div>
+                            </div>
+
+                            <div
+                                class="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-slate-100 rounded-full border-l border-orange-200">
+                            </div>
                         </div>
                     @empty
-                        <div class="col-span-3 text-center text-xs text-ink-400 py-4">No Offers</div>
+                        <div class="w-full border-2 border-dashed border-slate-200 rounded-2xl py-8 text-center">
+                            <i data-lucide="badge-percent" class="w-8 h-8 text-slate-300 mx-auto mb-2"></i>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">No Active Offers Today
+                            </p>
+                        </div>
                     @endforelse
                 </div>
 
