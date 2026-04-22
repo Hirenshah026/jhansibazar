@@ -96,7 +96,7 @@ $(document).ready(function () {
         e.preventDefault();
         const btn      = $(this);
         const shopId   = btn.attr('data-shopid');
-        const userId   = btn.data('data-userid');
+        const userId   = btn.attr('data-userid');
         const isLogged = btn.attr('data-islogged') === 'true';
 
         // Not logged in → show popup first
