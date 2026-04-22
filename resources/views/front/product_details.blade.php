@@ -194,7 +194,7 @@ body { background: #F0F4FF; min-height: 100vh }
     foreach ($reviews as $r) { $starCounts[(int)$r->rating] = ($starCounts[(int)$r->rating] ?? 0) + 1; }
 
     /* ── Is current user logged in? ── */
-    $loggedUser = Session::get('shopuser');
+    $loggedUser = Session::get('public_user');
     $isLogged   = Session::has('shopuser') && $loggedUser;
 
     /* ── Is already following? ── */
