@@ -195,8 +195,6 @@ body { background: #F0F4FF; min-height: 100vh }
 
     /* ── Is current user logged in? ── */
     $loggedUser = Session::get('shopuser');
-    print_r($loggedUser);
-    die();
     $isLogged   = Session::has('shopuser') && $loggedUser;
 
     /* ── Is already following? ── */
