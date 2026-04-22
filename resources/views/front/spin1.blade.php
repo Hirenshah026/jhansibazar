@@ -156,31 +156,6 @@
             {{-- ── BONUS CARDS ── --}}
             <div style="display:flex; flex-direction:column; gap:10px; width:100%; margin-bottom:8px;">
 
-                {{-- Card 1: Add 1 Spin --}}
-                <div class="bonus-card" onclick="earnBonus('addspin')" id="addSpinCard">
-                    <div class="bonus-icon-wrap" style="background:#EEF2FF;">🎡</div>
-                    <div style="flex:1; min-width:0;">
-                        <p class="bonus-card-title">Add 1 Spin</p>
-                        <p class="bonus-card-sub" style="color:#3B5BDB;">Aap seedha 1 spin kharid sakte hain</p>
-                    </div>
-                    <div class="bonus-card-arrow">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
-                    </div>
-                </div>
-
-                {{-- Card 2: Get 10 Rs + 1 Spin --}}
-                <div class="bonus-card" onclick="earnBonus('reward')" id="rewardCard">
-                    <div class="bonus-icon-wrap" style="background:#FFFBEB;">🎁</div>
-                    <div style="flex:1; min-width:0;">
-                        <p class="bonus-card-title">Get ₹10 + 1 Spin</p>
-                        <p class="bonus-card-sub" style="color:#B45309;">Special bonus — claim karein!</p>
-                    </div>
-                    <div class="bonus-card-arrow">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
-                    </div>
-                </div>
-
-                {{-- Card 3: Follow → 1 Spin --}}
                 <div class="bonus-card" onclick="openFollowSheet()" id="followBonusCard">
                     <div class="bonus-icon-wrap" style="background:#DCFCE7;">❤️</div>
                     <div style="flex:1; min-width:0;">
