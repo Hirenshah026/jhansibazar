@@ -212,12 +212,6 @@ body { background: #F0F4FF; min-height: 100vh }
         <p class="fd" style="font-size:15px; font-weight:800; color:#1e293b; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
             {{ ucwords($shop->shop_name) }}
         </p>
-        <button style="background:none; border:none; cursor:pointer; font-size:18px; line-height:1">🤍</button>
-        <button style="width:36px; height:36px; border-radius:12px; background:#EEF2FF; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" stroke-width="2.5">
-                <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/>
-            </svg>
-        </button>
     </div>
 
     {{-- ── HERO IMAGE ── --}}
