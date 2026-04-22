@@ -84,7 +84,7 @@
         foreach($catShops as $shop) {
             $offers = $shop->offers_list ?? [];
             foreach($offers as $offer) {
-                if (!empty($offer['is_active']) && isset($offer['category']) &&$offer['category'] != 'spin') {
+                if (!empty($offer['is_active']) && (strtotime($offer['expiry_date']) <= strtotime(date('Y-m-d'))) && isset($offer['category']) && $offer['category'] != 'spin') {
                     $offerText = isset($offer['text'])
                         ? $offer['text']
                         : 'Special Offer';
@@ -122,7 +122,12 @@
                     </button>
                 </div>
                 <div>
+                    <?php 
+                        if(count($brandOffers) > 0)
+                        {
+                    ?>
                     <p class="text-white font-semibold text-sm mb-2">Featured Brand Offers</p>
+                    <?php } ?>
 
                     {{-- Brand slider wrapper --}}
                     <div class="relative overflow-hidden rounded-2xl" id="brandWrap">
@@ -145,9 +150,9 @@
                                 </span>
                             </a>
                             @empty
-                            <div class="flex-shrink-0 w-[90px] bg-white/20 rounded-2xl p-2 text-center">
+                            <!-- <div class="flex-shrink-0 w-[90px] bg-white/20 rounded-2xl p-2 text-center">
                                 <p class="text-white text-[10px] font-medium">No offers yet</p>
-                            </div>
+                            </div> -->
                             @endforelse
                         </div>
                     </div>
@@ -320,8 +325,7 @@
                                 @if($halfStar)<span class="star" style="opacity:0.5">★</span>@endif
                                 @for($s = 0; $s < $emptyStars; $s++)<span class="star" style="opacity:0.2">★</span>@endfor
                             </div>
-                            <span style="font-size:12px;font-weight:800;color:#1e293b">{{ $rating }}</span>
-                            <span style="font-size:10px;color:#94a3b8">({{ $shop->review_count }})</span>
+                            <span style="font-size:12px;color:#1e293b">{{ $rating }}</span>
                         </div>
                         @else
                         <span style="font-size:10px;color:#94a3b8">No reviews yet</span>
