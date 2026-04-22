@@ -412,4 +412,8 @@ class ShopController extends Controller
             ->where( 'id', $id)->first(); // Ya aapka jo bhi Model name hai
         return view('front.partial.shop_card', compact('shop'));
     }
+    public function scanner()
+    {
+        return view('front.partial.scanner');
+    }
 }
