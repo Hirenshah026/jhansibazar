@@ -105,6 +105,10 @@ $(document).ready(function() {
                         pendingFollowBtn.trigger('click');
                         pendingFollowBtn = null;
                     }
+                    setTimeout(function()
+                    {
+                        location.reload();
+                    },2000);
                 }
             },
             complete: function() {
