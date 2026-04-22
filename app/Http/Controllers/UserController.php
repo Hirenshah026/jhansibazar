@@ -80,34 +80,37 @@ class UserController extends Controller
             return response()->json(['status' => 'followed']);
         }
     }
+    
     public function save_mobile(Request $request) 
     {
-        $request->validate(['mobile' => 'required']);
-
-        $user = DB::table('users')->where('mobile' , $request->mobile)->first();
-        if(!$user)
-        {
+        $request->validate(['mobile' => 'required|digits:10']);
+        
+        $user = DB::table('users')->where('mobile', $request->mobile)->first();
+        
+        if (!$user) {
             DB::table('users')->insert([
-                'mobile' => $request->mobile,
+                'mobile'     => $request->mobile,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
-        }
-        
-        $user = DB::table('users')->where('mobile' , $request->mobile)->first();
-        Session::put('public_user',$user);
-        $followCheck = DB::table('follows')
-                        ->where('follower_id', $user->id)
-                        ->where('following_id', $request->shopid)
-                        ->exists();
-        if($followCheck)
-        {
-            return response()->json(['success' => true,'id' => $user->id,'isFollowed' => $followCheck]);
-        }else{
-            return response()->json(['success' => true,'id' => $user->id,'isFollowed' => $followCheck]);
+            $user = DB::table('users')->where('mobile', $request->mobile)->first();
         }
 
+        Session::put('public_user', $user);
+
+        // Use lowercase 'shopid' to match JS
+        $followCheck = DB::table('follows')
+            ->where('follower_id', $user->id)
+            ->where('following_id', $request->shopid)  // ← lowercase
+            ->exists();
+
+        return response()->json([
+            'success'    => true,
+            'id'         => $user->id,
+            'isFollowed' => $followCheck,
+        ]);
     }
+    
     public function trackActivity($shopId, $column, $ipAddress) 
     {
         if (Session::has('public_user')) {

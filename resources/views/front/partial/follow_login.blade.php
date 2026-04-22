@@ -1,154 +1,225 @@
-
+{{-- ── FOLLOW LOGIN POPUP ── --}}
 <div id="spinPopup"
-    class="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden p-4">
-    <div class="bg-white w-full max-w-[320px] rounded-2xl shadow-xl overflow-hidden border border-gray-200 relative">
-        
-        <button id="closePopup" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
-            <i data-lucide="x-circle" class="w-6 h-6"></i>
-        </button>
+    style="display:none; position:fixed; inset:0; z-index:9999; 
+           background:rgba(15,23,42,0.6); backdrop-filter:blur(4px);
+           align-items:center; justify-content:center; padding:16px">
+    <div style="background:#fff; width:100%; max-width:320px; border-radius:20px; 
+                box-shadow:0 20px 60px rgba(0,0,0,0.3); overflow:hidden; 
+                border:1px solid #E0E8FF; position:relative">
 
-        <div class="p-6">
-            <div class="flex flex-col items-center text-center mb-6">
-                <p class="text-xs text-gray-500 mt-1">Please enter your mobile number </p>
+        <button id="closePopup"
+            style="position:absolute; top:12px; right:12px; background:#F1F5F9; 
+                   border:none; border-radius:50%; width:28px; height:28px; 
+                   cursor:pointer; font-size:16px; color:#64748b; 
+                   display:flex; align-items:center; justify-content:center">✕</button>
+
+        <div style="padding:24px">
+            <div style="text-align:center; margin-bottom:20px">
+                <div style="font-size:36px; margin-bottom:8px">👤</div>
+                <p style="font-size:15px; font-weight:800; color:#1e293b">Quick Login</p>
+                <p style="font-size:12px; color:#94a3b8; margin-top:4px">Enter your mobile to follow this shop</p>
             </div>
 
-            <div class="space-y-4">
-                <div class="relative">
-                    <input type="tel" id="userMobile" maxlength="10"
-                        class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-center text-lg font-semibold tracking-widest transition-all"
-                        placeholder="Enter Mobile Number">
-                </div>
+            <input type="tel" id="userMobile" maxlength="10"
+                style="width:100%; padding:12px 16px; background:#F8FAFF; 
+                       border:1.5px solid #E0E8FF; border-radius:12px; 
+                       font-size:16px; font-weight:700; text-align:center; 
+                       letter-spacing:0.1em; outline:none; 
+                       font-family:'Nunito',sans-serif; color:#1e293b;
+                       box-sizing:border-box; margin-bottom:12px"
+                placeholder="10-digit Mobile Number">
 
-                <button id="spinBtn"
-                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
-                    <span>Proceed</span>
-                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </button>
-            </div>
+            <div id="mobileError" 
+                style="display:none; color:#EF4444; font-size:11px; 
+                       font-weight:700; text-align:center; margin-bottom:8px"></div>
 
-            <p class="text-center text-[10px] text-gray-400 mt-4">
-                Your data is secure and will not be shared.
+            <button id="proceedBtn"
+                style="width:100%; background:#3B5BDB; color:#fff; border:none; 
+                       border-radius:12px; padding:13px; font-size:14px; 
+                       font-weight:800; cursor:pointer; font-family:'Nunito',sans-serif;
+                       transition:opacity .15s; display:flex; align-items:center; 
+                       justify-content:center; gap:8px">
+                <span id="proceedBtnText">Proceed & Follow</span>
+                <svg id="proceedBtnIcon" width="16" height="16" viewBox="0 0 24 24" 
+                     fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+                <svg id="proceedBtnLoader" 
+                    style="display:none; animation:spin-slow 1s linear infinite" 
+                    width="16" height="16" viewBox="0 0 24 24" fill="none" 
+                    stroke="currentColor" stroke-width="2.5">
+                    <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0"/>
+                </svg>
+            </button>
+
+            <p style="text-align:center; font-size:10px; color:#cbd5e1; margin-top:12px">
+                🔒 Your data is secure and will not be shared
             </p>
         </div>
     </div>
 </div>
+
 @push('script')
 <script>
-$(document).ready(function() {
-    
-    let pendingFollowBtn = null;
+$(document).ready(function () {
 
-    // 1. Follow/Unfollow Logic (Using Class instead of ID for multiple buttons)
-    $(document).on('click', '#followBtn', function(e) {
-        e.preventDefault();
-        let btn = $(this);
-        let userId = btn.attr('data-userid');
-        let shopId = btn.data('shopid');
+    // ── State ──
+    let pendingShopId = null;
 
-        // UI toggle
-        toggleFollowUI(btn);
+    // ── Show popup as flex ──
+    function showPopup(shopId) {
+        pendingShopId = shopId;
+        $('#userMobile').val('');
+        $('#mobileError').hide();
+        $('#spinPopup').css('display', 'flex');
+    }
 
-        $.ajax({
-            url: "{{ url('/follow-user') }}",
-            method: 'POST',
-            data: {
-                user_id: userId,
-                shopId: shopId,
-                _token: '{{ csrf_token() }}'
-            },
-            success: function(res) {
-                if (res.status == 'unfollowed' || res.status == 'error') {
-                    pendingFollowBtn = btn;
-                    resetFollowUI(btn);
-                    
-                    if (!localStorage.getItem('user_mobile')) {
-                        $('#spinPopup').removeClass('hidden');
-                    }
-                }
-                
-            },
-            error: function(xhr) {
-                console.error("Route Error:", xhr.responseText);
-                resetFollowUI(btn);
-            }
-        });
+    function hidePopup() {
+        $('#spinPopup').css('display', 'none');
+        pendingShopId = null;
+    }
+
+    // ── Close popup ──
+    $('#closePopup').on('click', hidePopup);
+    $('#spinPopup').on('click', function (e) {
+        if ($(e.target).is('#spinPopup')) hidePopup();
     });
 
-    // 2. Mobile Login Logic with Loader
-    $('#spinBtn').on('click', function() {
-        const mobile = $('#userMobile').val();
-        const $btn = $(this);
+    // ── Mobile input: numbers only ──
+    $('#userMobile').on('input', function () {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        $('#mobileError').hide();
+    });
 
-        if (mobile.length !== 10) {
-            Swal.fire({ icon: 'error', text: 'Please enter 10 digits' });
+    // ── Follow button click ──
+    $(document).on('click', '#followBtn', function (e) {
+        e.preventDefault();
+        const btn      = $(this);
+        const shopId   = btn.data('shopid');
+        const userId   = btn.data('userid');
+        const isLogged = btn.data('islogged') === 'true';
+
+        // Not logged in → show popup first
+        if (!isLogged || !userId || userId == 0) {
+            showPopup(shopId);
             return;
         }
 
+        // Logged in → call follow API directly
+        doFollow(shopId, userId, btn);
+    });
+
+    // ── Proceed button (after mobile entry) ──
+    $('#proceedBtn').on('click', function () {
+        const mobile = $('#userMobile').val().trim();
+
+        if (mobile.length !== 10) {
+            $('#mobileError').text('Please enter a valid 10-digit number').show();
+            return;
+        }
+
+        const $btn = $(this);
+        $btn.prop('disabled', true);
+        $('#proceedBtnText').text('Processing…');
+        $('#proceedBtnIcon').hide();
+        $('#proceedBtnLoader').show();
+
         $.ajax({
             url: "{{ route('save.mobile') }}",
-            type: "POST",
-            data: { _token: "{{ csrf_token() }}", mobile: mobile,shopId: $('#followBtn').attr('data-shopid') },
-            beforeSend: function() {
-                $btn.prop('disabled', true);
-                $('#btnLoader').removeClass('hidden');
-                $('#btnIcon').addClass('hidden');
-                $('#btnText').text('Processing...');
+            type: 'POST',
+            data: {
+                _token:  '{{ csrf_token() }}',
+                mobile:  mobile,
+                shopid:  pendingShopId   // ← lowercase matches controller
             },
-            success: function(data) {
+            success: function (data) {
                 if (data.success) {
-                    if(data.isFollowed)
-                    {
-                        location.reload();
-                    }else{
-                        localStorage.setItem('user_mobile', mobile);
-                        $('#followBtn').attr('data-userid',data.id);
-                        $('#spinPopup').fadeOut(300);
+                    hidePopup();
 
-                        // Re-trigger following
-                        if (pendingFollowBtn) {
-                            pendingFollowBtn.trigger('click');
-                            pendingFollowBtn = null;
-                        }
-                        setTimeout(function()
-                        {
-                            location.reload();
-                        },2000);
+                    if (data.isFollowed) {
+                        // Already following → just reload to show "Followed" state
+                        location.reload();
+                        return;
                     }
+
+                    // Update button with real user ID, mark as logged
+                    const $followBtn = $('#followBtn');
+                    $followBtn.attr('data-userid', data.id);
+                    $followBtn.attr('data-islogged', 'true');
+
+                    // Now do the actual follow (no re-click, direct call)
+                    doFollow(pendingShopId, data.id, $followBtn);
+                } else {
+                    $('#mobileError').text(data.message || 'Something went wrong.').show();
                 }
             },
-            complete: function() {
+            error: function () {
+                $('#mobileError').text('Server error. Please try again.').show();
+            },
+            complete: function () {
                 $btn.prop('disabled', false);
-                $('#btnLoader').addClass('hidden');
-                $('#btnIcon').removeClass('hidden');
-                $('#btnText').text('Proceed');
+                $('#proceedBtnText').text('Proceed & Follow');
+                $('#proceedBtnIcon').show();
+                $('#proceedBtnLoader').hide();
             }
         });
     });
 
-    // --- Helpers ---
-    function toggleFollowUI(btn) {
-        if (!btn.hasClass('is-following')) {
-            btn.addClass('is-following bg-green-700 text-white').removeClass('bg-black');
-            btn.text('Following');
+    // ── Core follow API call ──
+    function doFollow(shopId, userId, btn) {
+        // Optimistic UI update
+        setFollowingUI(btn, true);
+
+        $.ajax({
+            url:    "{{ url('/follow-user') }}",
+            method: 'POST',
+            data: {
+                _token:  '{{ csrf_token() }}',
+                user_id: userId,
+                shopId:  shopId
+            },
+            success: function (res) {
+                if (res.status === 'followed') {
+                    // Reload so server-rendered "Followed" label shows
+                    setTimeout(() => location.reload(), 800);
+                } else if (res.status === 'unfollowed') {
+                    setFollowingUI(btn, false);
+                } else {
+                    // Error (user_id was 0 etc.)
+                    setFollowingUI(btn, false);
+                }
+            },
+            error: function () {
+                setFollowingUI(btn, false);
+            }
+        });
+    }
+
+    // ── Button UI helpers ──
+    function setFollowingUI(btn, isFollowing) {
+        if (isFollowing) {
+            btn.text('✓ Following')
+               .css({
+                   background: '#16A34A',
+                   color: '#fff',
+                   opacity: '0.85'
+               });
         } else {
-            btn.removeClass('is-following bg-green-700 text-white').addClass('bg-black text-white');
-            btn.text('Follow');
+            btn.text('+ Follow')
+               .css({
+                   background: '#3B5BDB',
+                   color: '#fff',
+                   opacity: '1'
+               });
         }
     }
-
-    function resetFollowUI(btn) {
-        btn.removeClass('is-following bg-green-700 text-white').addClass('bg-black text-white');
-        btn.text('Follow');
-    }
-
-    $('#closePopup').on('click', function() { $('#spinPopup').addClass('hidden'); pendingFollowBtn = null; });
-    $('#userMobile').on('input', function() { this.value = this.value.replace(/[^0-9]/g, ''); });
 });
 </script>
+
 @if (!Session::has('public_user'))
-        <script>
-            localStorage.removeItem('user_mobile');
-            
-        </script>
-    @endif
+<script>
+    // Clear stale mobile from localStorage if session expired
+    localStorage.removeItem('user_mobile');
+</script>
+@endif
 @endpush

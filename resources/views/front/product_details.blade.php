@@ -292,16 +292,21 @@ body { background: #F0F4FF; min-height: 100vh }
                 </p>
             </div>
 
-            {{-- ── Follow / Followed state ── --}}
             @if($isFollowing)
-                {{-- Already following: plain non-clickable text --}}
                 <span class="followed-label">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                         stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
                     Followed
                 </span>
             @else
-                <button id="followBtn" data-shopid="{{ $shop->id }}" data-userid="0"
-                    style="flex-shrink:0; background:#3B5BDB; color:#fff; font-size:11px; font-weight:800; padding:7px 14px; border-radius:20px; border:none; cursor:pointer">
+                <button id="followBtn" 
+                    data-shopid="{{ $shop->id }}" 
+                    data-userid="{{ $isLogged ? ($loggedUser->id ?? 0) : 0 }}"
+                    data-islogged="{{ $isLogged ? 'true' : 'false' }}"
+                    style="flex-shrink:0; background:#3B5BDB; color:#fff; font-size:11px; font-weight:800; 
+                           padding:7px 14px; border-radius:20px; border:none; cursor:pointer">
                     + Follow
                 </button>
             @endif
