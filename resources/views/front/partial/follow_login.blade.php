@@ -96,7 +96,7 @@ $(document).ready(function() {
             },
             success: function(data) {
                 if (data.success) {
-                    if(data.followCheck)
+                    if(data.isFollowed)
                     {
                         location.reload();
                     }else{
@@ -109,6 +109,10 @@ $(document).ready(function() {
                             pendingFollowBtn.trigger('click');
                             pendingFollowBtn = null;
                         }
+                        setTimeout(function()
+                        {
+                            location.reload();
+                        },2000);
                     }
                 }
             },
