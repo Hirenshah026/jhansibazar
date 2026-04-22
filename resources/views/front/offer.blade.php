@@ -120,9 +120,10 @@
             <div id="offerListContainer" class="space-y-1">
                 @forelse($offers as $index => $offer)
                     @php
-                        // Expiry check logic
+                        // Updated logic: Aaj ki date expired nahi hogi, sirf guzra hua kal (yesterday) expired hoga
                         $isExpired =
-                            isset($offer['expiry_date']) && \Carbon\Carbon::parse($offer['expiry_date'])->isPast();
+                            isset($offer['expiry_date']) &&
+                            \Carbon\Carbon::parse($offer['expiry_date'])->isBefore(now()->startOfDay());
                         $isActive = $offer['is_active'] ?? true;
                     @endphp
 
@@ -157,7 +158,7 @@
                                     @if (isset($offer['expiry_date']))
                                         <span
                                             class="text-[8px] px-1.5 py-0.5 {{ $isExpired ? 'bg-red-600 text-white' : 'bg-amber-50 text-amber-600' }} rounded font-bold uppercase">
-                                            Exp: {{ $offer['expiry_date'] }}
+                                            Exp: {{ date('d m Y',strtotime($offer['expiry_date'])) }}
                                         </span>
                                     @endif
                                 </div>
