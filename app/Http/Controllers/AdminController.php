@@ -25,4 +25,33 @@ class AdminController extends Controller
         // Isme hum ek variable bhejenge 'autoPrint'
         return view('admin.front.id_card_preview', compact('shop'))->with('autoPrint', true);
     }
+
+    public function showLogin() {
+        if (Session::has('key')) {
+            return redirect('/admin/dashboard'); // Agar pehle se login hai toh dashboard bhejo
+        }
+        return view('admin.auth.login');
+    }
+
+    // 2. Login Handle Karna
+    public function login(Request $request) {
+       
+        $credentials = $request->validate([
+            'email' => 'required',
+            'password' => 'required',
+        ]);
+        
+        return redirect('/admin/dashboard');
+
+        // Agar galat hai toh wapas bhejo error ke sath
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ])->onlyInput('email');
+    }
+
+    // 3. Logout Karna
+    public function logout(Request $request) {
+        Session::flush();
+        return redirect('/admin/login');
+    }
 }

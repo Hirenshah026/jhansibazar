@@ -3,6 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 
+Route::get('/login', [AdminController::class, 'showLogin'])->name('admin.login');
+Route::post('/login-post', [AdminController::class, 'login']);
+Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
+
 Route::any('/dashboard', [AdminController::class, 'dashboard']);
 Route::get('/merchant-preview/{id}', [AdminController::class, 'show'])->name('merchant.preview');
 Route::get('/merchant-id-preview/{id}', [AdminController::class, 'showPreview']);

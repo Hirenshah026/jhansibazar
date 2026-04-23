@@ -31,7 +31,7 @@
             </div>
             <div class="flex gap-4">
                 <button class="text-sm font-semibold opacity-80 hover:opacity-100">Support</button>
-                <button class="bg-indigo-700 px-4 py-2 rounded-lg text-sm font-bold">Logout</button>
+                <button class="bg-indigo-700 px-4 py-2 rounded-lg text-sm font-bold" onclick="location.assign('{{url('/admin/login')}}')">Logout</button>
             </div>
         </div>
     </nav>
