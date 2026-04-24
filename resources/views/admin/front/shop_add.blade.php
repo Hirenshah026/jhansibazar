@@ -22,7 +22,7 @@
                 <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-indigo-900 font-black">JHS</div>
                 <h1 class="font-bold tracking-tight">Marketplace Admin</h1>
             </div>
-            <a href="{{ url('/admin/merchants') }}" class="bg-indigo-700 px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-indigo-600 transition-all">
+            <a href="{{ url('/admin/dashboard') }}" class="bg-indigo-700 px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-indigo-600 transition-all">
                 <i data-lucide="list" class="w-4 h-4"></i> View All Shops
             </a>
         </div>

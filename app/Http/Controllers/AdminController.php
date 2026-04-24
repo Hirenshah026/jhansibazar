@@ -12,6 +12,11 @@ class AdminController extends Controller
     public function dashboard()
     {
         $shops = DB::table('shops')->get();
+        return view('admin.front.dashboard',compact('shops'));
+    }
+    public function add_shop()
+    {
+        $shops = DB::table('shops')->get();
         return view('admin.front.shop_add',compact('shops'));
     }
     
