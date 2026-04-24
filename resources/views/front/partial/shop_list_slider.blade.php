@@ -143,7 +143,7 @@
                     {{ date('g:i a', strtotime($sp->close_time)) }}</span>
             </div>
             <div class="flex gap-2 mt-2.5 flex-wrap">
-                @if ($sp->tagline)
+                @if (!empty($sp->tagline))
                     <span
                         class="bg-blue-50 text-blue-700 border border-blue-100 text-[10px] font-semibold rounded-lg px-2.5 py-1">✨
                         {{ $sp->tagline }}</span>
