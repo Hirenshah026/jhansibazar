@@ -33,7 +33,26 @@ class UserController extends Controller
     // --- FOLLOW / UNFOLLOW LOGIC ---
     public function toggleFollow(Request $request)
     {
-        $follower_id = $request->user_id;
+        $follower_id = '';
+        if($request->has('phone'))
+        {
+            $getUserDetail = DB::table('users')->where('mobile',$request->phone)->get();
+            if($getUserDetail->count() > 0)
+            {
+                $follower_id = $getUserDetail[0]->id;
+            }else{
+                $id = DB::table('users')->insertGetId([
+                    'mobile'     => $request->phone,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+                $follower_id = $id;
+            }
+            $user = DB::table('users')->where('mobile', $request->phone)->first();
+            Session::put('public_user', $user);
+        }else{
+            $follower_id = $request->user_id;
+        }
         $following_id = $request->shopId;      // Target user/shop ID
         $check_type=$request->flw_check??'work';
 
