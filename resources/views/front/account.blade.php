@@ -209,6 +209,8 @@ $offers = json_decode($shop->offers ?? '[]', true) ?? [];
                 id="tab-reviews">Reviews</button>
             <button onclick="shopTab(this,'info')" class="flex-1 py-2.5 text-xs font-semibold text-ink-400 "
                 id="tab-info">Info</button>
+            <button onclick="shopTab(this,'logo')" class="flex-1 py-2.5 text-xs font-semibold text-ink-400"
+            id="tab-logo">Logo & Banner</button>
         </div>
 
         <!-- Tab: Offers -->
@@ -276,7 +278,7 @@ $offers = json_decode($shop->offers ?? '[]', true) ?? [];
                 </div>
                 @endforelse
             </div>
-
+            
             <!-- Video -->
             <div class="hidden relative bg-gradient-to-br from-ink-100 to-ink-200 rounded-2xl overflow-hidden mb-4 cursor-pointer group"
                 style="height:160px" onclick="showScreen('spin')">
@@ -323,7 +325,9 @@ $offers = json_decode($shop->offers ?? '[]', true) ?? [];
                 </div>
             </div>
         </div>
-
+        <div id="shopTab-logo" class="hidden">
+            @include('front.partial.logo_and_banner')
+        </div>
         <!-- Tab: Items -->
         <div id="shopTab-items" class="hidden">
             @if ($items->isEmpty())

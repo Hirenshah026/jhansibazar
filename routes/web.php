@@ -110,5 +110,11 @@ Route::middleware(['authcheckuser'])->group(function () {
     Route::get('/services/fetch/{id}', [ServiceController::class, 'fetch']);
     Route::post('/services/update/{id}', [ServiceController::class, 'update']);
     Route::delete('/services/delete/{id}', [ServiceController::class, 'destroy']);
+
+    //logo
+    Route::post('/shop/update-banner', [ShopController::class, 'updateBanner'])->name('shop.update.banner.local');
+
+    // Logo update karne ke liye
+    Route::post('/shop/update-logo', [ShopController::class, 'updateLogo'])->name('shop.update.logo.local');
 });
 

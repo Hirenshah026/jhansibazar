@@ -80,7 +80,7 @@ class AdminController extends Controller
                 'open_time'  => $request->open_time,
                 'close_time' => $request->close_time,
                 'is_whatsapp'=> $request->is_whatsapp,
-                // Array ko string ya json mein convert karna padega DB ke liye
+                'pin_set'    => 1,
                 'off_days'   => $request->has('off_days') ? json_encode($request->off_days) : null,
                 
             ]);

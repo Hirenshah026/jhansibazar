@@ -416,4 +416,62 @@ class ShopController extends Controller
     {
         return view('front.partial.scanner');
     }
+    public function updateBanner(Request $request)
+    {
+        if ($request->filled('cropped_banner')) {
+            // 1. Purana Banner Cloudinary se delete karo
+            $shop = DB::table('shops')->where('id', Session::get('shopuser')->id)->first();
+            if (!empty($shop->banner_public_id)) {
+                Cloudinary::destroy($shop->banner_public_id);
+            }
+
+            // 2. Base64 Image ko Cloudinary par upload karo
+            // Note: Cloudinary Base64 string ko directly accept kar leta hai
+            $uploaded = Cloudinary::upload($request->cropped_banner, [
+                'folder'         => 'banners',
+                'transformation' => ['quality' => 'auto', 'fetch_format' => 'auto'],
+            ]);
+
+            // 3. DB Facade se update karo
+            DB::table('shops')->where('id', $shop->id)->update([
+                'banner'           => $uploaded->getSecurePath(),
+                'banner_public_id' => $uploaded->getPublicId(),
+                
+            ]);
+
+            return back()->with('success', 'Official Banner Updated!');
+        }
+        return back()->with('error', 'No image data found.');
+    }
+    public function updateLogo(Request $request)
+    {
+        if ($request->filled('cropped_logo')) {
+            // 1. Find Shop using DB Facade
+            $shop = DB::table('shops')->where('id', Session::get('shopuser')->id)->first();
+
+            // 2. Delete old logo from Cloudinary
+            if (!empty($shop->logo_public_id)) {
+                Cloudinary::destroy($shop->logo_public_id);
+            }
+
+            // 3. Upload new cropped logo
+            $uploaded = Cloudinary::upload($request->cropped_logo, [
+                'folder'         => 'logos',
+                'transformation' => [
+                    'width' => 500, 'height' => 500, 'crop' => 'limit', // Identity protection
+                    'quality' => 'auto', 'fetch_format' => 'auto'
+                ],
+            ]);
+
+            // 4. DB Update
+            DB::table('shops')->where('id', $shop->id)->update([
+                'logo'           => $uploaded->getSecurePath(),
+                'logo_public_id' => $uploaded->getPublicId(),
+                
+            ]);
+
+            return back()->with('success', 'Official Brand Logo Updated!');
+        }
+        return back()->with('error', 'Update Failed.');
+    }
 }
