@@ -116,7 +116,7 @@
             toast: true,
             position: 'top',
             showConfirmButton: false,
-            timer: 2000,
+            timer: 5500,
             timerProgressBar: true,
             customClass: {
                 popup: 'app-toast'
@@ -187,7 +187,7 @@
                                 } else {
                                     window.location.href = "{{ url('/') }}";
                                 }
-                            }, 1500);
+                            }, 50);
                         } else {
                             AppToast.fire({
                                 icon: 'error',

@@ -267,80 +267,80 @@ class ShopController extends Controller
     }
 
     public function saveOffer( Request $request )
- {
-        // 1. Validation: Jo fields humne Front-end mein diye hain unhe validate karo
-        $request->validate( [
-            'offer_text'   => 'required|string|max:255',
-            'quantity'     => 'nullable|integer|min:0',
-            'expiry_date'  => 'nullable|date',
-            'is_active'    => 'required|in:0,1',
-            'offer_image'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-        ] );
+    {
+            // 1. Validation: Jo fields humne Front-end mein diye hain unhe validate karo
+            $request->validate( [
+                'offer_text'   => 'required|string|max:255',
+                'quantity'     => 'nullable|integer|min:0',
+                'expiry_date'  => 'nullable|date',
+                'is_active'    => 'required|in:0,1',
+                'offer_image'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            ] );
 
-        // Shop user session se lo
-        $shopUser = Session::get( 'shopuser' );
-        if ( !$shopUser ) {
-            return response()->json( [ 'status' => 'error', 'message' => 'Session expired!' ], 401 );
-        }
-
-        $shop = DB::table( 'shops' )->where( 'id', $shopUser->id )->first();
-        // Purane offers ko array mein convert karo
-        $offers = json_decode( $shop->offers, true ) ?? [];
-
-        // 2. Image Upload Logic
-        $imageUrl = null;
-        if ( $request->hasFile( 'offer_image' ) ) {
-            $file = $request->file( 'offer_image' );
-            $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            // Public folder mein save karega
-            $file->move( public_path( 'uploads/offers' ), $fileName );
-            $imageUrl = asset( 'uploads/offers/' . $fileName );
-        }
-
-        // 3. Naya Data Object taiyar karo ( Same as Front-end keys )
-        $offerData = [
-            'text'        => $request->offer_text,
-            'quantity'    => $request->quantity ?? 0,
-            'category'    => $request->category ?? null,
-            'offer_description'    => $request->offer_description ?? null,
-            'expiry_date' => $request->expiry_date,
-            'is_active'   => ( int ) $request->is_active,
-            'image'       => $imageUrl, // Initial image
-        ];
-
-        // 4. Update ya Add ka logic
-        // Index check: agar index empty nahi hai to update, warna naya add
-        if ( $request->filled( 'index' ) ) {
-            $index = $request->index;
-
-            // Agar edit ke time nayi image upload nahi ki, to purani wali hi rakho
-            if ( !$imageUrl && isset( $offers[ $index ][ 'image' ] ) ) {
-                $offerData[ 'image' ] = $offers[ $index ][ 'image' ];
+            // Shop user session se lo
+            $shopUser = Session::get( 'shopuser' );
+            if ( !$shopUser ) {
+                return response()->json( [ 'status' => 'error', 'message' => 'Session expired!' ], 401 );
             }
 
-            $offers[ $index ] = $offerData;
-        } else {
-            // Naya Add karne se pehle check karo limit ( Max 5 )
-            if ( count( $offers ) >= 5 ) {
-                return response()->json( [
-                    'status'  => 'error',
-                    'message' => 'Limit Full: Aap sirf 5 offers hi laga sakte hain!'
-                ], 422 );
+            $shop = DB::table( 'shops' )->where( 'id', $shopUser->id )->first();
+            // Purane offers ko array mein convert karo
+            $offers = json_decode( $shop->offers, true ) ?? [];
+
+            // 2. Image Upload Logic
+            $imageUrl = null;
+            if ( $request->hasFile( 'offer_image' ) ) {
+                $file = $request->file( 'offer_image' );
+                $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                // Public folder mein save karega
+                $file->move( public_path( 'uploads/offers' ), $fileName );
+                $imageUrl = asset( 'uploads/offers/' . $fileName );
             }
 
-            // Agar nayi image nahi hai to default gift icon
-            if ( !$imageUrl ) {
-                $offerData[ 'image' ] = asset( 'assets/img/gift.png' );
+            // 3. Naya Data Object taiyar karo ( Same as Front-end keys )
+            $offerData = [
+                'text'        => $request->offer_text,
+                'quantity'    => $request->quantity ?? 0,
+                'category'    => $request->category ?? null,
+                'offer_description'    => $request->offer_description ?? null,
+                'expiry_date' => $request->expiry_date,
+                'is_active'   => ( int ) $request->is_active,
+                'image'       => $imageUrl, // Initial image
+            ];
+
+            // 4. Update ya Add ka logic
+            // Index check: agar index empty nahi hai to update, warna naya add
+            if ( $request->filled( 'index' ) ) {
+                $index = $request->index;
+
+                // Agar edit ke time nayi image upload nahi ki, to purani wali hi rakho
+                if ( !$imageUrl && isset( $offers[ $index ][ 'image' ] ) ) {
+                    $offerData[ 'image' ] = $offers[ $index ][ 'image' ];
+                }
+
+                $offers[ $index ] = $offerData;
+            } else {
+                // Naya Add karne se pehle check karo limit ( Max 5 )
+                if ( count( $offers ) >= 5 ) {
+                    return response()->json( [
+                        'status'  => 'error',
+                        'message' => 'Limit Full: Aap sirf 5 offers hi laga sakte hain!'
+                    ], 422 );
+                }
+
+                // Agar nayi image nahi hai to default gift icon
+                if ( !$imageUrl ) {
+                    $offerData[ 'image' ] = asset( 'assets/img/gift.png' );
+                }
+
+                $offers[] = $offerData;
             }
 
-            $offers[] = $offerData;
-        }
-
-        // 5. Database mein Save karo ( re-index array values )
-        DB::table( 'shops' )->where( 'id', $shop->id )->update( [
-            'offers'     => json_encode( array_values( $offers ) ),
-            'updated_at' => now(),
-        ] );
+            // 5. Database mein Save karo ( re-index array values )
+            DB::table( 'shops' )->where( 'id', $shop->id )->update( [
+                'offers'     => json_encode( array_values( $offers ) ),
+                'updated_at' => now(),
+            ] );
 
         return response()->json( [ 'status' => 'success' ] );
     }
