@@ -268,12 +268,13 @@
             <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide" id="{{ $sectionId }}">
                 @foreach($catShops as $shop)
                 @php
-                    $photo      = $shop->shop_photo ?? null;
-                    $itemPhotos = $shop->photos_list ?? [];
-                    $displayPhoto = $photo ?: ($itemPhotos ?? null);
-                    $offersList = $shop->offers_list ?? [];
-                    $firstOffer = $offersList[0] ?? null;
-                    $isOpen     = $shop->is_open;
+                    $photo        = $shop->shop_photo ?? null;
+                    $itemPhotos   = $shop->photos_list ?? [];
+                    $itemPhotos   = is_array($itemPhotos) ? $itemPhotos : [$itemPhotos];
+                    $displayPhoto = $photo ?: ($itemPhotos[0] ?? null);
+                    $offersList   = $shop->offers_list ?? [];
+                    $firstOffer   = $offersList[0] ?? null;
+                    $isOpen       = $shop->is_open;
                 @endphp
 
                 <div class="flex-shrink-0 w-44 bg-white rounded-2xl border border-ink-100 overflow-hidden shadow-sm card-hover cursor-pointer"
