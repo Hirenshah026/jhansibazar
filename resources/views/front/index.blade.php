@@ -271,6 +271,8 @@
                     $photo      = $shop->shop_photo ?? null;
                     $itemPhotos = $shop->photos_list ?? [];
                     $displayPhoto = !empty($photo) ? $photo : (!empty($itemPhotos[0]) ? $itemPhotos[0] : '');
+                    print_r($displayPhoto);
+                    die();
                     $offersList = $shop->offers_list ?? [];
                     $firstOffer = $offersList[0] ?? null;
                     $isOpen     = $shop->is_open;
