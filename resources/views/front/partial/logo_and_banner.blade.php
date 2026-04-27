@@ -74,7 +74,7 @@
                 <input type="hidden" name="cropped_logo" id="cropped_logo_input">
                 <div class="flex gap-2">
                     <button type="button" onclick="location.reload()" class="btn-gov flex-1 py-3 bg-slate-100 text-slate-400 rounded-xl">Cancel</button>
-                    <button type="submit" class="btn-gov flex-[2] py-3 bg-[#f97316] text-white rounded-xl shadow-lg">Save Identity</button>
+                    <button type="submit" class="btn-gov flex-[2] py-3 bg-[#f97316] text-white rounded-xl shadow-lg">Save Logo</button>
                 </div>
             </form>
         </div>

@@ -185,4 +185,9 @@ class UserController extends Controller
             return "new_visit_inserted";
         }
     }
+    function logout()
+    {
+        Session::flush();
+        return view('front.auth.logout_user');
+    }
 }

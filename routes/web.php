@@ -30,7 +30,7 @@ Route::get('/clear-cache', function () {
 Route::post('/login-check', [UserController::class, 'ajaxLogin'])->name('login.check');
 Route::post('/save-mobile', [UserController::class, 'save_mobile'])->name('save.mobile');
 Route::any('/user-profile', [UserController::class, 'dashboard'])->name('user.dashboard');
-
+Route::any('/user-logout', [UserController::class, 'logout']);
 
 // Follow/Unfollow Route
 Route::post('/follow-user', [UserController::class, 'toggleFollow'])->name('follow.user');
