@@ -271,8 +271,6 @@
                     $photo      = $shop->shop_photo ?? null;
                     $itemPhotos = $shop->photos_list ?? [];
                     $displayPhoto = !empty($photo) ? $photo : (!empty($itemPhotos[0]) ? $itemPhotos[0] : '');
-                    print_r($displayPhoto);
-                    die();
                     $offersList = $shop->offers_list ?? [];
                     $firstOffer = $offersList[0] ?? null;
                     $isOpen     = $shop->is_open;
@@ -283,7 +281,7 @@
 
                     <div class="relative h-24 bg-ink-50 overflow-hidden">
                         @if($displayPhoto)
-                            <img src="{{ $displayPhoto }}" class="w-full h-full object-cover" loading="lazy" alt="{{ $shop->shop_name }}">
+                            <img src="<?= $displayPhoto; ?>" class="w-full h-full object-cover" loading="lazy" alt="{{ $shop->shop_name }}">
                         @else
                             <div class="w-full h-full flex items-center justify-center bg-gradient-to-br {{ $cfg['color'] }} opacity-20">
                                 <span class="text-4xl">{{ $cfg['emoji'] }}</span>
