@@ -268,13 +268,12 @@
             <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide" id="{{ $sectionId }}">
                 @foreach($catShops as $shop)
                 @php
-                    $photo        = $shop->shop_photo ?? null;
-                    $itemPhotos   = $shop->photos_list ?? [];
-                    $itemPhotos   = is_array($itemPhotos) ? $itemPhotos : [$itemPhotos];
-                    $displayPhoto = $photo ?: ($itemPhotos[0] ?? null);
-                    $offersList   = $shop->offers_list ?? [];
-                    $firstOffer   = $offersList[0] ?? null;
-                    $isOpen       = $shop->is_open;
+                    $photo      = $shop->shop_photo ?? null;
+                    $itemPhotos = $shop->photos_list ?? [];
+                    $displayPhoto = !empty($photo) ? $photo : (isset($itemPhotos[0] : $itemPhotos[0] : '')) 
+                    $offersList = $shop->offers_list ?? [];
+                    $firstOffer = $offersList[0] ?? null;
+                    $isOpen     = $shop->is_open;
                 @endphp
 
                 <div class="flex-shrink-0 w-44 bg-white rounded-2xl border border-ink-100 overflow-hidden shadow-sm card-hover cursor-pointer"
@@ -282,7 +281,7 @@
 
                     <div class="relative h-24 bg-ink-50 overflow-hidden">
                         @if($displayPhoto)
-                            <img src="{{ $displayPhoto ?? '' }}" class="w-full h-full object-cover" loading="lazy" alt="{{ $shop->shop_name }}">
+                            <img src="{{ $displayPhoto }}" class="w-full h-full object-cover" loading="lazy" alt="{{ $shop->shop_name }}">
                         @else
                             <div class="w-full h-full flex items-center justify-center bg-gradient-to-br {{ $cfg['color'] }} opacity-20">
                                 <span class="text-4xl">{{ $cfg['emoji'] }}</span>
