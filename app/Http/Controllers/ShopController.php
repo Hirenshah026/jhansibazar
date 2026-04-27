@@ -474,4 +474,45 @@ class ShopController extends Controller
         }
         return back()->with('error', 'Update Failed.');
     }
+    public function updateShopPhotos(Request $request)
+    {
+        $shop = DB::table('shops')->where('id', $request->shop_id)->first();
+        if (!$shop) return response()->json(['success' => false], 404);
+
+        // Pehle purana data array mein le lo
+        $items = json_decode($shop->item_photos ?? '[]', true) ?: [];
+
+        for ($i = 1; $i <= 6; $i++) {
+            $key = 'item_photo_' . $i;
+
+            if ($request->hasFile($key)) {
+                // Sirf usi slot ki purani photo delete hogi jo upload ho raha hai
+                if (isset($items[$i - 1]['public_id'])) {
+                    Cloudinary::destroy($items[$i - 1]['public_id']);
+                }
+
+                $uploaded = Cloudinary::upload($request->file($key)->getRealPath(), [
+                    'folder' => 'items',
+                    'transformation' => ['width' => 800, 'height' => 800, 'crop' => 'fill']
+                ]);
+
+                // Naya data usi specific slot (index $i-1) par set karo
+                $items[$i - 1] = [
+                    'url' => $uploaded->getSecurePath(),
+                    'public_id' => $uploaded->getPublicId(),
+                ];
+            }
+        }
+
+        // array_values ensure karta hai ki JSON format [{},{}] hi rahe
+        DB::table('shops')->where('id', $request->shop_id)->update([
+            'item_photos' => json_encode(array_values($items)),
+            'updated_at' => now()
+        ]);
+
+        // Session update
+        Session::put('shopuser', DB::table('shops')->where('id', $request->shop_id)->first());
+
+        return response()->json(['success' => true]);
+    }
 }

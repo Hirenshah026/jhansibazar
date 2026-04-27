@@ -211,6 +211,8 @@ $offers = json_decode($shop->offers ?? '[]', true) ?? [];
                 id="tab-info">Info</button>
             <button onclick="shopTab(this,'logo')" class="flex-1 py-2.5 text-xs font-semibold text-ink-400"
             id="tab-logo">Logo & Banner</button>
+            <button onclick="shopTab(this,'gallery')" class="flex-1 py-2.5 text-xs font-semibold text-ink-400"
+            id="tab-logo">Gallery</button>
         </div>
 
         <!-- Tab: Offers -->
@@ -327,6 +329,10 @@ $offers = json_decode($shop->offers ?? '[]', true) ?? [];
         </div>
         <div id="shopTab-logo" class="hidden">
             @include('front.partial.logo_and_banner')
+            
+        </div>
+        <div id="shopTab-gallery" class="hidden">
+            @include('front.partial.gallery_tab')
         </div>
         <!-- Tab: Items -->
         <div id="shopTab-items" class="hidden">

@@ -60,7 +60,7 @@
     }
 
     function shopTab(btn, tab) {
-        ['offers', 'items', 'service', 'reviews', 'info','logo'].forEach(t => {
+        ['offers', 'items', 'service', 'reviews', 'info','logo','gallery'].forEach(t => {
             const el = document.getElementById('shopTab-' + t);
             const tb = document.getElementById('tab-' + t);
             if (el) el.classList.toggle('hidden', t !== tab);
