@@ -281,7 +281,7 @@
 
                     <div class="relative h-24 bg-ink-50 overflow-hidden">
                         @if($displayPhoto)
-                            <img src="{{ is_array($displayPhoto) ? ($displayPhoto[0] ?? '') : ($displayPhoto ?? '') }}" 
+                            <img src="{{ is_array($displayPhoto) ? ($displayPhoto[0] ?? 'https://placehold.co/600x400?text=Jhansi+Bazaar') : ($displayPhoto ?? 'https://placehold.co/600x400?text=Jhansi+Bazaar') }}" 
                                  class="w-full h-full object-cover" 
                                  loading="lazy" 
                                  alt="{{ $shop->shop_name }}">
