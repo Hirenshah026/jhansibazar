@@ -270,7 +270,7 @@
                 @php
                     $photo      = $shop->shop_photo ?? null;
                     $itemPhotos = $shop->photos_list ?? [];
-                    $displayPhoto = !empty($photo) ? $photo : (isset($itemPhotos[0] : $itemPhotos[0] : '')) 
+                    $displayPhoto = !empty($photo) ? $photo : (isset($itemPhotos[0] ? $itemPhotos[0] : '')) 
                     $offersList = $shop->offers_list ?? [];
                     $firstOffer = $offersList[0] ?? null;
                     $isOpen     = $shop->is_open;
