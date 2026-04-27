@@ -65,6 +65,7 @@
             const tb = document.getElementById('tab-' + t);
             if (el) el.classList.toggle('hidden', t !== tab);
             if (tb) {
+                 
                 tb.classList.toggle('tab-active', t === tab);
                 tb.classList.toggle('text-ink-400', t !== tab);
             }

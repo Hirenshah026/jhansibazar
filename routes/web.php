@@ -116,5 +116,7 @@ Route::middleware(['authcheckuser'])->group(function () {
 
     // Logo update karne ke liye
     Route::post('/shop/update-logo', [ShopController::class, 'updateLogo'])->name('shop.update.logo.local');
+    Route::post('/shop-photos-update', [ShopController::class, 'updateShopPhotos'])->name('shop.photos.update');
+    Route::post('/shop-photos-delete', [ShopController::class, 'deleteShopPhoto'])->name('shop.photos.delete');
 });
 

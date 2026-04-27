@@ -479,39 +479,49 @@ class ShopController extends Controller
         $shop = DB::table('shops')->where('id', $request->shop_id)->first();
         if (!$shop) return response()->json(['success' => false], 404);
 
-        // Pehle purana data array mein le lo
+        // Purana data le lo
         $items = json_decode($shop->item_photos ?? '[]', true) ?: [];
+
+        $hasChanged = false;
 
         for ($i = 1; $i <= 6; $i++) {
             $key = 'item_photo_' . $i;
 
             if ($request->hasFile($key)) {
-                // Sirf usi slot ki purani photo delete hogi jo upload ho raha hai
+                // 1. Purani photo delete karo agar usi index par koi pehle se hai
                 if (isset($items[$i - 1]['public_id'])) {
                     Cloudinary::destroy($items[$i - 1]['public_id']);
                 }
 
+                // 2. Nayi photo upload
                 $uploaded = Cloudinary::upload($request->file($key)->getRealPath(), [
                     'folder' => 'items',
                     'transformation' => ['width' => 800, 'height' => 800, 'crop' => 'fill']
                 ]);
 
-                // Naya data usi specific slot (index $i-1) par set karo
+                // 3. Specific index ($i-1) par data set karo
                 $items[$i - 1] = [
                     'url' => $uploaded->getSecurePath(),
                     'public_id' => $uploaded->getPublicId(),
                 ];
+                $hasChanged = true;
             }
         }
 
-        // array_values ensure karta hai ki JSON format [{},{}] hi rahe
-        DB::table('shops')->where('id', $request->shop_id)->update([
-            'item_photos' => json_encode(array_values($items)),
-            'updated_at' => now()
-        ]);
+        if ($hasChanged) {
+            // Order maintain rakhne ke liye keys ko sort karo (0, 1, 2...)
+            ksort($items);
 
-        // Session update
-        Session::put('shopuser', DB::table('shops')->where('id', $request->shop_id)->first());
+            DB::table('shops')->where('id', $request->shop_id)->update([
+                // array_values() tabhi use karo agar aapko beech ke "gaps" khatam karne hain.
+                // Agar aap chahte ho ki Slot 5 ki photo Slot 5 par hi rahe, toh array_values mat lagao.
+                'item_photos' => json_encode($items), 
+                'updated_at' => now()
+            ]);
+
+            // Session update
+            Session::put('shopuser', DB::table('shops')->where('id', $request->shop_id)->first());
+        }
 
         return response()->json(['success' => true]);
     }

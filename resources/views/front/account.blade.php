@@ -212,7 +212,7 @@ $offers = json_decode($shop->offers ?? '[]', true) ?? [];
             <button onclick="shopTab(this,'logo')" class="flex-1 py-2.5 text-xs font-semibold text-ink-400"
             id="tab-logo">Logo & Banner</button>
             <button onclick="shopTab(this,'gallery')" class="flex-1 py-2.5 text-xs font-semibold text-ink-400"
-            id="tab-logo">Gallery</button>
+            id="tab-gallery">Gallery</button>
         </div>
 
         <!-- Tab: Offers -->
@@ -669,6 +669,7 @@ $offers = json_decode($shop->offers ?? '[]', true) ?? [];
                 $('#arrow').text($(this).is(':visible') ? '▲' : '▼');
             });
         });
+        
     });
 
     function confirmDelete(itemId, itemName) {
