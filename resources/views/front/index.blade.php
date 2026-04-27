@@ -282,7 +282,7 @@
 
                     <div class="relative h-24 bg-ink-50 overflow-hidden">
                         @if($displayPhoto)
-                            <img src="{{ $displayPhoto }}" class="w-full h-full object-cover" loading="lazy" alt="{{ $shop->shop_name }}">
+                            <img src="{{ $displayPhoto ?? '' }}" class="w-full h-full object-cover" loading="lazy" alt="{{ $shop->shop_name }}">
                         @else
                             <div class="w-full h-full flex items-center justify-center bg-gradient-to-br {{ $cfg['color'] }} opacity-20">
                                 <span class="text-4xl">{{ $cfg['emoji'] }}</span>
