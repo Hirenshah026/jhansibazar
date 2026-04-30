@@ -148,8 +148,8 @@
         }
 
         $loggedUser  = Session::get('public_user');
-        $isLogged    = Session::has('public_user') && $loggedUser;
-        $isFollowing = $isFollowed ?? false;
+        $isLogged    = Session::has('public_user');
+        $isFollowing = $isFollowed;
     @endphp
 
     <div id="screen-spin" class="screen active fade-up pb-24">
@@ -180,8 +180,8 @@
             {{-- Stats Row --}}
             <div class="stats-row">
                 <div class="stat-pill coins-pill">
-                    <span class="stat-val" id="coinsDisplay">🪙 {{ $userCoins ?? 340 }}</span>
-                    <span class="stat-lbl">Coins</span>
+                    <span class="stat-val" id="coinsDisplay">🪙 {{ $userCoins ?? 10 }}</span>
+                    <span class="stat-lbl" style="font-size:1rem;">💵</span>
                 </div>
                 <div class="stat-pill spins-pill">
                     <span class="stat-val" id="spinsCount">{{ $shop->spins_left ?? 1 }}</span>
@@ -198,6 +198,7 @@
             <div style="display:flex; flex-direction:column; gap:10px; width:100%; margin-bottom:80px;">
 
                 {{-- Follow Card --}}
+                @if(!$isFollowing)
                 <div class="bonus-card" onclick="openFollowSheet()" id="followBonusCard">
                     <div class="bonus-icon-wrap" style="background:#DCFCE7;">❤️</div>
                     <div style="flex:1; min-width:0;">
@@ -208,6 +209,7 @@
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
                     </div>
                 </div>
+                @endif
 
                 {{-- Review Card --}}
                 <div class="bonus-card" onclick="openReviewSheet()" id="reviewBonusCard">
@@ -310,7 +312,6 @@
                     <input class="fr-input" id="followPhone" type="tel" placeholder="Mobile number">
                     <input class="fr-input" id="followName" type="text" placeholder="Aapka naam (optional)">
                     @if($isLogged)
-                    {{-- Pre-fill hidden for logged users, shown fields stay for confirm --}}
                     @endif
                 </div>
 
@@ -400,7 +401,7 @@
         let isSpinning      = false;
         let spinsLeft       = {{ $shop->spins_left ?? 1 }};
         let userCoins       = {{ $userCoins ?? 340 }};
-        let alreadyFollowed = {{ $isFollowing ? 'true' : 'false' }};
+        let alreadyFollowed = {{ $isFollowed ? 'true' : 'false' }};
         let reviewDone      = false;
         let currentReviewRating = 0;
 
@@ -570,11 +571,105 @@
         function openFollowSheet() {
             if (alreadyFollowed) {
                 showToast('Aapne pehle se follow kar rakha hai! ✅');
+                $('#followBonusCard').addClass('hidden');
                 return;
             }
-            document.getElementById('followSheet').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
+            if (localStorage.getItem('user_mobile') !== null)
+            {
+                const data = {
+                    shopId: shopId,
+                    phone:   localStorage.getItem('user_mobile'),
+                    _token:  '{{ csrf_token() }}'
+                }
+                $.ajax({
+                    url: '{{ url("/check-follow") }}',
+                    method: 'POST',
+                    data: data,
+                    success: function(res) {
+                        if(res.status == 'success')
+                        {
+                            showToast('Aapne pehle se follow kar rakha hai! ✅');
+                            setTimeout(function()
+                            {
+                                location.reload();
+                            },2000);
+                            return;
+                        }else{
+                            $.ajax({
+                                url: '{{ url("/follow-user") }}',
+                                method: 'POST',
+                                data: data,
+                                success: function(res) {
+                                    alreadyFollowed = true;
+                                    spinsLeft++;
+                                    updateSpinUI();
+                                    fireConfetti();
+                                    showSheetMsg('followMsg', '✅ Followed! +1 Spin mila!', true);
+                                    const card = document.getElementById('followBonusCard');
+                                    if (card) {
+                                        card.style.opacity = '0.6';
+                                        card.style.pointerEvents = 'none';
+                                        document.getElementById('followBonusTitle').textContent = '✅ Followed!';
+                                        document.getElementById('followBonusSub').textContent   = '+1 Spin added';
+                                    }
+                                    setTimeout(() => location.reload(), 3000);
+                                },
+                            });
+                        }
+                    },
+                });
+            }else{
+                document.getElementById('followPopup').classList.remove('hidden');
+            }
         }
+
+        $('#followPopupBtn').click(function()
+        {
+              const mobile = document.getElementById('userFollowMobile').value;
+
+                // Validation: Exactly 10 digits
+                if (mobile.length !== 10) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid Number',
+                        text: 'Please enter a valid 10-digit mobile number.',
+                        confirmButtonColor: '#4f46e5'
+                    });
+                    return;
+                }
+
+                // 1. LocalStorage me Save
+                localStorage.setItem('user_mobile', mobile);
+
+                // 2. DB me Save (Laravel AJAX)
+                fetch("{{ route('save.mobile') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                        },
+                        body: JSON.stringify({
+                            mobile: mobile
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('followPopup').classList.add('hidden');
+                            if(data.isFollowed)
+                            {
+                                showToast('Aapne pehle se follow kar rakha hai! ✅');
+                                setTimeout(function()
+                                {
+                                    location.reload();
+                                },2000);
+                                return;
+                            }
+                            openFollowSheet();
+                        }
+                    })
+                    .catch(err => console.error("Database error:", err));  
+        })
 
         function openReviewSheet() {
             if (reviewDone) {

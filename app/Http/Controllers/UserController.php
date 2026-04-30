@@ -30,34 +30,55 @@ class UserController extends Controller
         return response()->json('0'); // Error code
     }
 
+    function checkFollow(Request $request)
+    {
+        $follower_id = '';
+        $getUserDetail = DB::table('users')->where('mobile',$request->phone)->get();
+        if($getUserDetail->count() > 0)
+        {
+            $follower_id = $getUserDetail[0]->id;
+        }
+        $following_id = $request->shopId;      // Target user/shop ID
+        $followCheck = DB::table('follows')
+                        ->where('follower_id', $follower_id)
+                        ->where('following_id', $following_id)
+                        ->first();
+        if($followCheck)
+        {
+            return response()->json(['status' => 'success']);
+        }else{
+            return response()->json(['status' => 'error']);
+        }
+    }
+
     // --- FOLLOW / UNFOLLOW LOGIC ---
     public function toggleFollow(Request $request)
     {
-        $follower_id = '';
+        $following_id = '';
         if($request->has('phone'))
         {
             $getUserDetail = DB::table('users')->where('mobile',$request->phone)->get();
             if($getUserDetail->count() > 0)
             {
-                $follower_id = $getUserDetail[0]->id;
+                $following_id = $getUserDetail[0]->id;
             }else{
                 $id = DB::table('users')->insertGetId([
                     'mobile'     => $request->phone,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
-                $follower_id = $id;
+                $following_id = $id;
             }
             $user = DB::table('users')->where('mobile', $request->phone)->first();
             Session::put('public_user', $user);
         }else{
-            $follower_id = $request->user_id;
+            $following_id = $request->user_id;
         }
-        $following_id = $request->shopId;      // Target user/shop ID
+        $follower_id = $request->shopId;      // Target user/shop ID
         $check_type=$request->flw_check??'work';
 
         // Check if user is logged in
-        if (!$follower_id) {
+        if (!$following_id) {
             return response()->json(['status' => 'error', 'msg' => 'Pehle login karein!']);
         }
 
@@ -119,8 +140,8 @@ class UserController extends Controller
 
         // Use lowercase 'shopid' to match JS
         $followCheck = DB::table('follows')
-            ->where('follower_id', $user->id)
-            ->where('following_id', $request->shopid)  // ← lowercase
+            ->where('following_id', $user->id)
+            ->where('follower_id', $request->shopid)  // ← lowercase
             ->exists();
 
         return response()->json([

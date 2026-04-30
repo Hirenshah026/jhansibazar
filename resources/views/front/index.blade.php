@@ -260,9 +260,6 @@
                     </div>
                     <p class="text-sm font-bold text-ink-700">{{ $cfg['label'] }}</p>
                 </div>
-                <button onclick="filterAndNav('{{ $cat }}')" class="text-xs text-saffron-500 font-semibold">
-                    Sab dekho →
-                </button>
             </div>
 
             <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide" id="{{ $sectionId }}">

@@ -5,7 +5,6 @@
     <title>Clearing Storage...</title>
 </head>
 <body>
-    <p>Data clear kiya ja raha hai, kripya intezar karein...</p>
 
     <script>
         // 1. LocalStorage ko puri tarah saaf karne ke liye

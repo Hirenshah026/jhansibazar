@@ -33,6 +33,7 @@ Route::any('/user-profile', [UserController::class, 'dashboard'])->name('user.da
 Route::any('/user-logout', [UserController::class, 'logout']);
 
 // Follow/Unfollow Route
+Route::post('/check-follow',[UserController::class,'checkFollow'])->name('follow.check');
 Route::post('/follow-user', [UserController::class, 'toggleFollow'])->name('follow.user');
 Route::post('/spin/decrement', [FrontController::class, 'decrementSpin'])->name('spin.decrement');
 

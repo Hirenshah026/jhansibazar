@@ -124,20 +124,21 @@ class FrontController extends Controller
 
         // ── Determine spins_left based on login status ──
         $spinsLeft = 1; // default for guests
-
+        $isFollowed = false;
         if (Session::has('public_user')) {
             $user = Session::get('public_user');
             if ($user) {
                 // Fresh fetch from DB to get latest freeSpin value
                 $freshUser = DB::table('users')->where('id', $user->id)->first();
                 $spinsLeft = $freshUser->freeSpin ?? 0;
+                $checkFollow = DB::table('follows')->where('following_id',$freshUser->id)->where('follower_id',$shop->id)->get();
+                $isFollowed = $checkFollow->count() > 0 ? true : false;
             }
         }
 
         // Attach spins_left to shop object so view can use $shop->spins_left
         $shop = (object) array_merge((array) $shop, ['spins_left' => $spinsLeft]);
-
-        return view('front.spin1', compact('shop'));
+        return view('front.spin1', compact('shop','isFollowed'));
     }
 
     public function decrementSpin(Request $request)
