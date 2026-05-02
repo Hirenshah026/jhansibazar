@@ -301,7 +301,7 @@
             <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide" id="{{ $sectionId }}">
                 @foreach($catShops as $shop)
                 @php
-                    $photo      = $shop->shop_photo ?? null;
+                    $photo      = $shop->banner ?? null;
                     $itemPhotos = $shop->photos_list ?? [];
                     $displayPhoto = !empty($photo) ? $photo : (!empty($itemPhotos[0]) ? $itemPhotos[0] : '');
                     $offersList = $shop->offers_list ?? [];
@@ -314,8 +314,15 @@
 
                     <div class="relative h-24 bg-ink-50 overflow-hidden">
                         @if($displayPhoto)
-                            <img src="{{ is_array($displayPhoto) ? ($displayPhoto[0] ?? 'https://placehold.co/600x400?text=Jhansi+Bazaar') : ($displayPhoto ?? 'https://placehold.co/600x400?text=Jhansi+Bazaar') }}" 
-                                 class="w-full h-full object-cover" 
+                            @php
+                                if (is_array($displayPhoto)) {
+                                    $img = $displayPhoto[0] ?? 'https://placehold.co/600x400?text=' . urlencode($shop->shop_name);
+                                } else {
+                                    $img = $displayPhoto ?? 'https://placehold.co/600x400?text=' . urlencode($shop->shop_name);
+                                }
+                            @endphp                            
+                            <img src="{{ $img }}" 
+                                 class="w-full h-full object-fill" 
                                  loading="lazy" 
                                  alt="{{ $shop->shop_name }}">
                         @else

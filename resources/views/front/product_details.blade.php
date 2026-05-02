@@ -180,7 +180,7 @@ body { background: #F0F4FF; min-height: 100vh }
 
     $hasSpin = count($cleanOffers) > 0;
     $shopSlug = str_replace(' ', '-', strtolower($shop->shop_name));
-    $mainImg = $shop->shop_photo ?: 'https://placehold.co/600x400?text=Jhansi+Bazaar';
+    $mainImg = $shop->banner ?: 'https://ui-avatars.com/api/?name='.urlencode($shop->shop_name).'&background=random';
     $itemPhotos = json_decode($shop->item_photos, true);
     $categories = json_decode($shop->categories, true) ?? [];
     $payments = json_decode($shop->payment_modes, true) ?? [];
@@ -287,7 +287,7 @@ body { background: #F0F4FF; min-height: 100vh }
             </div>
 
             @if($isFollowing)
-                <span class="followed-label">
+                <span class="followed-label d-none">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" 
                          stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="20 6 9 17 4 12"/>
@@ -300,7 +300,7 @@ body { background: #F0F4FF; min-height: 100vh }
                     data-userid="{{ $isLogged ? ($loggedUser->id ?? 0) : 0 }}"
                     data-islogged="{{ $isLogged ? 'true' : 'false' }}"
                     style="flex-shrink:0; background:#3B5BDB; color:#fff; font-size:11px; font-weight:800; 
-                           padding:7px 14px; border-radius:20px; border:none; cursor:pointer">
+                           padding:7px 14px; border-radius:20px; border:none; cursor:pointer;display: none;">
                     + Follow
                 </button>
             @endif
