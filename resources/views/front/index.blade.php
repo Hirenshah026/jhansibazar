@@ -316,9 +316,9 @@
                         @if($displayPhoto)
                             @php
                                 if (is_array($displayPhoto)) {
-                                    $img = $displayPhoto[0] ?? 'https://placehold.co/600x400?text=' . urlencode($shop->shop_name);
+                                    $img = $displayPhoto[0] ?? 'https://ui-avatars.com/api/?name='.urlencode($shop->shop_name).'&background=random';
                                 } else {
-                                    $img = $displayPhoto ?? 'https://placehold.co/600x400?text=' . urlencode($shop->shop_name);
+                                    $img = $displayPhoto ?? 'https://ui-avatars.com/api/?name='.urlencode($shop->shop_name).'&background=random';
                                 }
                             @endphp                            
                             <img src="{{ $img }}" 
