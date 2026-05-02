@@ -1,10 +1,10 @@
 @extends('front_layout.main')
 @section('content')
 <style>
-    #section-paan .h-24{
+    .h-24{
         height:15rem!important;
     }
-    #screen-home .w-44{
+    .w-44{
         width: 14rem!important;
     }
     .star {
@@ -12,11 +12,11 @@
         color: #FCD34D
     }
 
-    #section-paan .text-xs{
+    .text-xs{
         font-size: 0.95rem!important;
     }
 
-    #section-paan .text-\[10px\]{
+    .text-\[10px\]{
         font-size: 12px!important;
     }
 
