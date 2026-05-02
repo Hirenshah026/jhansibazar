@@ -1,10 +1,25 @@
 @extends('front_layout.main')
 @section('content')
 <style>
+    #section-paan .h-24{
+        height:15rem!important;
+    }
+    #screen-home .w-44{
+        width: 14rem!important;
+    }
     .star {
         font-size: 13px;
         color: #FCD34D
     }
+
+    #section-paan .text-xs{
+        font-size: 0.95rem!important;
+    }
+
+    #section-paan .text-\[10px\]{
+        font-size: 12px!important;
+    }
+
     /* Growth Services */
     .gs-card {
         border-radius: 18px;
@@ -198,7 +213,7 @@
 
         @php
             $catConfig = [
-                'food'        => ['emoji' => '🍛', 'label' => 'Food & Dhaba',          'color' => 'from-amber-400 to-orange-400'],
+                'food'        => ['emoji' => '🍛', 'label' => 'Food Zone',          'color' => 'from-amber-400 to-orange-400'],
                 'sweets'      => ['emoji' => '🍡', 'label' => 'Sweets & Mithai',        'color' => 'from-yellow-400 to-amber-400'],
                 'bakery'      => ['emoji' => '🎂', 'label' => 'Bakery & Cake',          'color' => 'from-pink-300 to-rose-400'],
                 'salon'       => ['emoji' => '✂️', 'label' => 'Salon & Beauty',         'color' => 'from-pink-400 to-rose-500'],
@@ -226,6 +241,27 @@
             $sectionId = 'section-' . $cat;
         @endphp
         @if($i == 3)
+        <div class="listee-promo mx-3 mb-4">
+            <div class="listee-promo-dots"></div>
+            <div class="relative z-10 flex items-center gap-3">
+                <div style="flex:1">
+                    <p class="text-white/70 text-[9px] font-bold uppercase tracking-widest mb-1">Listee ke saath baro</p>
+                    <h3 class="text-white font-black text-base leading-tight mb-2">
+                        Apna business list karo &<br>
+                        <span class="text-yellow-300">lakho customers</span> tak pahuncho!
+                    </h3>
+                    <button class="bg-white text-orange-600 text-[11px] font-black px-4 py-2 rounded-full shadow-lg active:scale-95 transition-transform">
+                        ADD YOUR BUSINESS →
+                    </button>
+                </div>
+                <div style="flex-shrink:0">
+                    <img src="https://cdni.iconscout.com/illustration/premium/thumb/business-deal-illustration-download-in-svg-png-gif-file-formats--agreement-handshake-partnership-working-people-pack-illustrations-5349479.png"
+                         class="w-24 object-contain drop-shadow-lg" alt="Grow">
+                </div>
+            </div>
+        </div>
+        @endif
+        @if($i == 5)
         <div class="px-3 pt-3 pb-1">
             <div class="relative overflow-hidden rounded-2xl" id="bannerWrap">
                 <div class="flex transition-transform duration-400 ease-in-out" id="bannerTrack" style="will-change: transform;">
@@ -252,7 +288,7 @@
         </div>
         @endif
 
-        <div class="px-4 mb-6">
+        <div class="px-4 mt-3">
             <div class="flex items-center justify-between mb-3">
                 <div class="flex items-center gap-2">
                     <div class="w-7 h-7 bg-gradient-to-br {{ $cfg['color'] }} rounded-lg flex items-center justify-center text-sm shadow-sm">
@@ -345,29 +381,7 @@
             </div>
         </div>
         @endforeach        
-
-        {{-- ═══════════════════════════════════════════════════════
-             LISTEE PROMO BANNER
-        ════════════════════════════════════════════════════════ --}}
-        <div class="listee-promo mx-3 mb-4">
-            <div class="listee-promo-dots"></div>
-            <div class="relative z-10 flex items-center gap-3">
-                <div style="flex:1">
-                    <p class="text-white/70 text-[9px] font-bold uppercase tracking-widest mb-1">Listee ke saath baro</p>
-                    <h3 class="text-white font-black text-base leading-tight mb-2">
-                        Apna business list karo &<br>
-                        <span class="text-yellow-300">lakho customers</span> tak pahuncho!
-                    </h3>
-                    <button class="bg-white text-orange-600 text-[11px] font-black px-4 py-2 rounded-full shadow-lg active:scale-95 transition-transform">
-                        ADD YOUR BUSINESS →
-                    </button>
-                </div>
-                <div style="flex-shrink:0">
-                    <img src="https://cdni.iconscout.com/illustration/premium/thumb/business-deal-illustration-download-in-svg-png-gif-file-formats--agreement-handshake-partnership-working-people-pack-illustrations-5349479.png"
-                         class="w-24 object-contain drop-shadow-lg" alt="Grow">
-                </div>
-            </div>
-        </div>
+        
 
         {{-- ═══════════════════════════════════════════════════════
              IMPORTANT GROWTH SERVICES

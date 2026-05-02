@@ -78,6 +78,13 @@ class FrontController extends Controller
         $shopsByCategory = $shops->groupBy(function ($shop) {
             return $shop->cats[0] ?? 'other';
         });
+
+        $categoryOrder = ['food','hospital', 'paan', 'clothing', 'other'];
+
+        $shopsByCategory = $shopsByCategory->sortBy(function ($shops, $category) use ($categoryOrder) {
+            $index = array_search($category, $categoryOrder);
+            return $index !== false ? $index : PHP_INT_MAX;
+        });
         return view('front.index', compact('shops','shopsByCategory'));
     }
 
