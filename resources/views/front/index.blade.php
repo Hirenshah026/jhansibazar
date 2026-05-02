@@ -301,7 +301,7 @@
             <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide" id="{{ $sectionId }}">
                 @foreach($catShops as $shop)
                 @php
-                    $photo      = $shop->banner ?? null;
+                    $photo      = $shop->shop_photo ?? null;
                     $itemPhotos = $shop->photos_list ?? [];
                     $displayPhoto = !empty($photo) ? $photo : (!empty($itemPhotos[0]) ? $itemPhotos[0] : '');
                     $offersList = $shop->offers_list ?? [];
