@@ -322,7 +322,7 @@
                                 }
                             @endphp                            
                             <img src="{{ $img }}" 
-                                 class="w-full h-full object-fill" 
+                                 class="w-full h-full object-cover" 
                                  loading="lazy" 
                                  alt="{{ $shop->shop_name }}">
                         @else
