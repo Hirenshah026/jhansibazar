@@ -26,6 +26,8 @@ Route::get('/clear-cache', function () {
     return redirect('/');
 });
 
+Route::post('/spin/apply-bonus', [FrontController::class, 'applyBonus'])->name('spin.applyBonus');
+
 // user route 
 Route::post('/login-check', [UserController::class, 'ajaxLogin'])->name('login.check');
 Route::post('/save-mobile', [UserController::class, 'save_mobile'])->name('save.mobile');

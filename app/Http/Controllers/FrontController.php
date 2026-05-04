@@ -38,6 +38,41 @@ class FrontController extends Controller
      
         return response()->json(['success' => true, 'message' => 'Review saved!']);
     }
+
+    public function applyBonus(Request $request)
+    {
+        $spins = (int) $request->input('spins', 0);
+        $coins = (int) $request->input('coins', 0);
+
+        if (Session::has('public_user')) {
+            $userId = Session::get('public_user')->id;
+
+            // Increment freeSpin and coins directly in DB
+            DB::table('users')
+            ->where('id', $userId)
+            ->update([
+                'freeSpin' => DB::raw('freeSpin + ' . $spins),
+                'coins'    => DB::raw('coins + ' . $coins),
+            ]);
+
+            // Fetch updated values
+            $user = DB::table('users')->where('id', $userId)->first();
+
+            return response()->json([
+                'success'   => true,
+                'spinsLeft' => $user->freeSpin,
+                'userCoins' => $user->coins,
+            ]);
+        }
+
+        // Guest → just acknowledge (frontend already updated)
+        return response()->json([
+            'success'   => true,
+            'spinsLeft' => null,
+            'userCoins' => null,
+        ]);
+    }
+
     // ─────────────────────────────────────────────
     // Home
     // ─────────────────────────────────────────────
@@ -131,6 +166,7 @@ class FrontController extends Controller
 
         // ── Determine spins_left based on login status ──
         $spinsLeft = 1; // default for guests
+        $userCoins = 10;
         $isFollowed = false;
         if (Session::has('public_user')) {
             $user = Session::get('public_user');
@@ -140,12 +176,13 @@ class FrontController extends Controller
                 $spinsLeft = $freshUser->freeSpin ?? 0;
                 $checkFollow = DB::table('follows')->where('following_id',$freshUser->id)->where('follower_id',$shop->id)->get();
                 $isFollowed = $checkFollow->count() > 0 ? true : false;
+                $userCoins = $freshUser->coins;
             }
         }
 
         // Attach spins_left to shop object so view can use $shop->spins_left
         $shop = (object) array_merge((array) $shop, ['spins_left' => $spinsLeft]);
-        return view('front.spin1', compact('shop','isFollowed'));
+        return view('front.spin1', compact('shop','isFollowed','userCoins'));
     }
 
     public function decrementSpin(Request $request)

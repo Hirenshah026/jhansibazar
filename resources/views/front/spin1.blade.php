@@ -143,8 +143,27 @@
                 'sub'   => 'Limited Offer',
                 'color' => $colors[$i % 6],
                 'emoji' => $emojis[$i % 6],
+                'type'  => 'offer',          // ← NEW: mark as normal offer
             ];
             $i++;
+        }
+
+        // ── NEW: If DB offers are 4 or fewer, add 2 bonus reward segments ──
+        if (count($finalSegments) <= 4) {
+            $finalSegments[] = [
+                'label' => '+2 SPIN',
+                'sub'   => 'Bonus Reward',
+                'color' => '#0369a1',        // blue
+                'emoji' => '🎡',
+                'type'  => 'bonus_spin',     // ← special type
+            ];
+            $finalSegments[] = [
+                'label' => '+2 SPIN + ₹10',
+                'sub'   => 'Bonus Reward',
+                'color' => '#7c3aed',        // purple
+                'emoji' => '💎',
+                'type'  => 'bonus_spin_coin', // ← special type
+            ];
         }
 
         $loggedUser  = Session::get('public_user');
@@ -400,7 +419,7 @@
         let curAngle        = 0;
         let isSpinning      = false;
         let spinsLeft       = {{ $shop->spins_left ?? 1 }};
-        let userCoins       = {{ $userCoins ?? 340 }};
+        let userCoins       = {{ $userCoins ?? 10 }};
         let alreadyFollowed = {{ $isFollowed ? 'true' : 'false' }};
         let reviewDone      = false;
         let currentReviewRating = 0;
@@ -538,9 +557,45 @@
             const norm = ((-angle % (2 * Math.PI)) + (2 * Math.PI)) % (2 * Math.PI);
             const idx  = Math.floor(norm / arc) % n;
             const seg  = segments[idx];
+
             document.getElementById('winPrizeText').textContent = seg.label;
             document.getElementById('winModal').classList.remove('hidden');
             fireConfetti();
+
+            // ── NEW: Handle bonus reward segments immediately ──
+            if (seg.type === 'bonus_spin') {
+                applyBonusReward({ spins: 2, coins: 0 });
+            } else if (seg.type === 'bonus_spin_coin') {
+                applyBonusReward({ spins: 2, coins: 10 });
+            }
+        }
+
+        // ── NEW: Apply bonus reward on frontend + sync to server ──
+        function applyBonusReward({ spins, coins }) {
+            // Instant frontend update
+            spinsLeft += spins;
+            userCoins += coins;
+            updateSpinUI();
+
+            // Sync to server
+            $.ajax({
+                url: '{{ url("/spin/apply-bonus") }}',   // ← new route (see below)
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    shop_id: shopId,
+                    spins:  spins,
+                    coins:  coins,
+                },
+                success: function(res) {
+                    if (res.spinsLeft !== undefined) spinsLeft = res.spinsLeft;
+                    if (res.userCoins !== undefined) userCoins = res.userCoins;
+                    updateSpinUI();
+                },
+                error: function() {
+                    showToast('Reward sync failed, please refresh.');
+                }
+            });
         }
 
         function closeWin() {
@@ -554,17 +609,21 @@
                     success: function(res) {
                         spinsLeft = res.spinsLeft;
                         updateSpinUI();
+                        setTimeout(() => location.reload(), 500); // ← reload after sync
                     },
                     error: function() {
-                        // Silent — UI already updated locally
                         updateSpinUI();
+                        setTimeout(() => location.reload(), 500); // ← reload even on error
                     }
                 });
+            } else {
+                setTimeout(() => location.reload(), 500); // ← reload for guests too
             }
         }
 
         function justCloseWin() {
             document.getElementById('winModal').classList.add('hidden');
+            setTimeout(() => location.reload(), 300); // ← reload on X button too
         }
 
         /* ─── Sheet Open / Close ─── */
