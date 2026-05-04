@@ -158,7 +158,6 @@
         $finalSegments = [];
         $i = 0;
         foreach ($dbOffers as $offer) {
-            // ── Build sub-label with expiry info ──
             $expiryLabel = 'Limited Offer';
             if (!empty($offer['expiry_date'])) {
                 $daysLeft = (int) ceil((strtotime($offer['expiry_date']) - strtotime($today)) / 86400);
@@ -179,7 +178,6 @@
             $i++;
         }
 
-        // ── Add bonus segments if 4 or fewer offers ──
         if (count($finalSegments) <= 4) {
             $finalSegments[] = [
                 'label' => '+2 SPIN',
@@ -633,7 +631,7 @@
             fireConfetti();
             if (isLoggedIn) {
                 $.ajax({
-                    url: '{{ route('spin.decrement') }}',
+                    url: "{{ route('spin.decrement') }}",
                     method: 'POST',
                     data: { _token: '{{ csrf_token() }}' },
                     success: function(res) {
