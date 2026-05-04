@@ -176,7 +176,7 @@
                 'expiry'  => $offer['expiry_date'] ?? null,
                 'qty'     => $offer['quantity']    ?? null,
             ];
-            $i++
+            $i++;
         }
 
         // ── Add bonus segments if 4 or fewer offers ──
@@ -231,7 +231,6 @@
             <div class="stats-row">
                 <div class="stat-pill coins-pill">
                     <span class="stat-val" id="coinsDisplay">🪙 {{ $userCoins ?? 10 }}</span>
-                    <span class="stat-lbl" style="font-size:1rem;">💵</span>
                 </div>
                 <div class="stat-pill spins-pill">
                     <span class="stat-val" id="spinsCount">{{ $shop->spins_left ?? 1 }}</span>
