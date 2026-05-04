@@ -118,18 +118,38 @@
     @php
         date_default_timezone_set('Asia/Kolkata');
         $currentTime = date('H:i:s');
+        $today       = date('Y-m-d');   // ← today's date for expiry check
 
         $openTime  = $shop->open_time  ?? '09:00:00';
         $closeTime = $shop->close_time ?? '21:00:00';
 
         $isShopOpen = $currentTime >= $openTime && $currentTime <= $closeTime;
         $rawOffers  = isset($shop) ? json_decode($shop->offers, true) : [];
-        $dbOffers   = array_filter(is_array($rawOffers) ? $rawOffers : [], function ($val) {
-            return isset($val['text']) && !empty(trim((string) $val['text']));
+
+        // ── Filter: must have text + is_active == 1 + not expired ──
+        $dbOffers = array_filter(is_array($rawOffers) ? $rawOffers : [], function ($val) use ($today) {
+            if (!isset($val['text']) || empty(trim((string) $val['text']))) return false;
+            if (isset($val['is_active']) && (int)$val['is_active'] !== 1) return false;
+            if (isset($val['expiry_date']) && !empty($val['expiry_date']) && $val['expiry_date'] < $today) return false;
+            return true;
+        });
+
+        // ── Sort by expiry date ascending (soonest expiring first) ──
+        usort($dbOffers, function($a, $b) {
+            $dateA = $a['expiry_date'] ?? '9999-12-31';
+            $dateB = $b['expiry_date'] ?? '9999-12-31';
+            return strcmp($dateA, $dateB);
         });
 
         if (empty($dbOffers)) {
-            $dbOffers = ['20% OFF', '+15 COINS', 'FREE POLISH', 'TRY AGAIN', 'BUY 2 GET 1', '+10 COINS'];
+            $dbOffers = [
+                ['text' => '20% OFF'],
+                ['text' => '+15 COINS'],
+                ['text' => 'FREE POLISH'],
+                ['text' => 'TRY AGAIN'],
+                ['text' => 'BUY 2 GET 1'],
+                ['text' => '+10 COINS'],
+            ];
         }
 
         $colors = ['#8b0000', '#1a237e', '#1b5e20', '#3e2723', '#212121', '#DC2626'];
@@ -138,31 +158,42 @@
         $finalSegments = [];
         $i = 0;
         foreach ($dbOffers as $offer) {
+            // ── Build sub-label with expiry info ──
+            $expiryLabel = 'Limited Offer';
+            if (!empty($offer['expiry_date'])) {
+                $daysLeft = (int) ceil((strtotime($offer['expiry_date']) - strtotime($today)) / 86400);
+                if ($daysLeft === 0)      $expiryLabel = '⚠️ Aaj Last Day!';
+                elseif ($daysLeft === 1)  $expiryLabel = '⏳ Kal Expire!';
+                elseif ($daysLeft <= 3)   $expiryLabel = "⏳ {$daysLeft} din bacha!";
+            }
+
             $finalSegments[] = [
-                'label' => strtoupper(trim((string) ($offer['text'] ?? 'OFFER'))),
-                'sub'   => 'Limited Offer',
-                'color' => $colors[$i % 6],
-                'emoji' => $emojis[$i % 6],
-                'type'  => 'offer',          // ← NEW: mark as normal offer
+                'label'   => strtoupper(trim((string) ($offer['text'] ?? 'OFFER'))),
+                'sub'     => $expiryLabel,
+                'color'   => $colors[$i % 6],
+                'emoji'   => $emojis[$i % 6],
+                'type'    => 'offer',
+                'expiry'  => $offer['expiry_date'] ?? null,
+                'qty'     => $offer['quantity']    ?? null,
             ];
             $i++;
         }
 
-        // ── NEW: If DB offers are 4 or fewer, add 2 bonus reward segments ──
+        // ── Add bonus segments if 4 or fewer offers ──
         if (count($finalSegments) <= 4) {
             $finalSegments[] = [
                 'label' => '+2 SPIN',
                 'sub'   => 'Bonus Reward',
-                'color' => '#0369a1',        // blue
+                'color' => '#0369a1',
                 'emoji' => '🎡',
-                'type'  => 'bonus_spin',     // ← special type
+                'type'  => 'bonus_spin',
             ];
             $finalSegments[] = [
                 'label' => '+2 SPIN + ₹10',
                 'sub'   => 'Bonus Reward',
-                'color' => '#7c3aed',        // purple
+                'color' => '#7c3aed',
                 'emoji' => '💎',
-                'type'  => 'bonus_spin_coin', // ← special type
+                'type'  => 'bonus_spin_coin',
             ];
         }
 
